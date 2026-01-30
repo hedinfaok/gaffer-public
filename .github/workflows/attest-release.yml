@@ -1,12 +1,8 @@
 name: Attest Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        description: 'Release tag to attest'
-        required: true
-        type: string
+  repository_dispatch:
+    types: [attest-release]
 
 jobs:
   attest:
@@ -20,7 +16,7 @@ jobs:
     steps:
       - name: Download release assets
         run: |
-          gh release download "${{ inputs.tag_name }}" \
+          gh release download "${{ github.event.client_payload.tag_name }}" \
             --repo hedinfaok/gaffer-public \
             --pattern "*.tar.gz" \
             --pattern "*.zip"
