@@ -1,0 +1,35 @@
+name: Attest Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag to attest'
+        required: true
+        type: string
+
+jobs:
+  attest:
+    name: Attest Release Assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      attestations: write
+      id-token: write
+    
+    steps:
+      - name: Download release assets
+        run: |
+          gh release download "${{ inputs.tag_name }}" \
+            --repo hedinfaok/gaffer-public \
+            --pattern "*.tar.gz" \
+            --pattern "*.zip"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      
+      - name: Attest artifacts
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            *.tar.gz
+            *.zip
