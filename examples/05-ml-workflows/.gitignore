@@ -1,0 +1,27 @@
+# Generated ML Artifacts - These are created by the pipeline
+data/
+venv/
+*.pyc
+__pycache__/
+.pytest_cache/
+*.log
+
+# OS Files
+.DS_Store
+.Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Python
+*.egg-info/
+build/
+dist/
