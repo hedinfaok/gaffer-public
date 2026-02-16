@@ -1,0 +1,19 @@
+{
+  "name": "local-dev-environment",
+  "version": "1.0.0",
+  "description": "Local Development Environment Example for gaffer-exec",
+  "private": true,
+  "scripts": {
+    "setup": "gaffer-exec run setup",
+    "dev": "gaffer-exec run dev",
+    "test": "gaffer-exec run test",
+    "stop": "gaffer-exec run stop",
+    "clean": "gaffer-exec run clean"
+  },
+  "keywords": ["gaffer-exec", "local-development", "postgres", "express", "react"],
+  "author": "Local Dev Environment Example",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
