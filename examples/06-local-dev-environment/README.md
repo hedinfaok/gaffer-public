@@ -31,8 +31,17 @@ This example demonstrates how to use **gaffer-exec** to orchestrate a complete l
 # Clone and navigate to this example
 cd examples/06-local-dev-environment
 
+# Setup environment (first time)
+gaffer-exec --graph graph.json run setup
+
 # Start the complete development stack
-gaffer-exec run dev
+./scripts/dev-full.sh
+
+# OR manually step-by-step:
+gaffer-exec --graph graph.json run db:start
+gaffer-exec --graph graph.json run api:start
+gaffer-exec --graph graph.json run frontend:start
+gaffer-exec --graph graph.json run dev
 ```
 
 The system will:
@@ -46,31 +55,37 @@ The system will:
 
 ### Core Development Commands
 ```bash
-# Start complete development stack
-gaffer-exec run dev
+# Setup environment (first time only)
+gaffer-exec --graph graph.json run setup
 
-# Run integration tests
-gaffer-exec run test
+# Start complete development stack (recommended)
+./scripts/dev-full.sh
+
+# OR run dev validation (after services started)
+gaffer-exec --graph graph.json run dev
+
+# Run integration tests (requires services running)
+gaffer-exec --graph graph.json run test
 
 # Stop all services gracefully  
-gaffer-exec run stop
+gaffer-exec --graph graph.json run stop
 
 # Clean up all generated files
-gaffer-exec run clean
+gaffer-exec --graph graph.json run clean
 ```
 
 ### Individual Service Commands
 ```bash
 # Setup environment only
-gaffer-exec run setup
+gaffer-exec --graph graph.json run setup
 
 # Install dependencies
-gaffer-exec run install-deps
+gaffer-exec --graph graph.json run install-deps
 
 # Start services individually
-gaffer-exec run db:start
-gaffer-exec run api:start
-gaffer-exec run frontend:start
+gaffer-exec --graph graph.json run db:start
+gaffer-exec --graph graph.json run api:start  
+gaffer-exec --graph graph.json run frontend:start
 ```
 
 ### NPM Shortcuts (Optional)
