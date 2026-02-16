@@ -1,0 +1,76 @@
+{
+  "version": "1",
+  "graphs": {
+    "clean": {
+      "command": "rm -rf coverage/ node_modules/.cache/ .nyc_output/",
+      "description": "Clean test artifacts and cache"
+    },
+    "install": {
+      "command": "npm install",
+      "deps": ["clean"],
+      "description": "Install test dependencies",
+      "outputs": ["node_modules/**"]
+    },
+    "lint": {
+      "command": "echo '📝 Running linting checks...' && echo '✅ Linting passed (would run eslint in real project)'",
+      "deps": ["install"],
+      "description": "Lint source code"
+    },
+    "unit-tests-lib": {
+      "command": "echo '🧪 Running library unit tests...' && npm run test:lib",
+      "deps": ["install"],
+      "description": "Run unit tests for library components",
+      "outputs": ["coverage/lib/**"]
+    },
+    "unit-tests-api": {
+      "command": "echo '🧪 Running API unit tests...' && npm run test:api",
+      "deps": ["install"],
+      "description": "Run unit tests for API services",
+      "outputs": ["coverage/api/**"]
+    },
+    "unit-tests-ui": {
+      "command": "echo '🧪 Running UI unit tests...' && npm run test:ui",
+      "deps": ["install"],
+      "description": "Run unit tests for UI components",
+      "outputs": ["coverage/ui/**"]
+    },
+    "integration-tests": {
+      "command": "echo '🔗 Running integration tests...' && npm run test:integration",
+      "deps": ["unit-tests-lib", "unit-tests-api"],
+      "description": "Run API integration tests",
+      "outputs": ["coverage/integration/**"]
+    },
+    "e2e-tests": {
+      "command": "echo '🌐 Running e2e tests...' && npm run test:e2e",
+      "deps": ["integration-tests", "unit-tests-ui"],
+      "description": "Run end-to-end tests",
+      "outputs": ["coverage/e2e/**"]
+    },
+    "coverage-report": {
+      "command": "echo '📊 Generating coverage report...' && npm run test:coverage",
+      "deps": ["unit-tests-lib", "unit-tests-api", "unit-tests-ui"],
+      "description": "Generate test coverage report",
+      "outputs": ["coverage/**"]
+    },
+    "test-all": {
+      "command": "echo '✅ All tests completed successfully!' && echo '📊 Test Summary: Unit, Integration, E2E tests passed'",
+      "deps": ["e2e-tests", "coverage-report", "lint"],
+      "description": "Run all tests in proper order"
+    },
+    "test-ci": {
+      "command": "echo '🚀 CI test suite complete' && echo 'Ready for deployment'",
+      "deps": ["test-all"],
+      "description": "Full CI test pipeline"
+    },
+    "test-watch": {
+      "command": "echo '👀 Starting test watch mode...' && timeout 3 npm test -- --watch --watchAll=false || echo '⚡ Watch mode started (timeout for demo)'",
+      "deps": ["install"],
+      "description": "Run tests in watch mode for development"
+    },
+    "test-debug": {
+      "command": "echo '🐛 Running tests in debug mode...' && npm test -- --verbose --detectOpenHandles",
+      "deps": ["install"],
+      "description": "Run tests with debug information"
+    }
+  }
+}
