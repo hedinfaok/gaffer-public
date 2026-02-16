@@ -1,0 +1,52 @@
+{
+  "version": "1",
+  "graphs": {
+    "clean": {
+      "command": "rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/cmd .cache/pkg",
+      "description": "Clean all build artifacts and cache"
+    },
+    "init": {
+      "command": "go mod tidy",
+      "deps": ["clean"],
+      "description": "Initialize Go modules and dependencies"
+    },
+    "fetch-cache": {
+      "command": "chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh",
+      "deps": ["init"],
+      "description": "Check remote cache for existing artifacts"
+    },
+    "build-gateway": {
+      "command": "echo '🔨 Building gateway service...' && go build -o cmd/gateway/main ./cmd/gateway",
+      "deps": ["fetch-cache"],
+      "description": "Build API Gateway service",
+      "outputs": ["cmd/gateway/main"]
+    },
+    "build-auth": {
+      "command": "echo '🔨 Building auth service...' && go build -o cmd/auth/main ./cmd/auth",
+      "deps": ["fetch-cache"],
+      "description": "Build Authentication service",
+      "outputs": ["cmd/auth/main"]
+    },
+    "build-users": {
+      "command": "echo '🔨 Building users service...' && go build -o cmd/users/main ./cmd/users",
+      "deps": ["fetch-cache"],
+      "description": "Build Users service",
+      "outputs": ["cmd/users/main"]
+    },
+    "upload-cache": {
+      "command": "chmod +x scripts/upload-cache.sh && ./scripts/upload-cache.sh",
+      "deps": ["build-gateway", "build-auth", "build-users"],
+      "description": "Upload new artifacts to remote cache"
+    },
+    "distributed-build": {
+      "command": "echo '✅ Distributed build complete!' && echo '🚀 All microservices built with caching optimization'",
+      "deps": ["upload-cache"],
+      "description": "Complete distributed build with caching"
+    },
+    "clean-build": {
+      "command": "echo '🧹 Clean build (no cache)'",
+      "deps": ["distributed-build"],
+      "description": "Full clean build for comparison"
+    }
+  }
+}

@@ -19,8 +19,13 @@ class UserCard {
     }
 
     escapeHtml(text) {
-        const div = { innerHTML: text };
-        return div.textContent || div.innerText || '';
+        if (typeof text !== 'string') text = String(text);
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;');
     }
 
     getDisplayName() {

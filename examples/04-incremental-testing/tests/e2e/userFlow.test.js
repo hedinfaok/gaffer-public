@@ -262,14 +262,15 @@ describe('E2E User Management Workflow', () => {
 
             expect(calc.body.result).toBe(userId * 2);
 
-            // 4. Update user with calculated data
+            // 4. Update user with calculated data (ensure valid phone format)
+            const phoneNumber = `+1555${String(calc.body.result).padStart(6, '0')}`;
             await request(server)
                 .put(`/api/users/${userId}`)
-                .send({ phone: `+${calc.body.result}` });
+                .send({ phone: phoneNumber });
 
             // 5. Verify end-to-end data flow
             const finalUser = await request(server).get(`/api/users/${userId}`);
-            expect(finalUser.body.user.phone).toBe(`+${userId * 2}`);
+            expect(finalUser.body.user.phone).toBe(phoneNumber);
 
             // Clean up
             await request(server).delete(`/api/users/${userId}`);

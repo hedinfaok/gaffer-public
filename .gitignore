@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+vendor/
+*/node_modules/
+*/vendor/
+
+# Build artifacts
+dist/
+build/
+target/
+*.o
+*.a
+*.so
+*.exe
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+*/coverage/
+
+# Cache and temporary files
+.cache/
+.tmp/
+.temp/
+*.tmp
+*.temp
+*/.cache/
+*/.tmp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Go specific
+*.mod.sum
+go.sum
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.pytest_cache/
+
+# Rust specific
+Cargo.lock
+target/
+
+# Gaffer specific
+.gaffer/

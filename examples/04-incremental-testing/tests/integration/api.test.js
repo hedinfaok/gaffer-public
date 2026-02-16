@@ -289,11 +289,12 @@ describe('API Integration Tests', () => {
 
             expect(calcResponse.body.result).toBe(userId * 10);
 
-            // 4. Update user with calculated information
+            // 4. Update user with calculated information (ensure valid phone format)
+            const phoneNumber = `+1555${String(calcResponse.body.result).padStart(6, '0')}`;
             await request(server)
                 .put(`/api/users/${userId}`)
                 .send({
-                    phone: `+${calcResponse.body.result}` // Use calc result as phone
+                    phone: phoneNumber // Use calc result as part of phone number
                 })
                 .expect(200);
 
@@ -305,7 +306,7 @@ describe('API Integration Tests', () => {
             expect(finalResponse.body.user).toMatchObject({
                 name: 'Workflow Test User',
                 email: 'workflow@test.com',
-                phone: `+${userId * 10}`
+                phone: phoneNumber
             });
         });
     });

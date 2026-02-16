@@ -69,7 +69,7 @@ describe('UserList', () => {
     const mockUsers = [
         { id: 1, name: 'Alice', email: 'alice@example.com' },
         { id: 2, name: 'Bob', email: 'bob@example.com' },
-        { id: 3, name: 'Charlie', email: 'charlie@example.com' }
+        { id: 3, name: 'Alicia', email: 'alicia@example.com' }
     ];
 
     beforeEach(() => {
@@ -110,8 +110,8 @@ describe('UserList', () => {
         userList.filterBy('name', 'ali');
         const filtered = userList.getFilteredUsers();
         
-        expect(filtered).toHaveLength(2); // Alice and Charlie contain 'ali'
-        expect(filtered.map(u => u.name)).toEqual(['Alice', 'Charlie']);
+        expect(filtered).toHaveLength(2); // Alice and Alicia contain 'ali'
+        expect(filtered.map(u => u.name)).toEqual(['Alice', 'Alicia']);
     });
 
     test('should handle empty filter', () => {
@@ -137,7 +137,7 @@ describe('UserList', () => {
         expect(html).toContain('Users (3)');
         expect(html).toContain('Alice');
         expect(html).toContain('Bob');
-        expect(html).toContain('Charlie');
+        expect(html).toContain('Alicia');
     });
 
     test('should render filtered user list', () => {
