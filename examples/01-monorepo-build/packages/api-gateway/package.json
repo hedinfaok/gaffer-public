@@ -1,0 +1,18 @@
+{
+  "name": "@example/api-gateway",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@example/shared-lib": "*",
+    "@example/auth-service": "*",
+    "@example/user-service": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

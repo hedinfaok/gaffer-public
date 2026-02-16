@@ -1,0 +1,16 @@
+{
+  "name": "monorepo-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real TypeScript monorepo example demonstrating gaffer-exec parallel builds",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "rm -rf packages/*/dist",
+    "build:all": "npm run build --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

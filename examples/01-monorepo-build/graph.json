@@ -1,0 +1,49 @@
+{
+  "version": "1",
+  "graphs": {
+    "clean": {
+      "command": "rm -rf packages/*/dist",
+      "description": "Clean all build artifacts"
+    },
+    "shared-lib": {
+      "command": "npx tsc -p packages/shared-lib/tsconfig.json",
+      "deps": ["clean"],
+      "description": "Build shared library used by all services",
+      "outputs": ["packages/shared-lib/dist/**"]
+    },
+    "auth-service": {
+      "command": "npx tsc -p packages/auth-service/tsconfig.json",
+      "deps": ["shared-lib"],
+      "description": "Build authentication microservice",
+      "outputs": ["packages/auth-service/dist/**"]
+    },
+    "user-service": {
+      "command": "npx tsc -p packages/user-service/tsconfig.json",
+      "deps": ["shared-lib"],
+      "description": "Build user management microservice",
+      "outputs": ["packages/user-service/dist/**"]
+    },
+    "api-gateway": {
+      "command": "npx tsc -p packages/api-gateway/tsconfig.json",
+      "deps": ["auth-service", "user-service"],
+      "description": "Build API gateway service",
+      "outputs": ["packages/api-gateway/dist/**"]
+    },
+    "web-app": {
+      "command": "npx tsc -p packages/web-app/tsconfig.json",
+      "deps": ["api-gateway"],
+      "description": "Build web application",
+      "outputs": ["packages/web-app/dist/**"]
+    },
+    "build-all": {
+      "command": "echo '✓ All packages built successfully' && echo 'Built: shared-lib, auth-service, user-service, api-gateway, web-app'",
+      "deps": ["web-app"],
+      "description": "Build entire monorepo"
+    },
+    "start": {
+      "command": "node packages/web-app/dist/index.js",
+      "deps": ["build-all"],
+      "description": "Run the web application after building"
+    }
+  }
+}

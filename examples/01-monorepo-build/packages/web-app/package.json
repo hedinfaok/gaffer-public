@@ -1,0 +1,17 @@
+{
+  "name": "@example/web-app",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@example/shared-lib": "*",
+    "@example/api-gateway": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

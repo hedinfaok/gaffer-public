@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "declaration": true,
+    "composite": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/shared-lib" },
+    { "path": "./packages/auth-service" },
+    { "path": "./packages/user-service" },
+    { "path": "./packages/api-gateway" },
+    { "path": "./packages/web-app" }
+  ]
+}
