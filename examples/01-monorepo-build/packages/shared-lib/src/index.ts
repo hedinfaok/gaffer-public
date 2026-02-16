@@ -27,16 +27,17 @@ export class Logger {
   warn(message: string): void {
     console.warn(`[${this.serviceName}] WARN: ${message}`);
   }
-}
 
-export function validateConfig(config: Config): boolean {
-  if (!config.serviceName || config.serviceName.trim() === '') {
-    return false;
+  debug(message: string): void {
+    if (process.env.DEBUG) {
+      console.log(`[${this.serviceName}] DEBUG: ${message}`);
+    }
   }
-  if (config.port < 1024 || config.port > 65535) {
-    return false;
-  }
-  return true;
 }
 
 export const version = '1.0.0';
+
+// Re-export from other modules
+export * from './types';
+export * from './validators';
+export * from './utils';

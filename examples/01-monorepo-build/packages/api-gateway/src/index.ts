@@ -6,12 +6,16 @@
 import { Logger, Config, validateConfig } from '@example/shared-lib';
 import { AuthService } from '@example/auth-service';
 import { UserService } from '@example/user-service';
+import { Router, AuthRouteHandler, UserRouteHandler } from './router';
+import { MiddlewareChain, LoggingMiddleware, RateLimitMiddleware, ValidationMiddleware } from './middleware';
 
 export class APIGateway {
   private logger: Logger;
   private config: Config;
   private authService: AuthService;
   private userService: UserService;
+  private router: Router;
+  private middleware: MiddlewareChain;
 
   constructor(config: Config) {
     if (!validateConfig(config)) {
@@ -32,26 +36,57 @@ export class APIGateway {
       port: 3002,
       environment: config.environment
     });
+
+    // Setup router
+    this.router = new Router(this.logger);
+    this.setupRoutes();
+
+    // Setup middleware
+    this.middleware = new MiddlewareChain();
+    this.setupMiddleware();
+  }
+
+  private setupRoutes(): void {
+    this.router.register('/auth', new AuthRouteHandler(this.authService));
+    this.router.register('/users', new UserRouteHandler(this.userService));
+  }
+
+  private setupMiddleware(): void {
+    this.middleware.use(new ValidationMiddleware(this.logger));
+    this.middleware.use(new LoggingMiddleware(this.logger));
+    this.middleware.use(new RateLimitMiddleware());
   }
 
   start(): void {
     this.logger.info(`Starting API gateway on port ${this.config.port}`);
+    this.logger.info(`Environment: ${this.config.environment}`);
+    this.logger.info(`Available routes: ${this.router.listRoutes().join(', ')}`);
+    
     this.authService.start();
     this.userService.start();
   }
 
-  handleRequest(endpoint: string, data: any): any {
+  async handleRequest(endpoint: string, data: any): Promise<void> {
     this.logger.info(`Handling request to ${endpoint}`);
-    
-    if (endpoint.startsWith('/auth/')) {
-      return this.authService;
-    } else if (endpoint.startsWith('/users/')) {
-      return this.userService;
+
+    const response = await this.middleware.execute(data, async () => {
+      return this.router.route(endpoint, data);
+    });
+
+    this.logger.info(`Response: ${response.success ? 'Success' : 'Error'}`);
+    if (response.error) {
+      this.logger.error(`Error: ${response.error}`);
     }
-    
-    return { error: 'Unknown endpoint' };
+  }
+
+  getRouter(): Router {
+    return this.router;
   }
 }
+
+// Export router and middleware
+export * from './router';
+export * from './middleware';
 
 // Example usage
 const config: Config = {

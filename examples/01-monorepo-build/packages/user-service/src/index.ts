@@ -1,21 +1,17 @@
 /**
- * User Service
- * Handles user profile management and operations
+ * User Management Service
+ * Handles user CRUD operations and profile management
  */
 
-import { Logger, Config, validateConfig } from '@example/shared-lib';
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  createdAt: Date;
-}
+import { Logger, Config, validateConfig, User } from '@example/shared-lib';
+import { UserRepository } from './repository';
+import { UserHandler } from './handlers';
 
 export class UserService {
   private logger: Logger;
   private config: Config;
-  private users: Map<string, User>;
+  private repository: UserRepository;
+  private handler: UserHandler;
 
   constructor(config: Config) {
     if (!validateConfig(config)) {
@@ -23,29 +19,37 @@ export class UserService {
     }
     this.config = config;
     this.logger = new Logger(config.serviceName);
-    this.users = new Map();
+    this.repository = new UserRepository();
+    this.handler = new UserHandler(this.logger, this.repository);
   }
 
   start(): void {
     this.logger.info(`Starting user service on port ${this.config.port}`);
+    this.logger.info(`Environment: ${this.config.environment}`);
   }
 
-  createUser(username: string, email: string): User {
-    const user: User = {
-      id: `user_${Date.now()}`,
-      username,
-      email,
-      createdAt: new Date()
-    };
-    this.users.set(user.id, user);
-    this.logger.info(`Created user: ${username}`);
-    return user;
+  async getUser(userId: string): Promise<User | null> {
+    this.logger.info(`Retrieving user: ${userId}`);
+    return this.repository.findById(userId);
   }
 
-  getUser(id: string): User | undefined {
-    return this.users.get(id);
+  async createUser(username: string, email: string): Promise<User> {
+    this.logger.info(`Creating user: ${username}`);
+    return this.repository.createUser(username, email);
+  }
+
+  getHandler(): UserHandler {
+    return this.handler;
+  }
+
+  getRepository(): UserRepository {
+    return this.repository;
   }
 }
+
+// Export handlers and repository
+export * from './handlers';
+export * from './repository';
 
 // Example usage
 const config: Config = {

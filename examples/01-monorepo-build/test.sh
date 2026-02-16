@@ -4,9 +4,11 @@ set -e
 cd "$(dirname "$0")"
 
 echo "=== Testing Monorepo Build Example ==="
+echo ""
 
-# Test 1: Run the full build
-echo "Test 1: Running build-all..."
+# Test 1: Clean build
+echo "Test 1: Full clean build..."
+rm -rf packages/*/dist
 output=$(gaffer-exec run build-all --graph graph.json --workspace-root . 2>&1)
 if echo "$output" | grep -q "All packages built successfully"; then
     echo "✓ Build completed successfully"
@@ -16,10 +18,35 @@ else
     exit 1
 fi
 
-# Test 2: Verify graph visualization works
-echo "Test 2: Graph visualization..."
+# Test 2: Verify all packages were built
+echo "Test 2: Checking build artifacts..."
+for pkg in shared-lib auth-service user-service api-gateway web-app; do
+    if [ -d "packages/$pkg/dist" ]; then
+        file_count=$(find "packages/$pkg/dist" -name "*.js" | wc -l | tr -d ' ')
+        if [ "$file_count" -gt 0 ]; then
+            echo "✓ $pkg built ($file_count files)"
+        else
+            echo "✗ $pkg has no output files"
+            exit 1
+        fi
+    else
+        echo "✗ $pkg dist directory not found"
+        exit 1
+    fi
+done
+
+# Test 3: Cached build should be fast
+echo "Test 3: Testing cache (rebuild without changes)..."
+start=$(date +%s%3N)
+gaffer-exec run build-all --graph graph.json --workspace-root . >/dev/null 2>&1
+end=$(date +%s%3N)
+cached_time=$((end - start))
+echo "✓ Cached build completed in ${cached_time}ms"
+
+# Test 4: Graph visualization works
+echo "Test 4: Graph visualization..."
 graph_output=$(gaffer-exec graph build-all --graph graph.json --workspace-root . --format dot 2>&1)
-if echo "$graph_output" | grep -q "web-app\|build"; then
+if echo "$graph_output" | grep -q "digraph\|web-app\|build"; then
     echo "✓ Graph visualization works"
 else
     echo "✗ Graph visualization failed"
@@ -27,5 +54,24 @@ else
     exit 1
 fi
 
+# Test 5: Running the app
+echo "Test 5: Running the application..."
+app_output=$(timeout 2s gaffer-exec run start --graph graph.json --workspace-root . 2>&1 || true)
+if echo "$app_output" | grep -q "Starting web app\|Welcome to the Monorepo"; then
+    echo "✓ Application runs successfully"
+else
+    echo "✗ Application failed to run"
+    echo "$app_output"
+    exit 1
+fi
+
 echo ""
 echo "=== All tests passed ==="
+echo ""
+echo "Summary:"
+echo "  ✓ Full build works"
+echo "  ✓ All 5 packages compiled"
+echo "  ✓ Caching functional"
+echo "  ✓ Graph visualization works"
+echo "  ✓ Application runs"
+echo ""

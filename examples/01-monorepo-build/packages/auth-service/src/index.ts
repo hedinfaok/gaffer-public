@@ -4,10 +4,14 @@
  */
 
 import { Logger, Config, validateConfig } from '@example/shared-lib';
+import { AuthHandler } from './handlers';
+import { TokenManager } from './token-manager';
 
 export class AuthService {
   private logger: Logger;
   private config: Config;
+  private authHandler: AuthHandler;
+  private tokenManager: TokenManager;
 
   constructor(config: Config) {
     if (!validateConfig(config)) {
@@ -15,10 +19,13 @@ export class AuthService {
     }
     this.config = config;
     this.logger = new Logger(config.serviceName);
+    this.authHandler = new AuthHandler(this.logger);
+    this.tokenManager = new TokenManager();
   }
 
   start(): void {
     this.logger.info(`Starting auth service on port ${this.config.port}`);
+    this.logger.info(`Environment: ${this.config.environment}`);
   }
 
   authenticate(username: string, password: string): boolean {
@@ -30,7 +37,19 @@ export class AuthService {
   generateToken(username: string): string {
     return `token_${username}_${Date.now()}`;
   }
+
+  getAuthHandler(): AuthHandler {
+    return this.authHandler;
+  }
+
+  getTokenManager(): TokenManager {
+    return this.tokenManager;
+  }
 }
+
+// Export handlers and managers
+export * from './handlers';
+export * from './token-manager';
 
 // Example usage
 const config: Config = {
