@@ -58,7 +58,7 @@ for i in $(seq 1 $GAFFER_RUNS); do
     rm -rf packages/*/dist
     
     GAFFER_START=$(date +%s%3N)
-    gaffer-exec run build-all --graph graph.json --workspace-root . >/dev/null 2>&1
+    gaffer-exec --graph graph.json --workspace-root . run build-all >/dev/null 2>&1
     GAFFER_END=$(date +%s%3N)
     
     GAFFER_TIME=$((GAFFER_END - GAFFER_START))
@@ -78,7 +78,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Do one build to warm cache
-gaffer-exec run build-all --graph graph.json --workspace-root . >/dev/null 2>&1
+gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all >/dev/null 2>&1
 
 CACHED_RUNS=3
 CACHED_TOTAL=0
@@ -87,7 +87,7 @@ for i in $(seq 1 $CACHED_RUNS); do
     echo "Run $i of $CACHED_RUNS..."
     
     CACHED_START=$(date +%s%3N)
-    gaffer-exec run build-all --graph graph.json --workspace-root . >/dev/null 2>&1
+    gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all >/dev/null 2>&1
     CACHED_END=$(date +%s%3N)
     
     CACHED_TIME=$((CACHED_END - CACHED_START))

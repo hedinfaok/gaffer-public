@@ -104,7 +104,7 @@ npm install
 
 ```bash
 # Build all packages with visual output
-gaffer-exec run build-all --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run build-all
 ```
 
 **Example Output:**
@@ -133,7 +133,7 @@ Note how **auth-service** and **user-service** output appears together - they bu
 
 ```bash
 # Run the web app (builds first if needed)
-gaffer-exec run start --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run start
 ```
 
 ## Interactive Demos
@@ -241,37 +241,37 @@ gaffer-exec (parallel, cached)                45      6.22x
 
 ```bash
 # One command to build all packages
-gaffer-exec run build-all --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run build-all
 ```
 
 ### Build Individual Packages
 
 ```bash
 # Build just shared-lib
-gaffer-exec run shared-lib --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run shared-lib
 
 # Build auth-service (builds shared-lib first if needed)
-gaffer-exec run auth-service --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run auth-service
 
 # Build up to api-gateway (builds all dependencies)
-gaffer-exec run api-gateway --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run api-gateway
 ```
 
 ### Visualize the Build Graph
 
 ```bash
 # See the dependency graph
-gaffer-exec graph build-all --graph graph.json --workspace-root . --format dot
+gaffer-exec --graph graph.json --workspace-root . graph build-all --format dot
 
 # Export as JSON for programmatic use
-gaffer-exec graph build-all --graph graph.json --workspace-root . --format json
+gaffer-exec --graph graph.json --workspace-root . graph build-all --format json
 ```
 
 ### Clean Build Artifacts
 
 ```bash
 # Clean all dist/ directories
-gaffer-exec run clean --graph graph.json --workspace-root .
+gaffer-exec --graph graph.json --workspace-root . run clean
 
 # Or using npm
 npm run clean

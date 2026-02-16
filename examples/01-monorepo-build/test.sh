@@ -9,7 +9,7 @@ echo ""
 # Test 1: Clean build
 echo "Test 1: Full clean build..."
 rm -rf packages/*/dist
-output=$(gaffer-exec run build-all --graph graph.json --workspace-root . 2>&1)
+output=$(gaffer-exec --graph graph.json --workspace-root . run build-all 2>&1)
 if echo "$output" | grep -q "All packages built successfully"; then
     echo "✓ Build completed successfully"
 else
@@ -38,14 +38,14 @@ done
 # Test 3: Cached build should be fast
 echo "Test 3: Testing cache (rebuild without changes)..."
 start=$(date +%s%3N)
-gaffer-exec run build-all --graph graph.json --workspace-root . >/dev/null 2>&1
+gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all >/dev/null 2>&1
 end=$(date +%s%3N)
 cached_time=$((end - start))
 echo "✓ Cached build completed in ${cached_time}ms"
 
 # Test 4: Graph visualization works
 echo "Test 4: Graph visualization..."
-graph_output=$(gaffer-exec graph build-all --graph graph.json --workspace-root . --format dot 2>&1)
+graph_output=$(gaffer-exec --graph graph.json --workspace-root . graph build-all --format dot 2>&1)
 if echo "$graph_output" | grep -q "digraph\|web-app\|build"; then
     echo "✓ Graph visualization works"
 else
@@ -56,7 +56,7 @@ fi
 
 # Test 5: Running the app
 echo "Test 5: Running the application..."
-app_output=$(timeout 2s gaffer-exec run start --graph graph.json --workspace-root . 2>&1 || true)
+app_output=$(timeout 2s gaffer-exec --graph graph.json --workspace-root . run start 2>&1 || true)
 if echo "$app_output" | grep -q "Starting web app\|Welcome to the Monorepo"; then
     echo "✓ Application runs successfully"
 else
