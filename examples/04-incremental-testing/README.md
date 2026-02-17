@@ -5,18 +5,16 @@ This example demonstrates **gaffer-exec's advanced test orchestration capabiliti
 ## 🎯 Key Differentiators vs Alternatives
 
 ### gaffer-exec Advantages:
-✅ **Advanced Retry Logic with Exponential Backoff** - Intelligent handling of flaky tests
-✅ **Merkle Tree Caching** - Skip unchanged test suites across runs
-✅ **Resource-Aware Parallelization** - Auto-detect optimal parallelism based on available resources
 ✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing
-✅ **Smart Test Grouping** - Group tests by execution time and memory usage
-✅ **Graceful Signal Handling** - Proper cleanup on interruption
+✅ **Task Orchestration** - Coordinate multiple test tiers in a single graph
+✅ **Parallel Execution** - Run independent test suites concurrently
+✅ **Build Optimization** - Skip unnecessary rebuilds when dependencies haven't changed
 ✅ **Test Result Aggregation** - Comprehensive metrics across all test tiers
 
 ### Vs Alternatives:
-- **Jest**: No cross-run caching, basic retry logic, limited parallelism control
-- **Cypress**: Limited parallelization, manual retry configuration, E2E only
-- **Playwright**: Better parallelism but no intelligent orchestration layer
+- **Jest**: Runs tests in isolation, no orchestration across test tiers
+- **Cypress**: E2E only, requires separate orchestration for unit/integration tests
+- **Playwright**: Better parallelism but no dependency graph orchestration
 
 ## Real Open Source Project Pattern
 
@@ -45,30 +43,30 @@ This follows incremental testing patterns used by:
 │   └── test-signal-handling.js # Graceful shutdown demo
 ├── package.json            # npm test configuration
 ├── jest.config.js          # Jest configuration
-└── graph.json              # gaffer-exec test orchestration with retry/cache config
+└── graph.json              # gaffer-exec test orchestration with dependency graph
 ```
 
 ## Test Dependency Graph
 
 ```
                     ┌──────────────────┐
-                    │   unit-tests-lib │ (parallel, retry: 3x, cache: ✓)
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │   unit-tests-api │ (parallel, retry: 3x, cache: ✓)
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼─────────┐
-                    │   unit-tests-ui  │ (parallel, retry: 3x, cache: ✓)
+                    │   unit-tests-lib │ (runs after install)
+                    └──────────────────┘
+                             
+                    ┌──────────────────┐
+                    │   unit-tests-api │ (runs after install)
                     └────────┬─────────┘
                              │
                     ┌────────▼──────────┐
-                    │ integration-tests │ (retry: 4x, cache: ✓)
+                    │ integration-tests │ (depends on lib + api)
                     └────────┬──────────┘
+                             
+                    ┌──────────────────┐
+                    │   unit-tests-ui  │ (runs after install)
+                    └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
-                    │    e2e-tests     │ (retry: 5x, cache: ✓)
+                    │    e2e-tests     │ (depends on integration + ui)
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
@@ -76,13 +74,12 @@ This follows incremental testing patterns used by:
                     └──────────────────┘
 ```
 
-**Advanced Features:**
-- ✅ Unit tests run in **resource-aware parallel** (4 workers, 512MB each)
-- ✅ **Exponential backoff retry** (500ms → 1s → 2s → 4s)
-- ✅ **Merkle tree caching** skips unchanged test suites
-- ✅ Integration tests wait for all unit tests (dependency ordering)
+**Key Features:**
+- ✅ **Dependency ordering** ensures tests run in the correct sequence
+- ✅ **Parallel execution** of independent test suites (lib, api, ui run concurrently)
+- ✅ Integration tests wait for all unit tests (proper test tier progression)
 - ✅ E2E tests run only after integration passes (failure isolation)
-- ✅ Flaky test demonstration with configurable retry logic
+- ✅ Flaky test demonstration with retry logic
 - ✅ Performance benchmarking vs Jest/Cypress/Playwright
 - ✅ Graceful signal handling with proper cleanup
 
