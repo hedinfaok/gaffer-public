@@ -5,16 +5,18 @@ This example demonstrates **gaffer-exec's advanced test orchestration capabiliti
 ## 🎯 Key Differentiators vs Alternatives
 
 ### gaffer-exec Advantages:
-✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing
+✅ **Advanced Retry Logic** - `--retry N` flag for intelligent retry handling
+✅ **Merkle Tree Caching** - `--cache merkle` to skip unchanged test suites across runs
+✅ **Auto-Detect Parallelization** - `-j auto` for optimal resource utilization
+✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing in graph.json
 ✅ **Task Orchestration** - Coordinate multiple test tiers in a single graph
-✅ **Parallel Execution** - Run independent test suites concurrently
-✅ **Build Optimization** - Skip unnecessary rebuilds when dependencies haven't changed
+✅ **Graceful Signal Handling** - `--signal-mode graceful` for proper cleanup
 ✅ **Test Result Aggregation** - Comprehensive metrics across all test tiers
 
 ### Vs Alternatives:
-- **Jest**: Runs tests in isolation, no orchestration across test tiers
-- **Cypress**: E2E only, requires separate orchestration for unit/integration tests
-- **Playwright**: Better parallelism but no dependency graph orchestration
+- **Jest**: Basic retry, no cross-run caching, limited parallelism control
+- **Cypress**: Manual retry configuration, no intelligent orchestration layer
+- **Playwright**: Better parallelism but no dependency graph + caching combined
 
 ## Real Open Source Project Pattern
 
@@ -43,30 +45,30 @@ This follows incremental testing patterns used by:
 │   └── test-signal-handling.js # Graceful shutdown demo
 ├── package.json            # npm test configuration
 ├── jest.config.js          # Jest configuration
-└── graph.json              # gaffer-exec test orchestration with dependency graph
+└── graph.json              # Test orchestration (dependency graph only - features via CLI flags)
 ```
 
 ## Test Dependency Graph
 
 ```
                     ┌──────────────────┐
-                    │   unit-tests-lib │ (runs after install)
-                    └──────────────────┘
-                             
-                    ┌──────────────────┐
-                    │   unit-tests-api │ (runs after install)
-                    └────────┬─────────┘
-                             │
-                    ┌────────▼──────────┐
-                    │ integration-tests │ (depends on lib + api)
-                    └────────┬──────────┘
-                             
-                    ┌──────────────────┐
-                    │   unit-tests-ui  │ (runs after install)
+                    │   unit-tests-lib │ (parallel with -j flag)
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
-                    │    e2e-tests     │ (depends on integration + ui)
+                    │   unit-tests-api │ (parallel with -j flag)
+                    └────────┬─────────┘
+                             │
+                    ┌────────▼─────────┐
+                    │   unit-tests-ui  │ (parallel with -j flag)
+                    └────────┬─────────┘
+                             │
+                    ┌────────▼──────────┐
+                    │ integration-tests │ (retry with --retry flag)
+                    └────────┬──────────┘
+                             │
+                    ┌────────▼─────────┐
+                    │    e2e-tests     │ (cached with --cache merkle)
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
@@ -74,14 +76,14 @@ This follows incremental testing patterns used by:
                     └──────────────────┘
 ```
 
-**Key Features:**
-- ✅ **Dependency ordering** ensures tests run in the correct sequence
-- ✅ **Parallel execution** of independent test suites (lib, api, ui run concurrently)
-- ✅ Integration tests wait for all unit tests (proper test tier progression)
-- ✅ E2E tests run only after integration passes (failure isolation)
-- ✅ Flaky test demonstration with retry logic
+**Advanced Features (via CLI flags):**
+- ✅ **Dependency ordering** defined in graph.json ensures correct sequence
+- ✅ **Parallel execution** with `-j auto` or `-j 4` for concurrent independent tests
+- ✅ **Retry logic** with `--retry 3` for handling flaky tests
+- ✅ **Merkle tree caching** with `--cache merkle` skips unchanged test suites
+- ✅ **Graceful shutdown** with `--signal-mode graceful` ensures proper cleanup
+- ✅ Flaky test demonstration scripts
 - ✅ Performance benchmarking vs Jest/Cypress/Playwright
-- ✅ Graceful signal handling with proper cleanup
 
 ## How to Run
 
@@ -92,42 +94,75 @@ This follows incremental testing patterns used by:
 npm install
 
 # Run all tests with intelligent orchestration
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --graph graph.json run test-all
 
-# Run just unit tests (exploits parallelism)
+# Run with retry, caching, and parallelism
+gaffer-exec --graph graph.json --retry 3 --cache merkle -j auto run test-all
+
+# Run just unit tests with parallelism
 gaffer-exec run unit-tests-lib unit-tests-api unit-tests-ui --graph graph.json
 ```
 
-### Advanced Features
+### Advanced Features via CLI Flags
 
+**Retry Logic:**
 ```bash
-# Demonstrate flaky test retry with exponential backoff
-gaffer-exec run unit-tests-flaky --graph graph.json
-# Expected: Fails 2-3 times, then succeeds with exponential backoff delays
+# Retry failed tests up to 3 times (for flaky tests)
+gaffer-exec --graph graph.json --retry 3 run test-all
 
-# Run with cache demonstration (2nd run is much faster)
-gaffer-exec run test-all --graph graph.json  # Cold run
-gaffer-exec run test-all --graph graph.json  # Warm run (cached)
+# Demonstrate flaky test handling
+gaffer-exec --graph graph.json --retry 5 run unit-tests-flaky
+```
+
+**Merkle Tree Caching:**
+```bash
+# First run (builds cache)
+gaffer-exec --graph graph.json --cache merkle run test-all
+
+# Second run (leverages cache - much faster!)
+gaffer-exec --graph graph.json --cache merkle run test-all
+
+# Modify a test file and see cache invalidation
+touch tests/unit/lib.test.js
+gaffer-exec --graph graph.json --cache merkle run test-all  # Re-runs only affected tests
+```
+
+**Parallelism Control:**
+```bash
+# Auto-detect optimal parallelism
+gaffer-exec --graph graph.json -j auto run test-all
+
+# Specify exact number of parallel jobs
+gaffer-exec --graph graph.json -j 4 run test-all
+
+# Check optimal concurrency for your machine
+gaffer-exec detect-concurrency
+```
+
+**Combined Power:**
+```bash
+# Full-featured test run (recommended for CI)
+gaffer-exec --graph graph.json --retry 3 --cache merkle -j auto --signal-mode graceful run test-all
 
 # Performance benchmark vs alternatives
-gaffer-exec run performance-benchmark --graph graph.json
+gaffer-exec --graph graph.json run performance-benchmark
 
 # Test graceful signal handling (press Ctrl+C)
-gaffer-exec run test-signal-handling --graph graph.json
-
-# Full CI pipeline with all features
-gaffer-exec run test-ci --graph graph.json
+gaffer-exec --graph graph.json --signal-mode graceful run test-signal-handling
 ```
 
-### Retry Configuration Examples
+### Configuration Reference
 
-```bash
-# Override retry configuration at runtime
-gaffer-exec run e2e-tests --graph graph.json --retry 10
+**Available CLI Flags:**
+- `--retry N` - Retry failed tests up to N times
+- `--cache merkle` - Enable Merkle tree caching (also: `--cache sha256`)
+- `-j N` or `-j auto` - Parallel jobs (auto-detect optimal concurrency)
+- `--signal-mode graceful` - Graceful shutdown on interrupt
+- `--on-failure continue|stop` - Failure handling mode
+- `--cache-dir <path>` - Custom cache directory
+- `--cache-backend <backend>` - Storage backend (local, s3, gs, azure)
 
-# Run with specific parallelism
-gaffer-exec run unit-tests-lib --graph graph.json --parallel 8
-```
+See `gaffer-exec --help` for complete list.
 
 ## Expected Output
 
