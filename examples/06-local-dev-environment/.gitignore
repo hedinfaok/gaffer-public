@@ -62,6 +62,9 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 
-# Setup markers
+# Setup markers and temporary files
 setup.complete
 ../../setup.complete
+.temp/
+*.ready
+node_modules/.installed
