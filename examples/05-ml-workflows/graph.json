@@ -2,51 +2,38 @@
   "version": "1",
   "graphs": {
     "setup": {
-      "command": "python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && echo 'Virtual environment created and dependencies installed'",
-      "description": "Create virtual environment and install Python dependencies for ML pipeline"
+      "command": "python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && echo 'Virtual environment created and dependencies installed'"
     },
     "data-prep": {
       "command": "source venv/bin/activate && python3 src/data_prep.py",
-      "deps": ["setup"],
-      "description": "Download and prepare datasets for ML pipeline",
-      "outputs": ["data/raw/**", "data/metadata/**"]
+      "deps": ["setup"]
     },
     "feature-engineering": {
       "command": "source venv/bin/activate && python3 src/feature_engineering.py",
-      "deps": ["data-prep"],
-      "description": "Engineer features and preprocess data",
-      "outputs": ["data/processed/**"]
+      "deps": ["data-prep"]
     },
     "train-models": {
       "command": "source venv/bin/activate && python3 src/train_model.py",
-      "deps": ["feature-engineering"],
-      "description": "Train multiple ML models on all datasets",
-      "outputs": ["data/models/**", "data/results/training_*.json"]
+      "deps": ["feature-engineering"]
     },
     "evaluate-models": {
       "command": "source venv/bin/activate && python3 src/evaluate_model.py",
-      "deps": ["train-models"],
-      "description": "Evaluate trained models and create performance reports",
-      "outputs": ["data/results/evaluation_*.json", "data/plots/**"]
+      "deps": ["train-models"]
     },
     "report": {
       "command": "source venv/bin/activate && python3 src/generate_report.py",
-      "deps": ["evaluate-models"],
-      "description": "Generate comprehensive ML pipeline report"
+      "deps": ["evaluate-models"]
     },
     "pipeline": {
       "command": "echo '✓ Complete ML pipeline finished successfully'",
-      "deps": ["report"],
-      "description": "Run complete ML pipeline from data preparation to evaluation"
+      "deps": ["report"]
     },
     "train-only": {
       "command": "echo '✓ Training pipeline completed'",
-      "deps": ["train-models", "evaluate-models", "report"],
-      "description": "Only run training and evaluation (assumes data is prepared)"
+      "deps": ["train-models", "evaluate-models", "report"]
     },
     "clean": {
-      "command": "rm -rf data/raw data/processed data/models data/results data/plots",
-      "description": "Clean generated data and models"
+      "command": "rm -rf data/raw data/processed data/models data/results data/plots"
     }
   }
 }
