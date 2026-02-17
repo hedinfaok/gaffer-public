@@ -57,20 +57,25 @@ model-comparison ←─────────┴─────> model-registr
 ## How to Run
 
 ```bash
-# Install ML dependencies
-pip install -r requirements.txt
+# Install ML dependencies (runs automatically as dependency, but can run standalone)
+gaffer-exec run setup --graph graph.json
 
 # Run full ML pipeline
-gaffer-exec run ml-pipeline --graph graph.json
+gaffer-exec run pipeline --graph graph.json
 
 # Run just data preparation
-gaffer-exec run data-preprocessing --graph graph.json
+gaffer-exec run data-prep --graph graph.json
 
-# Train multiple models in parallel
-gaffer-exec run model-comparison --graph graph.json
+# Run training and evaluation only (skips data prep if already done)
+gaffer-exec run train-only --graph graph.json
 
-# Deploy best model
-gaffer-exec run model-deployment --graph graph.json
+# Run individual pipeline stages
+gaffer-exec run feature-engineering --graph graph.json  # Feature engineering only
+gaffer-exec run train-models --graph graph.json         # Model training only
+gaffer-exec run evaluate-models --graph graph.json      # Model evaluation only
+
+# Clean up generated data
+gaffer-exec run clean --graph graph.json
 ```
 
 ## Expected Output
