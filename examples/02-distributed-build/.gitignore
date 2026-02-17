@@ -1,0 +1,13 @@
+# Build artifacts
+cmd/*/main
+cmd/*/*.exe
+pkg/*/*.a
+
+# Cache directories
+.cache/
+tmp/
+
+# Docker volumes
+localstack/
+azurite/
+gcs/
