@@ -57,14 +57,17 @@ With `gaffer-exec`, you define **all tasks** in a single `graph.json` and get:
 # Install all dependencies (runs in parallel)
 gaffer-exec run install-all --graph graph.json
 
+**Note**: Use `--graph-override` flag to ensure only graph.json tasks run (prevents auto-discovered package.json interference):
+
+```bash
 # Build everything (parallel across languages)
-gaffer-exec run build-all --graph graph.json
+gaffer-exec --graph-override graph.json run build-all
 
 # Run all tests (parallel across languages)
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --graph-override graph.json run test-all
 
 # Lint all code (parallel)
-gaffer-exec run lint-all --graph graph.json
+gaffer-exec --graph-override graph.json run lint-all
 ```
 
 ## Project Structure
