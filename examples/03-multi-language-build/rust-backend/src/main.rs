@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use warp::Filter;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -99,21 +98,27 @@ async fn main() {
     let api_info = warp::path("api")
         .and(warp::get())
         .map(|| {
-            let mut info = HashMap::new();
-            info.insert("name", "Multi-Language API");
-            info.insert("description", "Rust backend for polyglot application");
-            info.insert("version", "1.0.0");
+            let endpoints = vec![
+                ("health", "GET /health - Service health check"),
+                ("metrics", "GET /metrics - Application metrics"),
+                ("api", "GET /api - API information"),
+            ];
             
-            let mut endpoints = HashMap::new();
-            endpoints.insert("health", "GET /health - Service health check");
-            endpoints.insert("metrics", "GET /metrics - Application metrics");
-            endpoints.insert("api", "GET /api - API information");
-            
-            info.insert("endpoints", serde_json::to_string(&endpoints).unwrap().as_str());
+            let info = serde_json::json!({
+                "name": "Multi-Language API",
+                "description": "Rust backend for polyglot application",
+                "version": "1.0.0",
+                "endpoints": endpoints.iter().map(|(k, v)| {
+                    serde_json::json!({
+                        "endpoint": k,
+                        "description": v
+                    })
+                }).collect::<Vec<_>>()
+            });
             
             warp::reply::json(&ApiResponse {
                 success: true,
-                data: serde_json::to_value(&info).unwrap(),
+                data: info,
                 timestamp: std::time::SystemTime::now()
                     .duration_since(std::time::UNIX_EPOCH)
                     .unwrap()

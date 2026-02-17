@@ -96,19 +96,55 @@ pip3 --version
 
 Each component is fully functional:
 
-- **🦀 Rust Backend**: HTTP API server with JSON responses
-- **🐹 Go CLI**: Command-line tool that calls the Rust API
-- **⚛️ Node Frontend**: React app that displays API data
-- **🐍 Python ML**: Data analysis tool that processes API responses
+- **🦀 Rust Backend**: HTTP API server (warp) with JSON API endpoints
+- **🐹 Go CLI**: Command-line tool (cobra) that calls the Rust API
+- **⚛️ Node Frontend**: Express web server with API proxy and dashboard
+- **🐍 Python ML**: Data analysis with numpy, pandas, scikit-learn
+
+## Build Performance
+
+**First build** (clean compile):
+- All dependencies installed in parallel
+- ~58 seconds total (dominated by Rust compilation)
+
+**Incremental builds** (with caching):
+- Dependencies already satisfied
+- ~1 second total (only verification needed)
+
+**Parallel execution**:
+- All four languages build simultaneously
+- Optimal parallelism handled by gaffer-exec
+- Each language can complete independently
 
 ## Integration Flow
 
-1. Rust backend starts on port 8080
-2. Node frontend starts on port 3000
-3. Go CLI tool fetches data from backend
-4. Python script analyzes the results
-5. All components work together in a polyglot system
-  "npm-build": { "command": "npm run build" },
-  "python-build": { "command": "python -m build" }
-}
+1. Rust backend provides REST API on port 8080
+2. Node frontend proxies to Rust on port 3000
+3. Go CLI tool queries the backend for status/metrics
+4. Python script analyzes API responses with ML techniques
+5. All components integrate in a cohesive polyglot system
+
+## Testing
+
+Run the full test suite:
+
+```bash
+./test.sh
 ```
+
+This validates:
+- All language toolchains are available
+- Multi-language build completes successfully
+- Build artifacts are created correctly
+- Integration tests pass
+- Python ML component works
+
+## Clean Build
+
+To force a clean rebuild from scratch:
+
+```bash
+gaffer-exec run clean --graph graph.json
+gaffer-exec run multi-language-build --graph graph.json
+```
+

@@ -7,23 +7,19 @@
     },
     "rust-deps": {
       "command": "echo '🦀 Fetching Rust dependencies...' && cd rust-backend && cargo fetch",
-      "deps": ["clean"],
       "description": "Fetch Rust dependencies with Cargo"
     },
     "go-deps": {
       "command": "echo '🐹 Fetching Go dependencies...' && cd go-cli && go mod download",
-      "deps": ["clean"],
       "description": "Download Go module dependencies"
     },
     "node-deps": {
       "command": "echo '⚛️ Installing Node.js dependencies...' && cd node-frontend && npm install",
-      "deps": ["clean"],
       "description": "Install Node.js packages with npm",
       "outputs": ["node-frontend/node_modules/**"]
     },
     "python-deps": {
-      "command": "echo '🐍 Installing Python dependencies...' && cd python-ml && pip3 install -r requirements.txt",
-      "deps": ["clean"],
+      "command": "echo '🐍 Installing Python dependencies...' && cd python-ml && pip3 install --break-system-packages setuptools -r requirements.txt",
       "description": "Install Python packages with pip"
     },
     "rust-backend": {
