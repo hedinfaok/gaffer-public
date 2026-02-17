@@ -1,0 +1,14 @@
+{
+  "name": "@example/shared-lib",
+  "version": "1.0.0",
+  "description": "Shared TypeScript utilities and types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

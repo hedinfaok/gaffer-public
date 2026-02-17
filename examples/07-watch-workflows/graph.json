@@ -1,0 +1,62 @@
+{
+  "tasks": {
+    "clean": {
+      "command": "rm -rf shared-lib/dist api-service/dist frontend/build",
+      "deps": []
+    },
+    "install-deps": {
+      "command": "cd shared-lib && npm install && cd ../api-service && npm install && cd ../frontend && npm install",
+      "deps": []
+    },
+    "build-shared-lib": {
+      "command": "cd shared-lib && npm run build",
+      "deps": ["install-deps"],
+      "outputs": ["shared-lib/dist/**"]
+    },
+    "build-api": {
+      "command": "cd api-service && npm run build",
+      "deps": ["build-shared-lib"],
+      "outputs": ["api-service/dist/**"]
+    },
+    "build-frontend": {
+      "command": "cd frontend && npm run build",
+      "deps": ["build-shared-lib"],
+      "outputs": ["frontend/build/**"]
+    },
+    "build-all": {
+      "command": "echo '✅ All services built'",
+      "deps": ["build-api", "build-frontend"]
+    },
+    "rebuild-shared-lib": {
+      "command": "cd shared-lib && npm run build",
+      "deps": [],
+      "outputs": ["shared-lib/dist/**"]
+    },
+    "rebuild-api": {
+      "command": "cd api-service && npm run build",
+      "deps": ["rebuild-shared-lib"],
+      "outputs": ["api-service/dist/**"]
+    },
+    "rebuild-frontend": {
+      "command": "cd frontend && npm run build",
+      "deps": ["rebuild-shared-lib"],
+      "outputs": ["frontend/build/**"]
+    },
+    "start-api": {
+      "command": "cd api-service && node dist/server.js",
+      "deps": ["build-api"]
+    },
+    "start-frontend": {
+      "command": "cd frontend && npx serve -s build -p 3000",
+      "deps": ["build-frontend"]
+    },
+    "dev": {
+      "command": "echo '🚀 All services started. Run ./scripts/watch-all.sh in another terminal to enable watch mode.'",
+      "deps": ["start-api", "start-frontend"]
+    },
+    "test": {
+      "command": "./test.sh",
+      "deps": []
+    }
+  }
+}
