@@ -5,6 +5,9 @@ source .env
 
 echo "🎨 Starting frontend development server..."
 
+# Ensure logs directory exists
+mkdir -p ../logs
+
 # Kill existing frontend process if running
 if [ -f .temp/frontend.pid ]; then
   kill $(cat .temp/frontend.pid) 2>/dev/null || true

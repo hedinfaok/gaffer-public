@@ -137,6 +137,26 @@ The **Task Manager** application demonstrates a real-world development environme
 
 ## Testing
 
+### Quick Verification
+
+Run the comprehensive test suite to verify the complete example:
+
+```bash
+./test.sh
+```
+
+This runs 10 test cases including:
+- Prerequisites check
+- Environment setup and auto port assignment
+- Dependency installation
+- Database, API, and Frontend startup
+- Integration tests
+- Graceful shutdown
+- Complete lifecycle validation
+- Environment cleanup
+
+### Integration Tests (Services Must Be Running)
+
 The integration test suite validates:
 
 ```bash

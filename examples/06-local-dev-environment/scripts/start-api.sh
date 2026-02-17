@@ -5,6 +5,9 @@ source .env
 
 echo "🚀 Starting API server..."
 
+# Ensure logs directory exists
+mkdir -p ../logs
+
 # Kill existing API process if running
 if [ -f .temp/api.pid ]; then
   kill $(cat .temp/api.pid) 2>/dev/null || true
