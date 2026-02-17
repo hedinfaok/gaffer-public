@@ -91,9 +91,18 @@ echo ""
 echo "Test 4: Task Graph Structure"
 echo "-----------------------------"
 if command -v jq &> /dev/null; then
+    # Check for version field
+    if jq -e '.version' graph.json > /dev/null 2>&1; then
+        echo "  ✅ Version field present"
+        ((TESTS_PASSED++))
+    else
+        echo "  ❌ Version field missing"
+        ((TESTS_FAILED++))
+    fi
+    
     # Check for required tasks
     for task in clean build-shared-lib build-api build-frontend rebuild-shared-lib rebuild-api rebuild-frontend; do
-        if jq -e ".tasks.\"$task\"" graph.json > /dev/null 2>&1; then
+        if jq -e ".graphs.\"$task\"" graph.json > /dev/null 2>&1; then
             echo "  ✅ Task defined: $task"
             ((TESTS_PASSED++))
         else
@@ -106,9 +115,39 @@ else
 fi
 echo ""
 
-# Test 5: Check for fswatch dependency
-echo "Test 5: Dependencies"
-echo "--------------------"
+# Test 5: Validate gaffer-exec graph schema
+echo "Test 5: Gaffer-exec Schema Validation"
+echo "--------------------------------------"
+if command -v gaffer-exec &> /dev/null; then
+    echo "  ✅ gaffer-exec is installed"
+    ((TESTS_PASSED++))
+    
+    # Test that gaffer-exec can parse the graph
+    if gaffer-exec --workspace-root . --graph-override graph.json list > /dev/null 2>&1; then
+        echo "  ✅ Graph schema is valid (gaffer-exec list)"
+        ((TESTS_PASSED++))
+    else
+        echo "  ❌ Graph schema validation failed"
+        ((TESTS_FAILED++))
+    fi
+    
+    # Test that clean task can be executed
+    if gaffer-exec --workspace-root . --graph-override graph.json run clean > /dev/null 2>&1; then
+        echo "  ✅ Clean task executes successfully"
+        ((TESTS_PASSED++))
+    else
+        echo "  ❌ Clean task execution failed"
+        ((TESTS_FAILED++))
+    fi
+else
+    echo "  ❌ gaffer-exec not installed"
+    ((TESTS_FAILED++))
+fi
+echo ""
+
+# Test 6: Check for fswatch dependency
+echo "Test 6: Watch Mode Dependencies"
+echo "--------------------------------"
 if command -v fswatch &> /dev/null; then
     echo "  ✅ fswatch is installed"
     ((TESTS_PASSED++))
@@ -116,18 +155,10 @@ else
     echo "  ⚠️  fswatch not installed (required for watch mode)"
     echo "     Install with: brew install fswatch (macOS)"
 fi
-
-if command -v gaffer-exec &> /dev/null; then
-    echo "  ✅ gaffer-exec is installed"
-    ((TESTS_PASSED++))
-else
-    echo "  ❌ gaffer-exec not installed"
-    ((TESTS_FAILED++))
-fi
 echo ""
 
-# Test 6: Verify source files exist
-echo "Test 6: Source Files"
+# Test 7: Verify source files exist
+echo "Test 7: Source Files"
 echo "--------------------"
 assert_file_exists "shared-lib/src/index.ts"
 assert_file_exists "api-service/src/server.ts"
@@ -135,8 +166,8 @@ assert_file_exists "frontend/src/App.tsx"
 assert_file_exists "frontend/src/index.tsx"
 echo ""
 
-# Test 7: Install dependencies (if not already installed)
-echo "Test 7: Dependency Installation"
+# Test 8: Install dependencies (if not already installed)
+echo "Test 8: Dependency Installation"
 echo "--------------------------------"
 if [ ! -d "shared-lib/node_modules" ]; then
     echo "  📦 Installing shared-lib dependencies..."
@@ -197,9 +228,9 @@ else
 fi
 echo ""
 
-# Test 9: Verify watch script patterns
-echo "Test 9: Watch Script Patterns"
-echo "------------------------------"
+# Test 10: Verify watch script patterns
+echo "Test 10: Watch Script Patterns"
+echo "-------------------------------"
 if grep -q "fswatch" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh uses fswatch"
     ((TESTS_PASSED++))
@@ -216,7 +247,7 @@ else
     ((TESTS_FAILED++))
 fi
 
-if grep -q "--latency" scripts/watch-shared-lib.sh; then
+if grep -q -- "--latency" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh uses debouncing (--latency)"
     ((TESTS_PASSED++))
 else

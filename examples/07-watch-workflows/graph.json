@@ -1,5 +1,6 @@
 {
-  "tasks": {
+  "version": "1",
+  "graphs": {
     "clean": {
       "command": "rm -rf shared-lib/dist api-service/dist frontend/build",
       "deps": []
@@ -10,18 +11,15 @@
     },
     "build-shared-lib": {
       "command": "cd shared-lib && npm run build",
-      "deps": ["install-deps"],
-      "outputs": ["shared-lib/dist/**"]
+      "deps": ["install-deps"]
     },
     "build-api": {
       "command": "cd api-service && npm run build",
-      "deps": ["build-shared-lib"],
-      "outputs": ["api-service/dist/**"]
+      "deps": ["build-shared-lib"]
     },
     "build-frontend": {
       "command": "cd frontend && npm run build",
-      "deps": ["build-shared-lib"],
-      "outputs": ["frontend/build/**"]
+      "deps": ["build-shared-lib"]
     },
     "build-all": {
       "command": "echo '✅ All services built'",
@@ -29,18 +27,15 @@
     },
     "rebuild-shared-lib": {
       "command": "cd shared-lib && npm run build",
-      "deps": [],
-      "outputs": ["shared-lib/dist/**"]
+      "deps": []
     },
     "rebuild-api": {
       "command": "cd api-service && npm run build",
-      "deps": ["rebuild-shared-lib"],
-      "outputs": ["api-service/dist/**"]
+      "deps": ["rebuild-shared-lib"]
     },
     "rebuild-frontend": {
       "command": "cd frontend && npm run build",
-      "deps": ["rebuild-shared-lib"],
-      "outputs": ["frontend/build/**"]
+      "deps": ["rebuild-shared-lib"]
     },
     "start-api": {
       "command": "cd api-service && node dist/server.js",

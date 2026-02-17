@@ -57,13 +57,11 @@ fswatch \
 {
   "rebuild-shared-lib": {
     "command": "cd shared-lib && npm run build",
-    "deps": [],
-    "outputs": ["shared-lib/dist/**"]
+    "deps": []
   },
   "rebuild-api": {
     "command": "cd api-service && npm run build",
-    "deps": ["rebuild-shared-lib"],
-    "outputs": ["api-service/dist/**"]
+    "deps": ["rebuild-shared-lib"]
   }
 }
 ```
