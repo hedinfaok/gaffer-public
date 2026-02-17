@@ -21,7 +21,7 @@ echo "Building all packages from scratch..."
 echo ""
 
 FIRST_START=$(date +%s%3N)
-gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all
+gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all
 FIRST_END=$(date +%s%3N)
 FIRST_TOTAL=$((FIRST_END - FIRST_START))
 
@@ -38,7 +38,7 @@ echo "Running same build again (no source changes)..."
 echo ""
 
 SECOND_START=$(date +%s%3N)
-gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all
+gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all
 SECOND_END=$(date +%s%3N)
 SECOND_TOTAL=$((SECOND_END - SECOND_START))
 
@@ -60,7 +60,7 @@ echo "Outputs are gone but gaffer remembers the build results"
 echo ""
 
 THIRD_START=$(date +%s%3N)
-gaffer-exec --graph graph.json --workspace-root . --cache sha256 run build-all
+gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all
 THIRD_END=$(date +%s%3N)
 THIRD_TOTAL=$((THIRD_END - THIRD_START))
 
