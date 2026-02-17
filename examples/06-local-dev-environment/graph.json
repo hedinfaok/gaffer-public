@@ -2,51 +2,53 @@
   "version": "1",
   "graphs": {
     "setup": {
-      "description": "Set up the local development environment",
-      "command": "scripts/setup.sh",
-      "outputs": ["setup.complete"]
+      "command": "scripts/setup.sh"
     },
     "install-deps": {
-      "description": "Install dependencies for all services",
-      "deps": ["setup"],
-      "command": "scripts/install-deps.sh", 
-      "outputs": ["node_modules/.installed"]
+      "deps": [
+        "setup"
+      ],
+      "command": "scripts/install-deps.sh"
     },
     "db:start": {
-      "description": "Start PostgreSQL database",
-      "deps": ["install-deps"],
-      "command": "scripts/start-db.sh",
-      "outputs": ["db.ready"]
+      "deps": [
+        "install-deps"
+      ],
+      "command": "scripts/start-db.sh"
     },
     "api:start": {
-      "description": "Start API server",
-      "deps": ["db:start"],
-      "command": "scripts/start-api.sh",
-      "outputs": ["api.ready"]
+      "deps": [
+        "db:start"
+      ],
+      "command": "scripts/start-api.sh"
     },
     "frontend:start": {
-      "description": "Start frontend development server", 
-      "deps": ["install-deps"],
-      "command": "scripts/start-frontend.sh",
-      "outputs": ["frontend.ready"]
+      "deps": [
+        "install-deps"
+      ],
+      "command": "scripts/start-frontend.sh"
     },
     "dev": {
-      "description": "Start complete development stack",
-      "deps": ["db:start", "api:start", "frontend:start"],
+      "deps": [
+        "db:start",
+        "api:start",
+        "frontend:start"
+      ],
       "command": "scripts/wait-for-services.sh"
     },
     "test": {
-      "description": "Run integration tests against the stack",
-      "deps": ["dev"],
+      "deps": [
+        "dev"
+      ],
       "command": "scripts/run-tests.sh"
     },
     "stop": {
-      "description": "Stop all services gracefully", 
       "command": "scripts/stop-services.sh"
     },
     "clean": {
-      "description": "Clean up all generated files and stop services",
-      "deps": ["stop"],
+      "deps": [
+        "stop"
+      ],
       "command": "scripts/clean.sh"
     }
   }

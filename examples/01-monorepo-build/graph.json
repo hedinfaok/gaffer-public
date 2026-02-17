@@ -2,52 +2,47 @@
   "version": "1",
   "graphs": {
     "clean": {
-      "command": "rm -rf packages/*/dist && echo '🧹 Cleaned all build artifacts'",
-      "description": "Clean all build artifacts"
+      "command": "rm -rf packages/*/dist && echo '🧹 Cleaned all build artifacts'"
     },
     "shared-lib": {
-      "command": "echo '📦 Building shared-lib...' && npx tsc -p packages/shared-lib/tsconfig.json && echo '✓ shared-lib complete'",
-      "description": "Build shared library used by all services",
-      "inputs": ["packages/shared-lib/src/**/*.ts", "packages/shared-lib/tsconfig.json"],
-      "outputs": ["packages/shared-lib/dist/**"]
+      "command": "echo '📦 Building shared-lib...' && npx tsc -p packages/shared-lib/tsconfig.json && echo '✓ shared-lib complete'"
     },
     "auth-service": {
       "command": "echo '🔐 Building auth-service...' && npx tsc -p packages/auth-service/tsconfig.json && echo '✓ auth-service complete'",
-      "deps": ["shared-lib"],
-      "description": "Build authentication microservice",
-      "inputs": ["packages/auth-service/src/**/*.ts", "packages/auth-service/tsconfig.json"],
-      "outputs": ["packages/auth-service/dist/**"]
+      "deps": [
+        "shared-lib"
+      ]
     },
     "user-service": {
       "command": "echo '👤 Building user-service...' && npx tsc -p packages/user-service/tsconfig.json && echo '✓ user-service complete'",
-      "deps": ["shared-lib"],
-      "description": "Build user management microservice",
-      "inputs": ["packages/user-service/src/**/*.ts", "packages/user-service/tsconfig.json"],
-      "outputs": ["packages/user-service/dist/**"]
+      "deps": [
+        "shared-lib"
+      ]
     },
     "api-gateway": {
       "command": "echo '🌐 Building api-gateway...' && npx tsc -p packages/api-gateway/tsconfig.json && echo '✓ api-gateway complete'",
-      "deps": ["auth-service", "user-service"],
-      "description": "Build API gateway service",
-      "inputs": ["packages/api-gateway/src/**/*.ts", "packages/api-gateway/tsconfig.json"],
-      "outputs": ["packages/api-gateway/dist/**"]
+      "deps": [
+        "auth-service",
+        "user-service"
+      ]
     },
     "web-app": {
       "command": "echo '🚀 Building web-app...' && npx tsc -p packages/web-app/tsconfig.json && echo '✓ web-app complete'",
-      "deps": ["api-gateway"],
-      "description": "Build web application",
-      "inputs": ["packages/web-app/src/**/*.ts", "packages/web-app/tsconfig.json"],
-      "outputs": ["packages/web-app/dist/**"]
+      "deps": [
+        "api-gateway"
+      ]
     },
     "build-all": {
       "command": "echo '' && echo '════════════════════════════════════════' && echo '✓ All packages built successfully!' && echo '════════════════════════════════════════' && echo 'Built: shared-lib, auth-service, user-service, api-gateway, web-app' && echo ''",
-      "deps": ["web-app"],
-      "description": "Build entire monorepo"
+      "deps": [
+        "web-app"
+      ]
     },
     "start": {
       "command": "node packages/web-app/dist/index.js",
-      "deps": ["build-all"],
-      "description": "Run the web application after building"
+      "deps": [
+        "build-all"
+      ]
     }
   }
 }
