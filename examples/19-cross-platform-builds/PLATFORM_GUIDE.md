@@ -1,58 +1,58 @@
-# Platform Field Guide
+# Platform Detection Guide
 
-Comprehensive guide to using gaffer-exec's `platforms` field for cross-platform build workflows.
+Comprehensive guide to using shell-based platform detection for cross-platform build workflows with gaffer-exec.
 
 ## Overview
 
-The `platforms` field in task definitions controls **which operating systems** a task should execute on. Tasks without a `platforms` field execute on all platforms.
+Since gaffer-exec doesn't have a native `platforms` field, we use shell conditionals to control **which operating systems** a task should execute on. Tasks include inline platform checks using `uname` to determine whether to execute or skip.
 
-## Platform Values
+## Platform Detection Methods
 
 ### Supported Platforms
 
-| Value | Description | Aliases |
-|-------|-------------|---------|
-| `"linux"` | Linux distributions (Ubuntu, Debian, RHEL, etc.) | - |
-| `"darwin"` | macOS / Mac OS X | `"macos"` |
-| `"macos"` | macOS / Mac OS X | `"darwin"` |
-| `"windows"` | Windows (7, 10, 11, Server, etc.) | - |
+| Platform | Detection Command | Value |
+|----------|------------------|-------|
+| Linux | `[ "$(uname)" = "Linux" ]` | `Linux` |
+| macOS | `[ "$(uname)" = "Darwin" ]` | `Darwin` |
+| Windows (Git Bash/MSYS) | `[ "$(uname -o 2>/dev/null \|\| echo 'Unknown')" = "Msys" ]` | `Msys` |
+| Windows (Cygwin) | `[ "$(uname -o 2>/dev/null \|\| echo 'Unknown')" = "Cygwin" ]` | `Cygwin` |
 
-### Platform Detection
+### How It Works
 
-Gaffer-exec determines the current platform using standard OS detection methods:
-- On Linux: Checks for Linux kernel
-- On macOS: Checks for Darwin kernel
-- On Windows: Checks for Windows NT kernel
+Each platform-specific task uses a shell conditional (`if`) to:
+- Check the current platform using `uname`
+- Execute the actual command if the platform matches
+- Print a skip message if the platform doesn't match
+
+This ensures tasks always succeed but only perform work on the correct platform.
 
 ## Syntax
 
-### Single Platform
-
-Execute task only on one platform:
+### Single Platform using a shell conditional:
 
 ```json
 {
   "build-linux": {
-    "command": "make",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then make && echo '✓ Built'; else echo '⊘ Skipping on '$(uname); fi"
   }
 }
 ```
 
-### Multiple Platforms
+### Multiple Platforms (Combined Check)
 
-Execute task on multiple platforms:
+Execute task on multiple platforms using OR logic:
 
 ```json
 {
   "build-unix": {
-    "command": "make",
-    "platforms": ["linux", "darwin"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ] || [ \"$(uname)\" = \"Darwin\" ]; then make && echo '✓ Built'; else echo '⊘ Skipping on '$(uname); fi"
   }
 }
 ```
 
 ### No Platform Filter (Universal)
+
+Execute task on all platforms without a checkrsal)
 
 Execute task on all platforms:
 
@@ -75,14 +75,13 @@ Build the same artifact using different tools per platform:
   "build-native-linux": {
     "command": "gcc src/main.c -o bin/app",
     "platforms": ["linux"]
+  },if [ \"$(uname)\" = \"Linux\" ]; then gcc src/main.c -o bin/app && echo '✓ Built for Linux'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "build-native-macos": {
-    "command": "clang src/main.c -o bin/app",
-    "platforms": ["darwin"]
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then clang src/main.c -o bin/app && echo '✓ Built for macOS'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "build-native-windows": {
-    "command": "cl.exe src\\main.c /Fe:bin\\app.exe",
-    "platforms": ["windows"]
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then gcc src/main.c -o bin/app.exe && echo '✓ Built for Windows'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "build-native": {
     "deps": ["build-native-linux", "build-native-macos", "build-native-windows"]
@@ -91,9 +90,9 @@ Build the same artifact using different tools per platform:
 ```
 
 Running `gaffer-exec run build-native` will:
-- On Linux: Execute `build-native-linux`
-- On macOS: Execute `build-native-macos`
-- On Windows: Execute `build-native-windows`
+- On Linux: Execute the gcc command in `build-native-linux`, skip others
+- On macOS: Execute the clang command in `build-native-macos`, skip others
+- On Windows: Execute the gcc command in `build-native-windows`, skip others
 
 ### Pattern 2: Platform-Specific Dependencies
 
@@ -102,16 +101,13 @@ Install dependencies using the appropriate package manager:
 ```json
 {
   "install-build-tools-debian": {
-    "command": "sudo apt-get install -y build-essential",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then sudo apt-get install -y build-essential && echo '✓ Installed'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "install-build-tools-macos": {
-    "command": "brew install gcc make",
-    "platforms": ["darwin"]
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then brew install gcc make && echo '✓ Installed'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "install-build-tools-windows": {
-    "command": "choco install -y mingw make",
-    "platforms": ["windows"]
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then pacman -S mingw-w64-x86_64-gcc make --noconfirm && echo '✓ Installed'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "install-build-tools": {
     "deps": ["install-build-tools-debian", "install-build-tools-macos", "install-build-tools-windows"]
@@ -129,15 +125,11 @@ Run a detection script on all platforms, then branch:
     "command": "bash scripts/detect.sh"
   },
   "setup-linux": {
-    "command": "bash scripts/setup-linux.sh",
-    "platforms": ["linux"],
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then bash scripts/setup-linux.sh; else echo '⊘ Skipping on '$(uname); fi",
     "deps": ["detect"]
   },
   "setup-macos": {
-    "command": "bash scripts/setup-macos.sh",
-    "platforms": ["darwin"],
-    "deps": ["detect"]
-  },
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then bash scripts/setup-macos.sh; else echo '⊘ Skipping on '$(uname); fi"
   "setup": {
     "deps": ["setup-linux", "setup-macos"]
   }
@@ -178,25 +170,22 @@ Run tests using platform-native test runners:
 {
   "test-linux": {
     "command": "./run-tests.sh",
-    "platforms": ["linux"]
+   platform check means these run on any platform (assuming Go is installed).
+
+### Pattern 5: Platform-Specific Tests
+
+Run tests using platform-native test runners:
+
+```json
+{
+  "test-linux": {
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then ./run-tests.sh; else echo '⊘ Skipping on '$(uname); fi"
   },
   "test-macos": {
-    "command": "./run-tests.sh",
-    "platforms": ["darwin"]
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then ./run-tests.sh; else echo '⊘ Skipping on '$(uname); fi"
   },
   "test-windows": {
-    "command": ".\\run-tests.bat",
-    "platforms": ["windows"]
-  },
-  "test": {
-    "deps": ["test-linux", "test-macos", "test-windows"]
-  }
-}
-```
-
-## Best Practices
-
-### 1. Use Aggregator Tasks
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then ./run-tests.sh; else echo '⊘ Skipping on '$(uname); fi"
 
 Create a parent task that depends on all platform-specific variants:
 
@@ -221,30 +210,36 @@ Avoid complex shell logic in commands. Use scripts instead:
     "command": "if [ -d build ]; then rm -rf build; fi && mkdir build && gcc ...",
     "platforms": ["linux"]
   }
-}
-```
+} Each platform-specific task will check internally and either execute or skip gracefully.
 
-**✅ Good:**
+### 2. Keep Commands Readable
+
+For complex commands, extract to scripts and keep the conditional simple:
+
+**❌ Hard to read:**
 ```json
 {
   "build-linux": {
-    "command": "bash scripts/build-linux.sh",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then if [ -d build ]; then rm -rf build; fi && mkdir build && gcc ...; else echo '⊘ Skipping'; fi"
   }
 }
 ```
 
-### 3. Use Both Platform Aliases
-
-For macOS, specify both `darwin` and `macos` for compatibility:
-
+**✅ Better:**
 ```json
 {
-  "build-macos": {
-    "command": "clang src/main.c -o bin/app",
-    "platforms": ["darwin", "macos"]
+  "build-linux": {
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then bash scripts/build-linux.sh; else echo '⊘ Skipping on '$(uname); fi"
   }
 }
+```
+
+### 3. Consistent Skip Messages
+
+Use a consistent pattern for skip messages to make logs readable:
+
+```bash
+echo '⊘ Skipping task-name on '$(uname)
 ```
 
 ### 4. Document Platform Requirements
@@ -256,10 +251,10 @@ In your README, clearly state which platforms are supported and any prerequisite
 
 - **Linux**: Requires gcc 9+ and make
 - **macOS**: Requires Xcode Command Line Tools
-- **Windows**: Requires MinGW or MSVC
+- **Windows**: Requires MSYS2 or Git Bash with MinGW
 ```
 
-### 5. Validate on All Platforms
+### 5. Test on All Platforms
 
 If possible, test your graph.json on all target platforms before committing:
 
@@ -270,7 +265,7 @@ gaffer-exec run test --graph graph.json
 # On macOS
 gaffer-exec run test --graph graph.json
 
-# On Windows
+# On Windows (Git Bash)
 gaffer-exec run test --graph graph.json
 ```
 
@@ -285,32 +280,15 @@ Prefer tools that work the same across platforms:
 
 ### 7. Handle Path Separators
 
-Windows uses `\` while Unix uses `/`. Options:
+Windows traditionally uses `\` while Unix uses `/`. In modern shells (Git Bash, MSYS2), forward slashes usually work everywhere:
 
-**Option A: Use forward slashes (works on modern Windows):**
 ```json
 {
-  "copy-windows": {
-    "command": "copy src/file.txt dest/file.txt",
-    "platforms": ["windows"]
+  "copy-files": {
+    "command": "cp src/file.txt dest/file.txt"
   }
 }
 ```
-
-**Option B: Use separate tasks:**
-```json
-{
-  "copy-unix": {
-    "command": "cp src/file.txt dest/file.txt",
-    "platforms": ["linux", "darwin"]
-  },
-  "copy-windows": {
-    "command": "copy src\\file.txt dest\\file.txt",
-    "platforms": ["windows"]
-  }
-}
-```
-
 ## Advanced Techniques
 
 ### Conditional Dependencies
@@ -320,37 +298,33 @@ Create dependency chains that only execute on specific platforms:
 ```json
 {
   "install-deps-linux": {
-    "command": "apt-get install -y libssl-dev",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then apt-get install -y libssl-dev; else echo '⊘ Skipping'; fi"
   },
   "build-linux": {
-    "command": "gcc main.c -o app -lssl",
-    "platforms": ["linux"],
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then gcc main.c -o app -lssl; else echo '⊘ Skipping'; fi",
     "deps": ["install-deps-linux"]
   }
 }
 ```
 
-On Linux: Both tasks run.
-On macOS/Windows: Neither task runs.
+On Linux: Both tasks execute commands.
+On macOS/Windows: Both tasks skip with messages.
 
 ### Platform-Specific Environment Variables
 
-Use the `env` field with platform filtering:
+Use the `env` field with shell conditionals:
 
 ```json
 {
   "build-linux": {
-    "command": "make",
-    "platforms": ["linux"],
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then make; else echo '⊘ Skipping'; fi",
     "env": {
       "CC": "gcc",
       "CFLAGS": "-O2 -Wall"
     }
   },
   "build-macos": {
-    "command": "make",
-    "platforms": ["darwin"],
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then make; else echo '⊘ Skipping'; fi",
     "env": {
       "CC": "clang",
       "CFLAGS": "-O2 -Wall -Wextra"
@@ -365,15 +339,17 @@ Different source locations per platform:
 
 ```json
 {
-  "build-unix": {
-    "command": "make",
-    "working_dir": "unix-build",
-    "platforms": ["linux", "darwin"]
+  "build-unix-linux": {
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then make; else echo '⊘ Skipping'; fi",
+    "working_dir": "unix-build"
+  },
+  "build-unix-macos": {
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then make; else echo '⊘ Skipping'; fi",
+    "working_dir": "unix-build"
   },
   "build-windows": {
-    "command": "nmake",
-    "working_dir": "windows-build",
-    "platforms": ["windows"]
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then nmake; else echo '⊘ Skipping'; fi",
+    "working_dir": "windows-build"
   }
 }
 ```
@@ -388,6 +364,12 @@ Different source locations per platform:
   "build-linux": { "platforms": ["linux"], ... },
   "build-macos": { "platforms": ["darwin"], ... }
 }
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then ...; fi"
+  },
+  "build-macos": {
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then ...; fi"
+  }
+}
 ```
 
 Users must know which task to run for their platform.
@@ -401,7 +383,7 @@ Users must know which task to run for their platform.
 }
 ```
 
-### Pitfall 2: Hardcoding Platform Logic in Scripts
+### Pitfall 2: Duplicating Platform Logic
 
 **Problem:**
 ```bash
@@ -413,18 +395,13 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 ```
 
-This duplicates gaffer-exec's platform filtering.
+This duplicates the platform check already in the task definition.
 
-**Solution:** Use separate scripts and platform tasks:
+**Solution:** Use the shell conditional in the task and keep scripts simple:
 ```json
 {
   "setup-linux": {
-    "command": "bash scripts/setup-linux.sh",
-    "platforms": ["linux"]
-  },
-  "setup-macos": {
-    "command": "bash scripts/setup-macos.sh",
-    "platforms": ["darwin"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then bash scripts/setup.sh; else echo '⊘ Skipping'; fi"
   }
 }
 ```
@@ -442,40 +419,36 @@ This duplicates gaffer-exec's platform filtering.
 
 `make` may not be installed on all platforms.
 
-**Solution:** Check in task or use platform-specific alternatives:
+**Solution:** Use platform-specific alternatives:
 ```json
 {
   "build-unix": {
-    "command": "make",
-    "platforms": ["linux", "darwin"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ] || [ \"$(uname)\" = \"Darwin\" ]; then make; else echo '⊘ Skipping'; fi"
   },
   "build-windows": {
-    "command": "nmake",
-    "platforms": ["windows"]
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then nmake; else echo '⊘ Skipping'; fi"
   }
 }
 ```
 
-### Pitfall 4: Incorrect Platform Names
+### Pitfall 4: Incorrect uname Values
 
 **Problem:**
 ```json
 {
   "build-mac": {
-    "platforms": ["mac", "osx"]
+    "command": "if [ \"$(uname)\" = \"macOS\" ]; then ...; fi"
   }
 }
 ```
 
-`"mac"` and `"osx"` are not valid. Use `"darwin"` or `"macos"`.
+`uname` returns `Darwin`, not `macOS`.
 
 **Solution:**
 ```json
 {
   "build-macos": {
-    "platforms": ["darwin", "macos"]
-  }
-}
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then ...; fi"
 ```
 
 ### Pitfall 5: Platform-Specific Bugs
@@ -609,23 +582,16 @@ build-windows:
 ## Future Considerations
 
 Potential enhancements for platform filtering:
+Summary
 
-1. **Architecture-specific tasks**: `"platforms": ["linux-amd64", "linux-arm64"]`
-2. **Distribution-specific tasks**: `"platforms": ["ubuntu", "debian", "rhel"]`
-3. **Version-specific tasks**: `"platforms": ["macos-13", "macos-14"]`
-4. **Negation**: `"platforms": ["!windows"]` (all except Windows)
-5. **Regex matching**: `"platforms": ["linux-.*"]`
-
-For now, use scripts for fine-grained platform detection.
-
-## Summary
-
-- Use `"platforms"` field to control task execution by OS
-- Valid values: `"linux"`, `"darwin"`, `"macos"`, `"windows"`
-- Omit `"platforms"` for universal tasks
+- Use shell conditionals with `uname` to control task execution by OS
+- Linux: `[ "$(uname)" = "Linux" ]`
+- macOS: `[ "$(uname)" = "Darwin" ]`
+- Windows (Git Bash/MSYS): `[ "$(uname -o 2>/dev/null || echo 'Unknown')" = "Msys" ]`
+- Tasks without platform checks run everywhere
 - Create aggregator tasks to unify platform-specific variants
 - Test on all target platforms
-- Keep commands simple, delegate complexity to scripts
+- Keep commands readable with clear skip messages
 - Document platform requirements clearly
 
-The `platforms` field enables clean, maintainable cross-platform workflows without complex scripting or external tools.
+Shell-based platform detection enables clean, maintainable cross-platform workflows without requiring special task runner feature

@@ -6,68 +6,59 @@
     },
 
     "install-deps-linux": {
-      "command": "bash scripts/install-deps.sh",
-      "platforms": ["linux"]
+      "command": "if [ \"$(uname)\" = \"Linux\" ]; then bash scripts/install-deps.sh && echo '✓ Installed Linux dependencies'; else echo '⊘ Skipping install-deps-linux on '$(uname); fi"
     },
 
     "install-deps-macos": {
-      "command": "bash scripts/install-deps.sh",
-      "platforms": ["darwin", "macos"]
+      "command": "if [ \"$(uname)\" = \"Darwin\" ]; then bash scripts/install-deps.sh && echo '✓ Installed macOS dependencies'; else echo '⊘ Skipping install-deps-macos on '$(uname); fi"
     },
 
     "install-deps-windows": {
-      "command": "bash scripts/install-deps.sh",
-      "platforms": ["windows"]
+      "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ] || [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Cygwin\" ]; then bash scripts/install-deps.sh && echo '✓ Installed Windows dependencies'; else echo '⊘ Skipping install-deps-windows on '$(uname); fi"
     },
 
     "install-deps": {
-      "command": "echo '✓ Dependencies installed for all platforms'",
+      "command": "echo '✓ Dependencies checked for all platforms'",
       "deps": ["install-deps-linux", "install-deps-macos", "install-deps-windows"]
     },
 
     "build-c-linux": {
-      "command": "mkdir -p c-app/bin && gcc -o c-app/bin/app c-app/main.c -O2",
-      "platforms": ["linux"],
+      "command": "if [ \"$(uname)\" = \"Linux\" ]; then mkdir -p c-app/bin && gcc -o c-app/bin/app c-app/main.c -O2 && echo '✓ Built C app for Linux'; else echo '⊘ Skipping build-c-linux on '$(uname); fi",
       "deps": ["install-deps-linux"]
     },
 
     "build-c-macos": {
-      "command": "mkdir -p c-app/bin && clang -o c-app/bin/app c-app/main.c -O2",
-      "platforms": ["darwin", "macos"],
+      "command": "if [ \"$(uname)\" = \"Darwin\" ]; then mkdir -p c-app/bin && clang -o c-app/bin/app c-app/main.c -O2 && echo '✓ Built C app for macOS'; else echo '⊘ Skipping build-c-macos on '$(uname); fi",
       "deps": ["install-deps-macos"]
     },
 
     "build-c-windows": {
-      "command": "if not exist c-app\\bin mkdir c-app\\bin && gcc -o c-app/bin/app.exe c-app/main.c -O2",
-      "platforms": ["windows"],
+      "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ] || [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Cygwin\" ]; then mkdir -p c-app/bin && gcc -o c-app/bin/app.exe c-app/main.c -O2 && echo '✓ Built C app for Windows'; else echo '⊘ Skipping build-c-windows on '$(uname); fi",
       "deps": ["install-deps-windows"]
     },
 
     "build-c": {
-      "command": "echo '✓ C application built for all platforms'",
+      "command": "echo '✓ C application build attempted for all platforms'",
       "deps": ["build-c-linux", "build-c-macos", "build-c-windows"]
     },
 
     "run-c-linux": {
-      "command": "./c-app/bin/app",
-      "platforms": ["linux"],
+      "command": "if [ \"$(uname)\" = \"Linux\" ]; then ./c-app/bin/app; else echo '⊘ Skipping run-c-linux on '$(uname); fi",
       "deps": ["build-c-linux"]
     },
 
     "run-c-macos": {
-      "command": "./c-app/bin/app",
-      "platforms": ["darwin", "macos"],
+      "command": "if [ \"$(uname)\" = \"Darwin\" ]; then ./c-app/bin/app; else echo '⊘ Skipping run-c-macos on '$(uname); fi",
       "deps": ["build-c-macos"]
     },
 
     "run-c-windows": {
-      "command": "c-app\\bin\\app.exe",
-      "platforms": ["windows"],
+      "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ] || [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Cygwin\" ]; then ./c-app/bin/app.exe; else echo '⊘ Skipping run-c-windows on '$(uname); fi",
       "deps": ["build-c-windows"]
     },
 
     "run-c": {
-      "command": "echo '✓ C application executed'",
+      "command": "echo '✓ C application run attempted'",
       "deps": ["run-c-linux", "run-c-macos", "run-c-windows"]
     },
 
@@ -124,27 +115,23 @@
     },
 
     "build-rust-linux-x86_64": {
-      "command": "cargo build --release --target x86_64-unknown-linux-gnu",
-      "working_dir": "rust-bin",
-      "platforms": ["linux"]
+      "command": "if [ \"$(uname)\" = \"Linux\" ]; then cargo build --release --target x86_64-unknown-linux-gnu && echo '✓ Built Rust for Linux x86_64'; else echo '⊘ Skipping build-rust-linux-x86_64 on '$(uname); fi",
+      "working_dir": "rust-bin"
     },
 
     "build-rust-macos-aarch64": {
-      "command": "cargo build --release --target aarch64-apple-darwin",
-      "working_dir": "rust-bin",
-      "platforms": ["darwin", "macos"]
+      "command": "if [ \"$(uname)\" = \"Darwin\" ]; then cargo build --release --target aarch64-apple-darwin && echo '✓ Built Rust for macOS ARM64'; else echo '⊘ Skipping build-rust-macos-aarch64 on '$(uname); fi",
+      "working_dir": "rust-bin"
     },
 
     "build-rust-macos-x86_64": {
-      "command": "cargo build --release --target x86_64-apple-darwin",
-      "working_dir": "rust-bin",
-      "platforms": ["darwin", "macos"]
+      "command": "if [ \"$(uname)\" = \"Darwin\" ]; then cargo build --release --target x86_64-apple-darwin && echo '✓ Built Rust for macOS x86_64'; else echo '⊘ Skipping build-rust-macos-x86_64 on '$(uname); fi",
+      "working_dir": "rust-bin"
     },
 
     "build-rust-windows": {
-      "command": "cargo build --release --target x86_64-pc-windows-msvc",
-      "working_dir": "rust-bin",
-      "platforms": ["windows"]
+      "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ] || [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Cygwin\" ]; then cargo build --release --target x86_64-pc-windows-msvc && echo '✓ Built Rust for Windows'; else echo '⊘ Skipping build-rust-windows on '$(uname); fi",
+      "working_dir": "rust-bin"
     },
 
     "run-rust": {

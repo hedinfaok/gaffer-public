@@ -84,18 +84,28 @@ test -f "node-native/index.js"
 test_result "Node.js source exists" $?
 
 echo ""
-echo "Test 4: Verify platform-specific tasks in graph.json"
+echo "Test 4: Verify platform-specific tasks use shell conditionals"
 if command -v jq &> /dev/null; then
-    jq -e '.graphs["build-c-linux"].platforms | contains(["linux"])' graph.json > /dev/null 2>&1
-    test_result "Linux-specific C build task defined" $?
+    # Check that Linux tasks have uname checks
+    jq -e '.graphs["build-c-linux"].command | contains("uname")' graph.json > /dev/null 2>&1
+    test_result "Linux C build uses uname check" $?
     
-    jq -e '.graphs["build-c-macos"].platforms | contains(["darwin"])' graph.json > /dev/null 2>&1
-    test_result "macOS-specific C build task defined" $?
+    # Check that macOS tasks have uname checks
+    jq -e '.graphs["build-c-macos"].command | contains("uname")' graph.json > /dev/null 2>&1
+    test_result "macOS C build uses uname check" $?
     
-    jq -e '.graphs["build-c-windows"].platforms | contains(["windows"])' graph.json > /dev/null 2>&1
-    test_result "Windows-specific C build task defined" $?
+    # Check that Windows tasks have uname checks
+    jq -e '.graphs["build-c-windows"].command | contains("uname")' graph.json > /dev/null 2>&1
+    test_result "Windows C build uses uname check" $?
+    
+    # Verify no platforms field exists
+    ! jq -e '.graphs["build-c-linux"].platforms' graph.json > /dev/null 2>&1
+    test_result "Linux task has no platforms field" $?
+    
+    ! jq -e '.graphs["build-c-macos"].platforms' graph.json > /dev/null 2>&1
+    test_result "macOS task has no platforms field" $?
 else
-    echo -e "${YELLOW}⊗${NC} Skipping platform task validation (jq not installed)"
+    echo -e "${YELLOW}⊗${NC} Skipping platform check validation (jq not installed)"
 fi
 
 echo ""
@@ -114,14 +124,15 @@ else
 fi
 
 echo ""
-echo "Test 6: Check for platform-agnostic tasks"
+echo "Test 6: Verify platform-agnostic tasks have no platform checks"
 if command -v jq &> /dev/null; then
-    # These tasks should NOT have a platforms field
-    ! jq -e '.graphs["detect-platform"].platforms' graph.json > /dev/null 2>&1
-    test_result "detect-platform is platform-agnostic" $?
+    # detect-platform should not have uname conditionals
+    ! jq -e '.graphs["detect-platform"].command | contains("[ \\\"$(uname)")' graph.json > /dev/null 2>&1
+    test_result "detect-platform has no platform conditional" $?
     
-    ! jq -e '.graphs["clean"].platforms' graph.json > /dev/null 2>&1
-    test_result "clean is platform-agnostic" $?
+    # clean should not have uname conditionals
+    ! jq -e '.graphs["clean"].command | contains("[ \\\"$(uname)")' graph.json > /dev/null 2>&1
+    test_result "clean has no platform conditional" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping platform-agnostic validation (jq not installed)"
 fi
@@ -205,10 +216,16 @@ test_result "README.md exists" $?
 test -f "PLATFORM_GUIDE.md"
 test_result "PLATFORM_GUIDE.md exists" $?
 
-# Check that README doesn't use "polyglot"
+# Check that README explains shell-based detection
 if [ -f "README.md" ]; then
-    ! grep -i "polyglot" README.md > /dev/null 2>&1
-    test_result "README avoids 'polyglot' terminology" $?
+    grep -i "uname" README.md > /dev/null 2>&1
+    test_result "README explains uname detection" $?
+fi
+
+# Check that PLATFORM_GUIDE explains shell-based detection
+if [ -f "PLATFORM_GUIDE.md" ]; then
+    grep -i "shell.based\|shell conditional" PLATFORM_GUIDE.md > /dev/null 2>&1
+    test_result "PLATFORM_GUIDE.md explains shell-based detection" $?
 fi
 
 echo ""

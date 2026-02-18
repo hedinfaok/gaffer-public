@@ -1,6 +1,6 @@
 # Example 19: Cross-Platform Builds
 
-This example demonstrates **platform-aware build workflows** using gaffer-exec's `platforms` field to manage cross-platform builds effectively.
+This example demonstrates **platform-aware build workflows** using shell-based platform detection to manage cross-platform builds effectively.
 
 ## The Problem
 
@@ -15,28 +15,25 @@ Building software for multiple operating systems and architectures presents seve
 
 Traditional build tools require complex shell scripting or separate configuration files per platform.
 
-## The Solution: Platform-Aware Tasks
+## The Solution: Shell-Based Platform Detection
 
-Gaffer-exec's `platforms` field allows you to define which platforms a task should execute on:
+Since gaffer-exec doesn't have a native `platforms` field, we use shell conditionals with `uname` to control platform-specific execution:
 
 ```json
 {
   "build-c-linux": {
-    "command": "gcc -o c-app/bin/app c-app/main.c",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then mkdir -p c-app/bin && gcc -o c-app/bin/app c-app/main.c && echo '✓ Built for Linux'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "build-c-macos": {
-    "command": "clang -o c-app/bin/app c-app/main.c",
-    "platforms": ["darwin", "macos"]
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then mkdir -p c-app/bin && clang -o c-app/bin/app c-app/main.c && echo '✓ Built for macOS'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "build-c-windows": {
-    "command": "gcc -o c-app/bin/app.exe c-app/main.c",
-    "platforms": ["windows"]
+    "command": "if [ \"$(uname -o 2>/dev/null || echo 'Unknown')\" = \"Msys\" ]; then mkdir -p c-app/bin && gcc -o c-app/bin/app.exe c-app/main.c && echo '✓ Built for Windows'; else echo '⊘ Skipping on '$(uname); fi"
   }
 }
 ```
 
-When you run the build, **only the task matching your current platform executes**.
+When you run the build, **only the task matching your current platform actually builds** - others print a skip message.
 
 ## Example Structure
 
@@ -50,17 +47,22 @@ This example includes four cross-platform applications:
 ## How the `platforms` Field Works
 
 ### Valid Platform Values
+Shell-Based Platform Detection Works
 
-- `"linux"` - Linux operating systems
-- `"darwin"` or `"macos"` - macOS (both values work)
-- `"windows"` - Windows operating systems
+### Platform Detection Commands
 
-### Platform Detection
+- **Linux**: `[ "$(uname)" = "Linux" ]`
+- **macOS**: `[ "$(uname)" = "Darwin" ]`  
+- **Windows (Git Bash/MSYS)**: `[ "$(uname -o 2>/dev/null || echo 'Unknown')" = "Msys" ]`
 
-Gaffer-exec automatically detects your current platform and:
-1. **Includes** tasks where `platforms` matches the current OS
-2. **Skips** tasks where `platforms` doesn't match
-3. **Runs** tasks without a `platforms` field on all platforms
+### Execution Pattern
+
+Each platform-specific task:
+1. **Checks the current platform** using `uname`
+2. **Executes the command** if the platform matches
+3. **Prints a skip message** if the platform doesn't match
+
+This ensures tasks always succeed but only perform work on the correct platform.
 
 ### Example Patterns
 
@@ -68,12 +70,10 @@ Gaffer-exec automatically detects your current platform and:
 ```json
 {
   "install-deps-linux": {
-    "command": "sudo apt-get install build-essential",
-    "platforms": ["linux"]
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then sudo apt-get install build-essential && echo '✓ Installed'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "install-deps-macos": {
-    "command": "brew install gcc",
-    "platforms": ["darwin", "macos"]
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then brew install gcc && echo '✓ Installed'; else echo '⊘ Skipping on '$(uname); fi"
   },
   "install-deps": {
     "deps": ["install-deps-linux", "install-deps-macos"]
@@ -81,7 +81,7 @@ Gaffer-exec automatically detects your current platform and:
 }
 ```
 
-The `install-deps` task declares both platform-specific tasks as dependencies. Gaffer-exec will only execute the one matching your platform.
+The `install-deps` task depends on both platform-specific tasks. Each checks the platform internally, so only the matching one actually installs packages.
 
 **Cross-Compilation:**
 ```json
@@ -97,10 +97,7 @@ The `install-deps` task declares both platform-specific tasks as dependencies. G
 }
 ```
 
-These tasks can run on any platform because they use Go's cross-compilation features. No `platforms` field means they execute everywhere.
-
-## Quick Start
-
+These tasks can run on any platform because they use Go's cross-compilation features. No platform check needed since they work
 ### 1. Detect Your Platform
 
 ```bash
@@ -171,12 +168,13 @@ gaffer-exec run clean --graph graph.json
 
 ### 1. Platform-Specific vs Cross-Platform Tasks
 
-**Platform-Specific Tasks** (with `platforms` field):
-- Only execute on matching platforms
+**Platform-Specific Tasks** (with shell conditionals):
+- Check platform using `uname` at runtime
+- Execute only on matching platforms (others skip gracefully)
 - Use platform-native tools (gcc on Linux, clang on macOS)
 - Handle platform-specific dependencies
 
-**Cross-Platform Tasks** (no `platforms` field):
+**Cross-Platform Tasks** (no platform checks):
 - Execute on all platforms
 - Use portable commands or tools with built-in cross-compilation
 - Platform-agnostic operations (cleaning, linting, etc.)
@@ -194,7 +192,7 @@ gaffer-exec run clean --graph graph.json
 }
 ```
 
-The `build-all` task depends on `build-c`, which depends on three platform-specific tasks. Only the relevant platform task executes.
+The `build-all` task depends on `build-c`, which depends on three platform-specific tasks. All three run, but only the matching platform performs actual work - the others print skip messages.
 
 ### 3. Working Directory
 
@@ -265,10 +263,11 @@ Install platform-specific development tools automatically based on the developer
 
 ## Benefits of Platform-Aware Workflows
 
-1. **Single Source of Truth**: One `graph.json` for all platforms
-2. **Automatic Filtering**: No manual platform checks in scripts
+1. **Explicit Platform Logic**: Shell conditionals make platform requirements visible
 3. **Clear Dependencies**: Platform-specific build chains are explicit
-4. **Maintainable**: Add new platforms by adding new tasks
+4. **Graceful Degradation**: Tasks skip on wrong platforms instead of failing
+5. **CI/CD Ready**: Same config works across different runners
+6. **No Special Features Required**: Uses standard shell commands, works with any task runner
 5. **CI/CD Ready**: Same config works across different runners
 
 ## Common Patterns
@@ -291,15 +290,21 @@ Detect platform, install dependencies, then build.
 ### Pattern 2: Platform-Specific Then Combine
 
 ```json
-{
-  "build-linux": { "platforms": ["linux"], ... },
-  "build-macos": { "platforms": ["darwin"], ... },
-  "build-windows": { "platforms": ["windows"], ... },
+    "command": "if [ \"$(uname)\" = \"Linux\" ]; then ...; else echo '⊘ Skipping'; fi"
+  },
+  "build-macos": {
+    "command": "if [ \"$(uname)\" = \"Darwin\" ]; then ...; else echo '⊘ Skipping'; fi"
+  },
+  "build-windows": {
+    "command": "if [ \"$(uname -o 2>/dev/null)\" = \"Msys\" ]; then ...; else echo '⊘ Skipping'; fi"
+  },
   "build-all": {
     "deps": ["build-linux", "build-macos", "build-windows"]
   }
 }
 ```
+
+Define specific builds with inline platform check
 
 Define specific builds, combine under one task.
 
