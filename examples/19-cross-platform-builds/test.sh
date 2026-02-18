@@ -86,13 +86,13 @@ test_result "Node.js source exists" $?
 echo ""
 echo "Test 4: Verify platform-specific tasks in graph.json"
 if command -v jq &> /dev/null; then
-    jq -e '.["build-c-linux"].platforms | contains(["linux"])' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-c-linux"].platforms | contains(["linux"])' graph.json > /dev/null 2>&1
     test_result "Linux-specific C build task defined" $?
     
-    jq -e '.["build-c-macos"].platforms | contains(["darwin"])' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-c-macos"].platforms | contains(["darwin"])' graph.json > /dev/null 2>&1
     test_result "macOS-specific C build task defined" $?
     
-    jq -e '.["build-c-windows"].platforms | contains(["windows"])' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-c-windows"].platforms | contains(["windows"])' graph.json > /dev/null 2>&1
     test_result "Windows-specific C build task defined" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping platform task validation (jq not installed)"
@@ -101,13 +101,13 @@ fi
 echo ""
 echo "Test 5: Verify cross-compilation tasks"
 if command -v jq &> /dev/null; then
-    jq -e '.["build-go-linux-amd64"]' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-go-linux-amd64"]' graph.json > /dev/null 2>&1
     test_result "Go Linux AMD64 cross-compile task exists" $?
     
-    jq -e '.["build-go-darwin-arm64"]' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-go-darwin-arm64"]' graph.json > /dev/null 2>&1
     test_result "Go Darwin ARM64 cross-compile task exists" $?
     
-    jq -e '.["cross-compile-go"]' graph.json > /dev/null 2>&1
+    jq -e '.graphs["cross-compile-go"]' graph.json > /dev/null 2>&1
     test_result "Cross-compile aggregator task exists" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping cross-compilation validation (jq not installed)"
@@ -117,10 +117,10 @@ echo ""
 echo "Test 6: Check for platform-agnostic tasks"
 if command -v jq &> /dev/null; then
     # These tasks should NOT have a platforms field
-    ! jq -e '.["detect-platform"].platforms' graph.json > /dev/null 2>&1
+    ! jq -e '.graphs["detect-platform"].platforms' graph.json > /dev/null 2>&1
     test_result "detect-platform is platform-agnostic" $?
     
-    ! jq -e '.["clean"].platforms' graph.json > /dev/null 2>&1
+    ! jq -e '.graphs["clean"].platforms' graph.json > /dev/null 2>&1
     test_result "clean is platform-agnostic" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping platform-agnostic validation (jq not installed)"
@@ -129,10 +129,10 @@ fi
 echo ""
 echo "Test 7: Verify task dependencies"
 if command -v jq &> /dev/null; then
-    jq -e '.["build-all"].deps' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-all"].deps' graph.json > /dev/null 2>&1
     test_result "build-all has dependencies" $?
     
-    jq -e '.["build-c"].deps' graph.json > /dev/null 2>&1
+    jq -e '.graphs["build-c"].deps' graph.json > /dev/null 2>&1
     test_result "build-c aggregates platform builds" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping dependency validation (jq not installed)"
@@ -215,7 +215,7 @@ echo ""
 echo "Test 14: Verify gaffer-exec compatibility"
 if command -v gaffer-exec &> /dev/null; then
     # Try to list tasks
-    gaffer-exec --graph graph.json list > /dev/null 2>&1
+    gaffer-exec --workspace-root . --graph-override graph.json list > /dev/null 2>&1
     test_result "gaffer-exec can read graph.json" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping gaffer-exec test (not installed)"
@@ -242,8 +242,8 @@ else
     echo -e "${GREEN}✓ All tests passed!${NC}"
     echo ""
     echo "Next steps:"
-    echo "  1. Run: gaffer-exec run detect-platform --graph graph.json"
-    echo "  2. Run: gaffer-exec run build-all --graph graph.json"
-    echo "  3. Run: gaffer-exec run run-all --graph graph.json"
+    echo "  1. Run: gaffer-exec --workspace-root . --graph-override graph.json run detect-platform"
+    echo "  2. Run: gaffer-exec --workspace-root . --graph-override graph.json run build-all"
+    echo "  3. Run: gaffer-exec --workspace-root . --graph-override graph.json run run-all"
     exit 0
 fi

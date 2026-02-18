@@ -1,185 +1,195 @@
 {
-  "detect-platform": {
-    "command": "bash scripts/detect-platform.sh"
-  },
+  "version": "1",
+  "graphs": {
+    "detect-platform": {
+      "command": "bash scripts/detect-platform.sh"
+    },
 
-  "install-deps-linux": {
-    "command": "bash scripts/install-deps.sh",
-    "platforms": ["linux"]
-  },
+    "install-deps-linux": {
+      "command": "bash scripts/install-deps.sh",
+      "platforms": ["linux"]
+    },
 
-  "install-deps-macos": {
-    "command": "bash scripts/install-deps.sh",
-    "platforms": ["darwin", "macos"]
-  },
+    "install-deps-macos": {
+      "command": "bash scripts/install-deps.sh",
+      "platforms": ["darwin", "macos"]
+    },
 
-  "install-deps-windows": {
-    "command": "bash scripts/install-deps.sh",
-    "platforms": ["windows"]
-  },
+    "install-deps-windows": {
+      "command": "bash scripts/install-deps.sh",
+      "platforms": ["windows"]
+    },
 
-  "install-deps": {
-    "deps": ["install-deps-linux", "install-deps-macos", "install-deps-windows"]
-  },
+    "install-deps": {
+      "command": "echo '✓ Dependencies installed for all platforms'",
+      "deps": ["install-deps-linux", "install-deps-macos", "install-deps-windows"]
+    },
 
-  "build-c-linux": {
-    "command": "mkdir -p c-app/bin && gcc -o c-app/bin/app c-app/main.c -O2",
-    "platforms": ["linux"],
-    "deps": ["install-deps-linux"]
-  },
+    "build-c-linux": {
+      "command": "mkdir -p c-app/bin && gcc -o c-app/bin/app c-app/main.c -O2",
+      "platforms": ["linux"],
+      "deps": ["install-deps-linux"]
+    },
 
-  "build-c-macos": {
-    "command": "mkdir -p c-app/bin && clang -o c-app/bin/app c-app/main.c -O2",
-    "platforms": ["darwin", "macos"],
-    "deps": ["install-deps-macos"]
-  },
+    "build-c-macos": {
+      "command": "mkdir -p c-app/bin && clang -o c-app/bin/app c-app/main.c -O2",
+      "platforms": ["darwin", "macos"],
+      "deps": ["install-deps-macos"]
+    },
 
-  "build-c-windows": {
-    "command": "if not exist c-app\\bin mkdir c-app\\bin && gcc -o c-app/bin/app.exe c-app/main.c -O2",
-    "platforms": ["windows"],
-    "deps": ["install-deps-windows"]
-  },
+    "build-c-windows": {
+      "command": "if not exist c-app\\bin mkdir c-app\\bin && gcc -o c-app/bin/app.exe c-app/main.c -O2",
+      "platforms": ["windows"],
+      "deps": ["install-deps-windows"]
+    },
 
-  "build-c": {
-    "deps": ["build-c-linux", "build-c-macos", "build-c-windows"]
-  },
+    "build-c": {
+      "command": "echo '✓ C application built for all platforms'",
+      "deps": ["build-c-linux", "build-c-macos", "build-c-windows"]
+    },
 
-  "run-c-linux": {
-    "command": "./c-app/bin/app",
-    "platforms": ["linux"],
-    "deps": ["build-c-linux"]
-  },
+    "run-c-linux": {
+      "command": "./c-app/bin/app",
+      "platforms": ["linux"],
+      "deps": ["build-c-linux"]
+    },
 
-  "run-c-macos": {
-    "command": "./c-app/bin/app",
-    "platforms": ["darwin", "macos"],
-    "deps": ["build-c-macos"]
-  },
+    "run-c-macos": {
+      "command": "./c-app/bin/app",
+      "platforms": ["darwin", "macos"],
+      "deps": ["build-c-macos"]
+    },
 
-  "run-c-windows": {
-    "command": "c-app\\bin\\app.exe",
-    "platforms": ["windows"],
-    "deps": ["build-c-windows"]
-  },
+    "run-c-windows": {
+      "command": "c-app\\bin\\app.exe",
+      "platforms": ["windows"],
+      "deps": ["build-c-windows"]
+    },
 
-  "run-c": {
-    "deps": ["run-c-linux", "run-c-macos", "run-c-windows"]
-  },
+    "run-c": {
+      "command": "echo '✓ C application executed'",
+      "deps": ["run-c-linux", "run-c-macos", "run-c-windows"]
+    },
 
-  "build-go": {
-    "command": "go build -o bin/cross-platform-go-cli",
-    "working_dir": "go-cli"
-  },
+    "build-go": {
+      "command": "go build -o bin/cross-platform-go-cli",
+      "working_dir": "go-cli"
+    },
 
-  "build-go-linux-amd64": {
-    "command": "mkdir -p bin && GOOS=linux GOARCH=amd64 go build -o bin/app-linux-amd64",
-    "working_dir": "go-cli"
-  },
+    "build-go-linux-amd64": {
+      "command": "mkdir -p bin && GOOS=linux GOARCH=amd64 go build -o bin/app-linux-amd64",
+      "working_dir": "go-cli"
+    },
 
-  "build-go-linux-arm64": {
-    "command": "mkdir -p bin && GOOS=linux GOARCH=arm64 go build -o bin/app-linux-arm64",
-    "working_dir": "go-cli"
-  },
+    "build-go-linux-arm64": {
+      "command": "mkdir -p bin && GOOS=linux GOARCH=arm64 go build -o bin/app-linux-arm64",
+      "working_dir": "go-cli"
+    },
 
-  "build-go-darwin-amd64": {
-    "command": "mkdir -p bin && GOOS=darwin GOARCH=amd64 go build -o bin/app-darwin-amd64",
-    "working_dir": "go-cli"
-  },
+    "build-go-darwin-amd64": {
+      "command": "mkdir -p bin && GOOS=darwin GOARCH=amd64 go build -o bin/app-darwin-amd64",
+      "working_dir": "go-cli"
+    },
 
-  "build-go-darwin-arm64": {
-    "command": "mkdir -p bin && GOOS=darwin GOARCH=arm64 go build -o bin/app-darwin-arm64",
-    "working_dir": "go-cli"
-  },
+    "build-go-darwin-arm64": {
+      "command": "mkdir -p bin && GOOS=darwin GOARCH=arm64 go build -o bin/app-darwin-arm64",
+      "working_dir": "go-cli"
+    },
 
-  "build-go-windows-amd64": {
-    "command": "mkdir -p bin && GOOS=windows GOARCH=amd64 go build -o bin/app-windows-amd64.exe",
-    "working_dir": "go-cli"
-  },
+    "build-go-windows-amd64": {
+      "command": "mkdir -p bin && GOOS=windows GOARCH=amd64 go build -o bin/app-windows-amd64.exe",
+      "working_dir": "go-cli"
+    },
 
-  "cross-compile-go": {
-    "deps": [
-      "build-go-linux-amd64",
-      "build-go-linux-arm64",
-      "build-go-darwin-amd64",
-      "build-go-darwin-arm64",
-      "build-go-windows-amd64"
-    ]
-  },
+    "cross-compile-go": {
+      "command": "echo '✓ Go application cross-compiled for all platforms'",
+      "deps": [
+        "build-go-linux-amd64",
+        "build-go-linux-arm64",
+        "build-go-darwin-amd64",
+        "build-go-darwin-arm64",
+        "build-go-windows-amd64"
+      ]
+    },
 
-  "run-go": {
-    "command": "./bin/cross-platform-go-cli 2>/dev/null || go run main.go",
-    "working_dir": "go-cli",
-    "deps": ["build-go"]
-  },
+    "run-go": {
+      "command": "./bin/cross-platform-go-cli 2>/dev/null || go run main.go",
+      "working_dir": "go-cli",
+      "deps": ["build-go"]
+    },
 
-  "build-rust": {
-    "command": "cargo build --release",
-    "working_dir": "rust-bin"
-  },
+    "build-rust": {
+      "command": "cargo build --release",
+      "working_dir": "rust-bin"
+    },
 
-  "build-rust-linux-x86_64": {
-    "command": "cargo build --release --target x86_64-unknown-linux-gnu",
-    "working_dir": "rust-bin",
-    "platforms": ["linux"]
-  },
+    "build-rust-linux-x86_64": {
+      "command": "cargo build --release --target x86_64-unknown-linux-gnu",
+      "working_dir": "rust-bin",
+      "platforms": ["linux"]
+    },
 
-  "build-rust-macos-aarch64": {
-    "command": "cargo build --release --target aarch64-apple-darwin",
-    "working_dir": "rust-bin",
-    "platforms": ["darwin", "macos"]
-  },
+    "build-rust-macos-aarch64": {
+      "command": "cargo build --release --target aarch64-apple-darwin",
+      "working_dir": "rust-bin",
+      "platforms": ["darwin", "macos"]
+    },
 
-  "build-rust-macos-x86_64": {
-    "command": "cargo build --release --target x86_64-apple-darwin",
-    "working_dir": "rust-bin",
-    "platforms": ["darwin", "macos"]
-  },
+    "build-rust-macos-x86_64": {
+      "command": "cargo build --release --target x86_64-apple-darwin",
+      "working_dir": "rust-bin",
+      "platforms": ["darwin", "macos"]
+    },
 
-  "build-rust-windows": {
-    "command": "cargo build --release --target x86_64-pc-windows-msvc",
-    "working_dir": "rust-bin",
-    "platforms": ["windows"]
-  },
+    "build-rust-windows": {
+      "command": "cargo build --release --target x86_64-pc-windows-msvc",
+      "working_dir": "rust-bin",
+      "platforms": ["windows"]
+    },
 
-  "run-rust": {
-    "command": "cargo run --release",
-    "working_dir": "rust-bin",
-    "deps": ["build-rust"]
-  },
+    "run-rust": {
+      "command": "cargo run --release",
+      "working_dir": "rust-bin",
+      "deps": ["build-rust"]
+    },
 
-  "install-node-deps": {
-    "command": "npm install",
-    "working_dir": "node-native"
-  },
+    "install-node-deps": {
+      "command": "npm install",
+      "working_dir": "node-native"
+    },
 
-  "build-node": {
-    "command": "npm run build",
-    "working_dir": "node-native",
-    "deps": ["install-node-deps"]
-  },
+    "build-node": {
+      "command": "npm run build",
+      "working_dir": "node-native",
+      "deps": ["install-node-deps"]
+    },
 
-  "run-node": {
-    "command": "node index.js",
-    "working_dir": "node-native"
-  },
+    "run-node": {
+      "command": "node index.js",
+      "working_dir": "node-native"
+    },
 
-  "clean": {
-    "command": "bash scripts/clean.sh"
-  },
+    "clean": {
+      "command": "bash scripts/clean.sh"
+    },
 
-  "build-all": {
-    "deps": ["build-c", "build-go", "build-rust", "build-node"]
-  },
+    "build-all": {
+      "command": "echo '✓ All applications built successfully'",
+      "deps": ["build-c", "build-go", "build-rust", "build-node"]
+    },
 
-  "cross-compile-all": {
-    "deps": ["cross-compile-go"]
-  },
+    "cross-compile-all": {
+      "command": "echo '✓ Cross-compilation complete for all targets'",
+      "deps": ["cross-compile-go"]
+    },
 
-  "run-all": {
-    "deps": ["run-c", "run-go", "run-rust", "run-node"]
-  },
+    "run-all": {
+      "command": "echo '✓ All applications executed successfully'",
+      "deps": ["run-c", "run-go", "run-rust", "run-node"]
+    },
 
-  "test": {
-    "command": "bash test.sh"
+    "test": {
+      "command": "bash test.sh"
+    }
   }
 }
