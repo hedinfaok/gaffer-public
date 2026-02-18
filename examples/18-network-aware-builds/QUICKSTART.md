@@ -193,7 +193,7 @@ aws --endpoint-url=http://localhost:4566 s3 ls s3://gaffer-cache-us-east/
 ✅ **Network Topology Detection** - Automatic selection of optimal cache  
 ✅ **Multi-Region Caching** - 3 regions with different characteristics  
 ✅ **Intelligent Fallback** - Automatic failover on network issues  
-✅ **Bandwidth Optimization** - Adaptive compression and delta transfers  
+✅ **Bandwidth Optimization** - Adaptive compression (delta transfers simulated)  
 ✅ **Cache Synchronization** - Cross-region artifact replication  
 ✅ **Performance Monitoring** - Real-time network metrics  
 ✅ **Failure Recovery** - Exponential backoff and resumable transfers  
@@ -213,4 +213,4 @@ aws --endpoint-url=http://localhost:4566 s3 ls s3://gaffer-cache-us-east/
 **Time to first successful build**: < 5 minutes  
 **Build time (cold)**: ~45s  
 **Build time (warm)**: ~8s  
-**Bandwidth savings**: 95% on incremental builds
+**Bandwidth savings**: 95% potential with delta transfers (simulated in demo)

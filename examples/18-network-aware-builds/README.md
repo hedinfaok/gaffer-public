@@ -23,7 +23,7 @@ This follows distributed build patterns used by:
 - Smart routing to nearest high-performance cache
 
 ⚡ **Bandwidth Optimization:**
-- Delta transfers for incremental updates
+- Conceptual delta transfer design (simulated in metrics)
 - Automatic compression (gzip/zstd) based on bandwidth
 - Parallel chunk downloads with resumable transfers
 
@@ -180,7 +180,8 @@ Automatic compression based on network speed:
 # High bandwidth: minimal compression
 # 100Mbps+ → no compression (CPU savings)
 # 50-100Mbps → gzip compression
-# <50Mbps → zstd maximum compression + delta transfers
+# <50Mbps → zstd maximum compression
+# Note: Delta transfers are conceptual (simulated in demo metrics)
 ```
 
 ### 3. Multi-Region Cache Sync
@@ -191,8 +192,9 @@ Automatic compression based on network speed:
 
 # Shows:
 # 🔄 Syncing us-east → us-west (100 artifacts)
-# 📦 Delta transfer: 25MB instead of 500MB (95% savings)
+# 📦 Transferred artifacts with compression
 # ⏱️  Sync completed in 12s
+# Note: Bandwidth savings shown in metrics are simulated/projected
 ```
 
 ### 4. Intelligent Fallback
@@ -234,14 +236,11 @@ Automatic compression based on network speed:
 | Scenario | Without Optimization | With Network-Aware | Savings |
 |----------|---------------------|-------------------|---------|
 | Full build artifacts | 500MB | 500MB | 0% |
-| Incremental update | 500MB | 25MB | 95% |
-| Cross-region sync | 500MB | 125MB | 75% |
-| Low bandwidth (<50Mbps) | 80s | 35s | 56% |
+| Incremental update | 500MB | 25MB* | 95%* |
+| Cross-region sync | 500MB | 125MB* | 75%* |
+| Low bandwidth (<50Mbps) | 80s | 35s* | 56%* |
 
-### Cache Hit Rates by Region
-
-```
-US-East:      85% (primary region, high bandwidth)
+*Projected with delta transfers (currently simulated in demo)
 US-West:      60% (secondary, medium bandwidth)
 EU-Central:   40% (tertiary, lower bandwidth, higher latency)
 ```
@@ -351,15 +350,17 @@ The system uses ICMP ping and bandwidth testing to build a network topology map:
 3. **Scoring**: Calculate composite score (latency × 0.4 + bandwidth × 0.6)
 4. **Selection**: Choose cache with best score
 
-### Delta Transfer Algorithm
+### Delta Transfer Algorithm (Conceptual)
 
-For incremental builds:
+Design for incremental builds (simulated in this demo):
 
 1. **Hash current artifacts**: SHA256 of each artifact
 2. **Compare with remote**: Get remote hashes
-3. **Calculate delta**: Only transfer changed bytes
+3. **Calculate delta**: Only transfer changed bytes (conceptual)
 4. **Compress delta**: Apply compression to delta
 5. **Verify**: Checksum verification on completion
+
+Note: Current implementation uses full artifact sync with compression. Delta transfers are demonstrated through simulated metrics to show the potential benefits.
 
 ### Failure Recovery Strategy
 
@@ -393,9 +394,9 @@ Cross-region sync uses eventual consistency:
 ### vs. GitHub Actions Caching
 
 - ✅ Regional cache selection (GitHub Actions uses single region)
-- ✅ Delta transfers (GitHub Actions transfers full cache)
+- ✅ Delta transfer design (GitHub Actions transfers full cache)
 - ✅ Intelligent fallback (GitHub Actions fails on cache unavailability)
-- ✅ 75% bandwidth savings on incremental builds
+- ✅ 75% bandwidth savings potential with delta transfers (simulated)
 
 ### vs. BuildKite Artifact Storage
 
