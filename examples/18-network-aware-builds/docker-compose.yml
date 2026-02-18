@@ -1,0 +1,142 @@
+services:
+  # US-East Region - Primary Cache (Low Latency, High Bandwidth)
+  localstack-us-east:
+    image: localstack/localstack:latest
+    container_name: gaffer-cache-us-east
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=0
+      - DATA_DIR=/tmp/localstack/data
+      - EDGE_PORT=4566
+    volumes:
+      - "./tmp/us-east:/tmp/localstack"
+    networks:
+      gaffer-network:
+        aliases:
+          - cache-us-east
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-us-east:
+    image: redis:7-alpine
+    container_name: gaffer-redis-us-east
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./tmp/redis-us-east:/data"
+    networks:
+      - gaffer-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # US-West Region - Secondary Cache (Medium Latency, Medium Bandwidth)
+  localstack-us-west:
+    image: localstack/localstack:latest
+    container_name: gaffer-cache-us-west
+    ports:
+      - "4567:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=0
+      - DATA_DIR=/tmp/localstack/data
+      - EDGE_PORT=4566
+    volumes:
+      - "./tmp/us-west:/tmp/localstack"
+    networks:
+      gaffer-network:
+        aliases:
+          - cache-us-west
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-us-west:
+    image: redis:7-alpine
+    container_name: gaffer-redis-us-west
+    ports:
+      - "6380:6379"
+    volumes:
+      - "./tmp/redis-us-west:/data"
+    networks:
+      - gaffer-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # EU-Central Region - Tertiary Cache (High Latency, Low Bandwidth)
+  localstack-eu-central:
+    image: localstack/localstack:latest
+    container_name: gaffer-cache-eu-central
+    ports:
+      - "4568:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=0
+      - DATA_DIR=/tmp/localstack/data
+      - EDGE_PORT=4566
+    volumes:
+      - "./tmp/eu-central:/tmp/localstack"
+    networks:
+      gaffer-network:
+        aliases:
+          - cache-eu-central
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-eu-central:
+    image: redis:7-alpine
+    container_name: gaffer-redis-eu-central
+    ports:
+      - "6381:6379"
+    volumes:
+      - "./tmp/redis-eu-central:/data"
+    networks:
+      - gaffer-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  # Network monitoring and metrics collector
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: gaffer-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./tmp/prometheus:/prometheus"
+    networks:
+      - gaffer-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  gaffer-network:
+    name: gaffer-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

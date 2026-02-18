@@ -1,0 +1,39 @@
+# Build artifacts
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Cache directories
+.cache/
+tmp/
+
+# Docker volumes
+/tmp/us-east/
+/tmp/us-west/
+/tmp/eu-central/
+/tmp/redis-*/
+/tmp/prometheus/
+
+# Config
+config/prometheus.yml
+
+# Go
+*.test
+*.out
+go.sum
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+

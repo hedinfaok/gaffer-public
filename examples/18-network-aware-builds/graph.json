@@ -1,0 +1,81 @@
+{
+  "version": "1",
+  "graphs": {
+    "clean": {
+      "command": "rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/ bin/",
+      "description": "Clean all build artifacts"
+    },
+    "init": {
+      "command": "go mod tidy && mkdir -p bin .cache",
+      "deps": ["clean"],
+      "description": "Initialize Go modules and directories"
+    },
+    "detect-network": {
+      "command": "chmod +x scripts/detect-region.sh && ./scripts/detect-region.sh",
+      "deps": ["init"],
+      "description": "Detect network topology and select optimal cache"
+    },
+    "fetch-cache-us-east": {
+      "command": "chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh us-east",
+      "deps": ["detect-network"],
+      "description": "Fetch cache from US-East region"
+    },
+    "fetch-cache-us-west": {
+      "command": "chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh us-west",
+      "deps": ["detect-network"],
+      "description": "Fetch cache from US-West region (fallback)"
+    },
+    "fetch-cache-eu": {
+      "command": "chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh eu-central",
+      "deps": ["detect-network"],
+      "description": "Fetch cache from EU-Central region (fallback)"
+    },
+    "build-api": {
+      "command": "echo '🔨 Building API service...' && go build -o bin/api ./cmd/api",
+      "deps": ["fetch-cache-us-east"],
+      "description": "Build API service"
+    },
+    "build-worker": {
+      "command": "echo '🔨 Building worker service...' && go build -o bin/worker ./cmd/worker",
+      "deps": ["fetch-cache-us-east"],
+      "description": "Build worker service"
+    },
+    "build-frontend": {
+      "command": "echo '🔨 Building frontend service...' && go build -o bin/frontend ./cmd/frontend",
+      "deps": ["fetch-cache-us-east"],
+      "description": "Build frontend service"
+    },
+    "verify-builds": {
+      "command": "chmod +x scripts/verify-builds.sh && ./scripts/verify-builds.sh",
+      "deps": ["build-api", "build-worker", "build-frontend"],
+      "description": "Verify all services built successfully"
+    },
+    "upload-cache": {
+      "command": "chmod +x scripts/upload-cache.sh && ./scripts/upload-cache.sh",
+      "deps": ["verify-builds"],
+      "description": "Upload cache to all regions"
+    },
+    "sync-regions": {
+      "command": "chmod +x scripts/sync-caches.sh && ./scripts/sync-caches.sh",
+      "deps": ["upload-cache"],
+      "description": "Synchronize caches across regions"
+    },
+    "network-build": {
+      "command": "echo '✅ Network-aware build complete!' && echo '📊 Build statistics:' && ./scripts/show-stats.sh",
+      "deps": ["sync-regions"],
+      "description": "Complete network-aware build workflow"
+    },
+    "benchmark": {
+      "command": "chmod +x scripts/benchmark.sh && ./scripts/benchmark.sh",
+      "description": "Run performance benchmarks"
+    },
+    "monitor": {
+      "command": "chmod +x scripts/monitor-network.sh && ./scripts/monitor-network.sh",
+      "description": "Monitor network performance"
+    },
+    "test-failure": {
+      "command": "chmod +x scripts/test-failure.sh && ./scripts/test-failure.sh",
+      "description": "Test network failure recovery"
+    }
+  }
+}
