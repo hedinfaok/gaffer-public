@@ -34,6 +34,7 @@
       "actor": "user",
       "agent_profile": "__resolved_profile_absent__",
       "agent_profile_version": "__resolved_profile_version_absent__",
+      "assignee": "opencode",
       "force_count": 0,
       "lane": "in_progress",
       "last_event_id": "01M36RYWXAKSTJSM54QRWX3EVY",
