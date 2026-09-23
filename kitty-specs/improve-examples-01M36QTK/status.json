@@ -1,7 +1,7 @@
 {
-  "event_count": 14,
-  "last_event_id": "01M36RRS0TPN99J3BT4WVGZN69",
-  "materialized_at": "2026-09-23T09:15:25.082784+00:00",
+  "event_count": 15,
+  "last_event_id": "01M36RRVCB8VH4WCX9W9P5XTAE",
+  "materialized_at": "2026-09-23T09:15:27.499366+00:00",
   "mission_number": "",
   "mission_slug": "improve-examples-01M36QTK",
   "mission_type": "software-dev",
@@ -11,9 +11,9 @@
     "canceled": 0,
     "claimed": 0,
     "done": 1,
-    "for_review": 1,
+    "for_review": 0,
     "in_progress": 1,
-    "in_review": 0,
+    "in_review": 1,
     "planned": 0
   },
   "work_packages": {
@@ -48,17 +48,20 @@
       }
     },
     "WP02": {
-      "actor": "opencode",
+      "actor": "user",
+      "agent": "opencode",
       "agent_profile": "__resolved_profile_absent__",
       "agent_profile_version": "__resolved_profile_version_absent__",
       "assignee": "opencode",
       "force_count": 0,
-      "lane": "for_review",
-      "last_event_id": "01M36RRS0TPN99J3BT4WVGZN69",
-      "last_transition_at": "2026-09-23T09:15:25.082784+00:00",
+      "lane": "in_review",
+      "last_event_id": "01M36RRVCB8VH4WCX9W9P5XTAE",
+      "last_transition_at": "2026-09-23T09:15:27.499366+00:00",
       "model": "__resolved_model_absent__",
       "provider": "__resolved_provider_absent__",
-      "role": "implementer",
+      "role": "reviewer",
+      "shell_pid": 56412,
+      "shell_pid_created_at": "1790154916.716835",
       "subtasks": {
         "T004": "done",
         "T005": "done",
