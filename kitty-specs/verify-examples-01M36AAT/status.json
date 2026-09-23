@@ -2,7 +2,7 @@
   "event_count": 34,
   "last_event_id": "01M36F6BQKY6F8RTZ51QNB7GMF",
   "materialized_at": "2026-09-23T06:28:04.467433+00:00",
-  "mission_number": "",
+  "mission_number": "1",
   "mission_slug": "verify-examples-01M36AAT",
   "mission_type": "software-dev",
   "summary": {
