@@ -142,4 +142,4 @@ status, evidence command, and outcome.
 - **SC-002**: 10/10 examples have an executed result recorded (pass, fail, or blocked-environment) from `test.sh` or the documented primary target.
 - **SC-003**: Every non-environment `fail` is fixed within the mission, or quarantined with a written rationale; zero unexplained failures remain.
 - **SC-004**: Zero references to the removed JSON-graph format remain in example content.
-- **SC-005**: A single report at `kitty-specs/verify-examples-01M36AAT/verification-report.md` lists every example with status and evidence.
+- **SC-005**: A single report at `docs/verify-examples-report.md` lists every example with status and evidence.

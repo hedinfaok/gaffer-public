@@ -47,8 +47,10 @@ kitty-specs/verify-examples-01M36AAT/
 ├── plan.md                  # This file
 ├── tasks.md                 # Work packages (/spec-kitty.tasks)
 ├── verify.sh                # Repeatable verification harness (FR-008)
-├── results/                 # Per-example raw evidence (gitignored or committed summaries)
-└── verification-report.md   # Consolidated report (SC-005)
+└── results/                 # Per-example raw evidence (static + wp02/wp03/wp04 results)
+
+docs/
+└── verify-examples-report.md  # Consolidated report (SC-005)
 ```
 
 ### Source Code (repository root)
@@ -106,6 +108,6 @@ verification reproducible and dependency-free.
 
 - **Purpose**: Consolidate results into one report and ensure every defect is fixed or quarantined with rationale.
 - **Relevant requirements**: FR-006, FR-007, FR-008, SC-003, SC-005
-- **Affected surfaces**: `kitty-specs/verify-examples-01M36AAT/verification-report.md`, defect fixes inside `examples/`
+- **Affected surfaces**: `docs/verify-examples-report.md`, defect fixes inside `examples/`
 - **Sequencing/depends-on**: IC-01, IC-02, IC-03
 - **Risks**: Environment-only failures must be labelled `blocked (environment)`, not `fail`; report must cite the exact evidence command per example.

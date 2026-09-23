@@ -21,13 +21,21 @@
       "actor": "user",
       "agent_profile": "__resolved_profile_absent__",
       "agent_profile_version": "__resolved_profile_version_absent__",
+      "assignee": "opencode",
       "force_count": 0,
       "lane": "in_progress",
       "last_event_id": "01M36B02TPESFC78D95HQ1J4R5",
       "last_transition_at": "2026-09-23T05:14:44.438971+00:00",
       "model": "__resolved_model_absent__",
       "provider": "__resolved_provider_absent__",
-      "role": "implementer"
+      "role": "implementer",
+      "subtasks": {
+        "T001": "done",
+        "T002": "done",
+        "T003": "done",
+        "T004": "done",
+        "T005": "done"
+      }
     },
     "WP02": {
       "actor": "finalize-tasks",

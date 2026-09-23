@@ -1,0 +1,16 @@
+{
+ "generated_at": "2026-09-23T05:14:02Z",
+ "cli": "gaffer-exec 0.8.0",
+ "results": [
+  {"example": "01-monorepo-build", "primary_target": "make:build-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:build-all; list -t makefile", "detail": ""},
+  {"example": "02-distributed-build", "primary_target": "make:distributed-build", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:distributed-build; list -t makefile", "detail": ""},
+  {"example": "03-multi-language-build", "primary_target": "make:multi-language-build", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:multi-language-build; list -t makefile", "detail": ""},
+  {"example": "04-incremental-testing", "primary_target": "make:test-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:test-all; list -t makefile", "detail": ""},
+  {"example": "05-ml-workflows", "primary_target": "make:pipeline", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:pipeline; list -t makefile", "detail": ""},
+  {"example": "06-local-dev-environment", "primary_target": "make:dev", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:dev; list -t makefile", "detail": ""},
+  {"example": "07-watch-workflows", "primary_target": "make:build-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:build-all; list -t makefile", "detail": ""},
+  {"example": "08-multi-language-task-running", "primary_target": "make:build-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:build-all; list -t makefile", "detail": ""},
+  {"example": "18-network-aware-builds", "primary_target": "make:network-build", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:network-build; list -t makefile", "detail": ""},
+  {"example": "19-cross-platform-builds", "primary_target": "make:build-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:build-all; list -t makefile", "detail": ""}
+ ]
+}
