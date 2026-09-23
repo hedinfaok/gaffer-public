@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Real-time analytics dashboard",
   "scripts": {
-    "install": "npm ci",
     "build": "webpack --mode production",
     "test": "jest --coverage",
     "lint": "eslint src/",

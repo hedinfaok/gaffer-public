@@ -30,11 +30,11 @@ run_test() {
   
   if eval "$command" > /dev/null 2>&1; then
     echo -e "${GREEN}[PASS]${NC} $test_name"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
     return 0
   else
     echo -e "${RED}[FAIL]${NC} $test_name"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
     return 1
   fi
 }
@@ -48,11 +48,11 @@ check_file_exists() {
   
   if [ -f "$file_path" ] || [ -d "$file_path" ]; then
     echo -e "${GREEN}[PASS]${NC} $test_name"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
     return 0
   else
     echo -e "${RED}[FAIL]${NC} $test_name - File/Directory not found: $file_path"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
     return 1
   fi
 }
@@ -86,11 +86,11 @@ gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 echo -e "${BLUE}[TEST]${NC} install-all runs successfully"
 if gaffer-exec --workspace-root . run make:install-all > /tmp/test-install.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} install-all runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} install-all failed"
   cat /tmp/test-install.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 # Test individual install tasks completed
@@ -105,11 +105,11 @@ echo ""
 echo -e "${BLUE}[TEST]${NC} build-all runs successfully"
 if gaffer-exec --workspace-root . run make:build-all > /tmp/test-build.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} build-all runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} build-all failed"
   cat /tmp/test-build.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 # Check build outputs exist
@@ -124,11 +124,11 @@ echo ""
 echo -e "${BLUE}[TEST]${NC} test-all runs successfully"
 if gaffer-exec --workspace-root . run make:test-all > /tmp/test-tests.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} test-all runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} test-all failed"
   cat /tmp/test-tests.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""
@@ -137,11 +137,11 @@ echo ""
 echo -e "${BLUE}[TEST]${NC} lint-all runs successfully"
 if gaffer-exec --workspace-root . run make:lint-all > /tmp/test-lint.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} lint-all runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} lint-all failed"
   cat /tmp/test-lint.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""
@@ -150,11 +150,11 @@ echo ""
 echo -e "${BLUE}[TEST]${NC} format-all runs successfully"
 if gaffer-exec --workspace-root . run make:format-all > /tmp/test-format.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} format-all runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} format-all failed"
   cat /tmp/test-format.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""
@@ -163,28 +163,30 @@ echo ""
 echo -e "${BLUE}[TEST]${NC} dev task runs successfully"
 if gaffer-exec --workspace-root . run make:dev > /tmp/test-dev.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} dev task runs successfully"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} dev task failed"
   cat /tmp/test-dev.log
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""
 
 # Test caching - run build-all again
 echo -e "${BLUE}[TEST]${NC} Caching works (build-all second run should be faster)"
+# Populate the cache, then measure a cached re-run.
+gaffer-exec --workspace-root . run --cache sha256 make:build-all > /tmp/test-cache-populate.log 2>&1 || true
 START_TIME=$(date +%s%N)
-gaffer-exec --workspace-root . run make:build-all > /tmp/test-cache.log 2>&1
+gaffer-exec --workspace-root . run --cache sha256 make:build-all > /tmp/test-cache.log 2>&1
 END_TIME=$(date +%s%N)
 CACHE_TIME=$((($END_TIME - $START_TIME) / 1000000))
 
-if grep -q "cached" /tmp/test-cache.log || [ $CACHE_TIME -lt 3000 ]; then
+if grep -qi "cached\|cache hit\|restored" /tmp/test-cache.log || [ $CACHE_TIME -lt 3000 ]; then
   echo -e "${GREEN}[PASS]${NC} Caching appears to work (completed in ${CACHE_TIME}ms)"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} Caching may not be working properly"
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""
@@ -194,10 +196,10 @@ echo -e "${BLUE}[TEST]${NC} clean removes artifacts"
 gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1
 if [ ! -d "node-frontend/dist" ] && [ ! -d "go-api/bin" ]; then
   echo -e "${GREEN}[PASS]${NC} clean removes artifacts"
-  ((TESTS_PASSED++))
+  TESTS_PASSED=$((TESTS_PASSED+1))
 else
   echo -e "${RED}[FAIL]${NC} clean did not remove all artifacts"
-  ((TESTS_FAILED++))
+  TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 echo ""

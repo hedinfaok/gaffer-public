@@ -25,10 +25,10 @@ install-node:
 	@cd node-frontend && npm ci
 
 install-python:
-	@cd python-ml && pip install -r requirements.txt --quiet
+	@cd python-ml && python3 -m pip install --break-system-packages -r requirements.txt --quiet
 
 install-go:
-	@cd go-api && go mod download
+	@cd go-api && go mod tidy
 
 install-rust:
 	@cd rust-cli && cargo fetch --quiet
@@ -41,7 +41,7 @@ build-node: install-node
 	@cd node-frontend && echo 'Simulating webpack build...' && mkdir -p dist && echo 'Built' > dist/bundle.js
 
 build-python: install-python
-	@cd python-ml && python setup.py build --quiet
+	@cd python-ml && python3 setup.py build --quiet
 
 build-go: install-go
 	@cd go-api && go build -o bin/api-server .
