@@ -11,12 +11,17 @@ directory. For orientation, start with
 |---------|----------|
 | Parallel scheduling | [01](../examples/01-monorepo-build/), [03](../examples/03-multi-language-build/), [04](../examples/04-incremental-testing/), [05](../examples/05-ml-workflows/), [06](../examples/06-local-dev-environment/), [08](../examples/08-multi-language-task-running/) |
 | Content-based caching | [01](../examples/01-monorepo-build/), [02](../examples/02-distributed-build/), [04](../examples/04-incremental-testing/), [08](../examples/08-multi-language-task-running/) |
-| Incremental / affected-only runs | [01](../examples/01-monorepo-build/), [04](../examples/04-incremental-testing/), [05](../examples/05-ml-workflows/), [07](../examples/07-watch-workflows/) |
+| Incremental / affected-only runs | [01](../examples/01-monorepo-build/), [04](../examples/04-incremental-testing/), [05](../examples/05-ml-workflows/), [07](../examples/07-watch-workflows/), [20](../examples/20-affected-ci/) |
 | Watch mode | [07](../examples/07-watch-workflows/) |
 | Remote / multi-region cache | [02](../examples/02-distributed-build/), [18](../examples/18-network-aware-builds/) |
 | Cross-platform builds | [19](../examples/19-cross-platform-builds/) |
 | Multi-language orchestration | [03](../examples/03-multi-language-build/), [08](../examples/08-multi-language-task-running/) |
 | Alternate manifests (Makefile, npm, Cargo) | [01](../examples/01-monorepo-build/), [08](../examples/08-multi-language-task-running/) |
+| Alternate manifests (Taskfile, justfile) | [23](../examples/23-alternate-manifests/) |
+| Onboarding (first example) | [00](../examples/00-hello-gaffer/) |
+| CI export + caching | [21](../examples/21-ci-github-actions/) |
+| Remote cache (real round-trip) | [22](../examples/22-remote-cache-s3/) |
+| Container build graphs | [24](../examples/24-docker-build-graph/) |
 
 ## Examples
 
@@ -32,6 +37,13 @@ directory. For orientation, start with
 | [08-multi-language-task-running](../examples/08-multi-language-task-running/) | Defines one Makefile task graph for Node.js, Python, Go, and Rust, adding caching and parallel scheduling on top. |
 | [18-network-aware-builds](../examples/18-network-aware-builds/) | Explores multi-region cache selection, network topology detection, and bandwidth-aware transfer; simulated transfer paths are labelled as such. |
 | [19-cross-platform-builds](../examples/19-cross-platform-builds/) | Uses shell platform detection in a Makefile so only the target matching the host platform builds, across Linux, macOS, and Windows. |
+
+| [00-hello-gaffer](../examples/00-hello-gaffer/) | The smallest working example: two independent tasks plus an aggregate, showing parallel scheduling and a cache hit. |
+| [20-affected-ci](../examples/20-affected-ci/) | Selects only the affected targets (and their dependents) with `--affected`/`--since` on a small monorepo fixture. |
+| [21-ci-github-actions](../examples/21-ci-github-actions/) | Runs a build in GitHub Actions with `export --format github-actions` and a cache restore/save strategy. |
+| [22-remote-cache-s3](../examples/22-remote-cache-s3/) | Performs a real remote-cache round-trip against MinIO using the cache key/artifact contract. |
+| [23-alternate-manifests](../examples/23-alternate-manifests/) | Shows gaffer-exec discovering and running a `Taskfile.yml` and a `justfile`. |
+| [24-docker-build-graph](../examples/24-docker-build-graph/) | Builds two container images as a parallel graph with a dependency edge. |
 
 ## Related examples
 
