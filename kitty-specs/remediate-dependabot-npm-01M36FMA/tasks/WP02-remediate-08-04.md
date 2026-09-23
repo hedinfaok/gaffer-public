@@ -11,6 +11,9 @@ requirement_refs:
 planning_base_branch: remediate-dependabot-npm
 merge_target_branch: remediate-dependabot-npm
 branch_strategy: Planning artifacts for this mission were generated on remediate-dependabot-npm. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into remediate-dependabot-npm unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-remediate-dependabot-npm-01M36FMA
+base_commit: 80843a47bc34b6cd4b88c9f8a6cf735f0b88370d
+created_at: '2026-09-23T06:44:15.809296+00:00'
 subtasks:
 - T006
 - T007
@@ -105,3 +108,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T06:40:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:46:16Z – opencode – Example 08 node-frontend: npm audit fix 26->4; example 04: 11->1. Verified: 08 Makefile build-node works (simulated build, creates dist/bundle.js); 04 test.sh exit 0. Reverted incidental tracked node_modules churn in 04. Note: 08's real 'npm run build' (webpack) has a pre-existing entry/config issue unrelated to this remediation and is not the example's Makefile path. Residual 4 (08) + 1 (04) need breaking upgrades.
