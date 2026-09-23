@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-23T05:15:14Z",
+ "generated_at": "2026-09-23T06:31:15Z",
  "cli": "gaffer-exec 0.8.0",
  "results": [
   {"example": "01-monorepo-build", "primary_target": "make:build-all", "status": "pass", "checks": {"validate": "pass", "list": "pass", "dry_run": "pass", "stale_refs": "pass"}, "evidence": "gaffer-exec --workspace-root . validate; run --dry-run make:build-all; list -t makefile", "detail": ""},
