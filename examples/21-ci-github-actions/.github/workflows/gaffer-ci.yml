@@ -1,0 +1,79 @@
+# GitHub Actions CI for the gaffer-exec task graph in this directory.
+#
+# This workflow is based on the output of:
+#
+#   gaffer-exec --workspace-root . export make:build --format github-actions
+#
+# which writes .gaffer/exports/make-build.yml (see the README). The generated
+# workflow installs gaffer-exec from the attested releases, caches .gaffer, and
+# runs the graph. This copy is adapted for CI caching:
+#
+#   - gaffer-exec is pinned to v0.8.0 and its release checksum is verified.
+#   - Node is set up so `make:install` (npm ci) has a toolchain.
+#   - the gaffer cache (.gaffer/cache) is restored before and saved after the
+#     cached build, keyed on the source inputs that gaffer hashes.
+#   - the build runs with `--cache sha256` and the tests run as a separate graph.
+
+name: gaffer-exec CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Release tag for gaffer-exec 0.8.0. Releases are published as GitHub
+  # attestations (see https://github.com/hedinfaok/gaffer-public/releases).
+  GAFFER_RELEASE: apps-gaffer-exec-v0.8.0
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install gaffer-exec (attested release, checksum verified)
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset="gaffer-exec-linux-x64.tar.gz"
+          base="https://github.com/hedinfaok/gaffer-public/releases/download/${GAFFER_RELEASE}"
+          curl -fsSL "${base}/${asset}" -o "${asset}"
+          curl -fsSL "${base}/${asset}.sha256" -o "${asset}.sha256"
+          sha256sum --check "${asset}.sha256"
+          tar xzf "${asset}"
+          sudo mv gaffer-exec /usr/local/bin/
+          gaffer-exec --version
+
+      - name: Restore gaffer cache
+        id: gaffer-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .gaffer/cache
+          key: gaffer-${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'Makefile', 'src/**', 'scripts/**') }}
+          restore-keys: |
+            gaffer-${{ runner.os }}-
+
+      - name: Build (cached)
+        run: gaffer-exec --workspace-root . run --cache sha256 make:build
+
+      - name: Save gaffer cache
+        if: always() && steps.gaffer-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .gaffer/cache
+          key: gaffer-${{ runner.os }}-${{ hashFiles('package.json', 'package-lock.json', 'Makefile', 'src/**', 'scripts/**') }}
+
+      - name: Test
+        run: gaffer-exec --workspace-root . run make:test

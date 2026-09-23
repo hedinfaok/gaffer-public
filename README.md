@@ -23,12 +23,17 @@ to the examples that demonstrate it.
 |---------|----------|
 | Parallel scheduling | [01](examples/01-monorepo-build/), [03](examples/03-multi-language-build/), [04](examples/04-incremental-testing/), [05](examples/05-ml-workflows/), [06](examples/06-local-dev-environment/), [08](examples/08-multi-language-task-running/) |
 | Content-based caching | [01](examples/01-monorepo-build/), [02](examples/02-distributed-build/), [04](examples/04-incremental-testing/), [08](examples/08-multi-language-task-running/) |
-| Incremental / affected-only | [01](examples/01-monorepo-build/), [04](examples/04-incremental-testing/), [05](examples/05-ml-workflows/), [07](examples/07-watch-workflows/) |
+| Incremental / affected-only | [01](examples/01-monorepo-build/), [04](examples/04-incremental-testing/), [05](examples/05-ml-workflows/), [07](examples/07-watch-workflows/), [20](examples/20-affected-ci/) |
 | Watch mode | [07](examples/07-watch-workflows/) |
 | Remote / multi-region cache | [02](examples/02-distributed-build/), [18](examples/18-network-aware-builds/) |
 | Cross-platform builds | [19](examples/19-cross-platform-builds/) |
 | Multi-language orchestration | [03](examples/03-multi-language-build/), [08](examples/08-multi-language-task-running/) |
 | Alternate manifests (Makefile, npm, Cargo) | [01](examples/01-monorepo-build/), [08](examples/08-multi-language-task-running/) |
+| Onboarding (first example) | [00](examples/00-hello-gaffer/) |
+| CI export + caching | [21](examples/21-ci-github-actions/) |
+| Remote cache (real round-trip) | [22](examples/22-remote-cache-s3/) |
+| Alternate manifests (Taskfile, justfile) | [23](examples/23-alternate-manifests/) |
+| Container build graphs | [24](examples/24-docker-build-graph/) |
 
 For per-example descriptions and longer notes, see
 [docs/example-index.md](docs/example-index.md).
