@@ -10,6 +10,9 @@ requirement_refs:
 planning_base_branch: remediate-dependabot-npm
 merge_target_branch: remediate-dependabot-npm
 branch_strategy: Planning artifacts for this mission were generated on remediate-dependabot-npm. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into remediate-dependabot-npm unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-remediate-dependabot-npm-01M36FMA
+base_commit: 80843a47bc34b6cd4b88c9f8a6cf735f0b88370d
+created_at: '2026-09-23T06:46:37.851358+00:00'
 subtasks:
 - T011
 - T012
@@ -83,3 +86,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T06:40:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:47:19Z – opencode – Authored docs/dependabot-remediation-report.md: 112->36 npm audit (all non-breaking-fixable resolved); residuals are react-scripts (CRA) breaking-only; regression checks pass (06 10/10, 04 exit 0, 08 build-node). SC-001..004 met.
