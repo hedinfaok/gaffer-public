@@ -9,6 +9,9 @@ requirement_refs:
 planning_base_branch: verify-examples
 merge_target_branch: verify-examples
 branch_strategy: Planning artifacts for this mission were generated on verify-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into verify-examples unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-verify-examples-01M36AAT
+base_commit: a9dc23c88fee30944196b9a563c688eb9e647506
+created_at: '2026-09-23T05:27:33.140547+00:00'
 subtasks:
 - T012
 - T013
