@@ -14,10 +14,10 @@ rust-deps:
 	@echo 'Fetching Rust dependencies...' && cd rust-backend && cargo fetch
 
 go-deps:
-	@echo 'Fetching Go dependencies...' && cd go-cli && go mod download
+	@echo 'Fetching Go dependencies...' && cd go-cli && go mod download all
 
 node-deps:
-	@echo '⚛ Installing Node.js dependencies...' && cd node-frontend && npm install
+	@echo 'Installing Node.js dependencies...' && cd node-frontend && npm install
 
 python-deps:
 	@echo 'Installing Python dependencies...' && cd python-ml && pip3 install --break-system-packages setuptools -r requirements.txt
@@ -29,7 +29,7 @@ go-cli: go-deps
 	@echo 'Building Go CLI...' && cd go-cli && go build -o go-cli main.go
 
 node-frontend: node-deps
-	@echo '⚛ Building Node.js frontend...' && cd node-frontend && npm run test
+	@echo 'Building Node.js frontend...' && cd node-frontend && npm run test
 
 python-ml: python-deps
 	@echo 'Building Python ML package...' && cd python-ml && python3 setup.py build
@@ -38,7 +38,7 @@ multi-language-build: rust-backend go-cli node-frontend python-ml
 	@echo '✓ Multi-language build complete!' && echo 'All components built: Rust, Go, Node.js, Python'
 
 integration-test: multi-language-build
-	@echo 'Running integration tests...' && echo 'Testing inter-component communication...' && sleep 1 && echo '✓ Integration tests passed'
+	@echo 'Running cross-language integration tests...' && bash scripts/integration-test.sh
 
 start-rust: rust-backend
 	@echo 'Starting Rust backend server...' && cd rust-backend && timeout 5 cargo run --release || echo '↯ Rust server started (timeout for demo)'

@@ -38,7 +38,7 @@ install-all: install-node install-python install-go install-rust
 
 # Build
 build-node: install-node
-	@cd node-frontend && echo 'Simulating webpack build...' && mkdir -p dist && echo 'Built' > dist/bundle.js
+	@cd node-frontend && npm run build
 
 build-python: install-python
 	@cd python-ml && python3 setup.py build --quiet
@@ -54,7 +54,7 @@ build-all: build-node build-python build-go build-rust
 
 # Test
 test-node: install-node
-	@cd node-frontend && echo 'Simulating Jest tests...' && echo 'PASS  src/App.test.js' && echo '✓ All tests passed'
+	@cd node-frontend && npm test
 
 test-python: install-python
 	@cd python-ml && pytest tests/ -v --tb=short
@@ -70,7 +70,7 @@ test-all: test-node test-python test-go test-rust
 
 # Lint
 lint-node: install-node
-	@cd node-frontend && echo 'Running ESLint...' && echo '✓ No linting errors found'
+	@cd node-frontend && echo '(simulated) Running ESLint...' && echo '✓ No linting errors found'
 
 lint-python: install-python
 	@cd python-ml && pylint ml_models/ --score=no || true
@@ -86,7 +86,7 @@ lint-all: lint-node lint-python lint-go lint-rust
 
 # Format
 format-node: install-node
-	@cd node-frontend && echo 'Running Prettier...' && echo '✓ Code formatted'
+	@cd node-frontend && echo '(simulated) Running Prettier...' && echo '✓ Code formatted'
 
 format-python: install-python
 	@cd python-ml && black ml_models/ tests/ --quiet && isort ml_models/ tests/ --quiet && echo '✓ Python code formatted'

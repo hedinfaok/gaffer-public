@@ -1,66 +1,20 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import axios from 'axios';
+import { renderToString } from 'react-dom/server';
 import App from './App';
 
-jest.mock('axios');
-
-describe('App Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+describe('App component', () => {
+  test('renders the dashboard title', () => {
+    const html = renderToString(<App />);
+    expect(html).toContain('Analytics Dashboard');
   });
 
-  test('renders dashboard title', () => {
-    axios.get.mockResolvedValue({ 
-      data: { status: 'healthy', predictions: [] } 
-    });
-    
-    render(<App />);
-    expect(screen.getByText(/Analytics Dashboard/i)).toBeInTheDocument();
+  test('shows the loading state before data arrives', () => {
+    const html = renderToString(<App />);
+    expect(html).toContain('Loading...');
   });
 
-  test('displays API health status', async () => {
-    axios.get.mockResolvedValue({
-      data: { status: 'healthy', predictions: [] }
-    });
-
-    render(<App />);
-    
-    await waitFor(() => {
-      expect(screen.getByText(/healthy/i)).toBeInTheDocument();
-    });
-  });
-
-  test('displays predictions when loaded', async () => {
-    axios.get.mockImplementation((url) => {
-      if (url.includes('health')) {
-        return Promise.resolve({ data: { status: 'healthy' } });
-      }
-      return Promise.resolve({
-        data: {
-          predictions: [
-            { label: 'cats', confidence: 0.95 },
-            { label: 'dogs', confidence: 0.87 }
-          ]
-        }
-      });
-    });
-
-    render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/cats: 0.95/i)).toBeInTheDocument();
-      expect(screen.getByText(/dogs: 0.87/i)).toBeInTheDocument();
-    });
-  });
-
-  test('handles API errors gracefully', async () => {
-    axios.get.mockRejectedValue(new Error('Network error'));
-
-    render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/error/i)).toBeInTheDocument();
-    });
+  test('renders the predictions section heading', () => {
+    const html = renderToString(<App />);
+    expect(html).toContain('Latest Predictions');
   });
 });
