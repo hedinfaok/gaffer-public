@@ -1,4 +1,5 @@
 {
+  "baseline_merge_commit": "2587e91a49e9f3e54c1fa66e4e6737536fc12410",
   "created_at": "2026-09-23T18:20:07.187011+00:00",
   "flattened": false,
   "friendly_name": "All-manifests local dev web stack",
@@ -9,6 +10,7 @@
   "purpose_context": "This mission advances All-manifests local dev web stack on all-manifests-devstack so stakeholders can track the work from mission creation onward.",
   "purpose_tldr": "A local dev web stack where every gaffer-exec manifest type participates, with Procfile processes and auto-assigned ports.",
   "slug": "all-manifests-devstack-01M37QY5",
+  "status_phase": "1",
   "target_branch": "all-manifests-devstack",
   "topology": "single_branch",
   "vcs": "git",
