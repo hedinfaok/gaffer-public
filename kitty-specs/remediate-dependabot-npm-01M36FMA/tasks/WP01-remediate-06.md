@@ -11,6 +11,9 @@ requirement_refs:
 planning_base_branch: remediate-dependabot-npm
 merge_target_branch: remediate-dependabot-npm
 branch_strategy: Planning artifacts for this mission were generated on remediate-dependabot-npm. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into remediate-dependabot-npm unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-remediate-dependabot-npm-01M36FMA
+base_commit: 80843a47bc34b6cd4b88c9f8a6cf735f0b88370d
+created_at: '2026-09-23T06:38:33.378974+00:00'
 subtasks:
 - T001
 - T002
@@ -109,3 +112,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T06:40:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:43:55Z – opencode – Example 06 remediation via npm audit fix (non-breaking): frontend 56->30, api 12->1, root 7->0. Example 06 test.sh passes 10/10 after clearing stale API/frontend processes from earlier runs (no regression). Residual (frontend 30) require react-scripts/CRA major upgrade — documented for WP03.

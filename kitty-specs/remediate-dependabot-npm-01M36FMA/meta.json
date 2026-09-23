@@ -10,5 +10,7 @@
   "purpose_tldr": "Reduce the 235 open npm Dependabot alerts across example lockfiles via safe dependency upgrades, keeping examples working.",
   "slug": "remediate-dependabot-npm-01M36FMA",
   "target_branch": "remediate-dependabot-npm",
-  "topology": "single_branch"
+  "topology": "single_branch",
+  "vcs": "git",
+  "vcs_locked_at": "2026-09-23T06:38:32.506029+00:00"
 }
