@@ -92,7 +92,8 @@
       "last_transition_at": "2026-09-23T09:15:42.962817+00:00",
       "model": "__resolved_model_absent__",
       "notes": [
-        "Reviewed: real integration test + real 08 build/test; verified."
+        "Reviewed: real integration test + real 08 build/test; verified.",
+        "Done override: Lane merge deferred"
       ],
       "provider": "__resolved_provider_absent__",
       "review_result": {

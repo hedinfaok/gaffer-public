@@ -81,3 +81,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 
 ## Activity Log
 - 2026-09-23T09:10:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T09:15:00Z – opencode – Root README rewritten value-first with feature->example table; docs/example-index.md added; provenance moved near end. Commit 59c6686.
