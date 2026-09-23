@@ -22,6 +22,7 @@ directory. For orientation, start with
 | CI export + caching | [21](../examples/21-ci-github-actions/) |
 | Remote cache (real round-trip) | [22](../examples/22-remote-cache-s3/) |
 | Container build graphs | [24](../examples/24-docker-build-graph/) |
+| All manifest types (incl. Procfile) + auto ports | [25](../examples/25-all-manifests-devstack/) |
 
 ## Examples
 
@@ -44,6 +45,8 @@ directory. For orientation, start with
 | [22-remote-cache-s3](../examples/22-remote-cache-s3/) | Performs a real remote-cache round-trip against MinIO using the cache key/artifact contract. |
 | [23-alternate-manifests](../examples/23-alternate-manifests/) | Shows gaffer-exec discovering and running a `Taskfile.yml` and a `justfile`. |
 | [24-docker-build-graph](../examples/24-docker-build-graph/) | Builds two container images as a parallel graph with a dependency edge. |
+
+| [25-all-manifests-devstack](../examples/25-all-manifests-devstack/) | A local-dev web stack where every manifest type participates (Make, npm, turbo, Cargo, Python, Procfile, Taskfile, just, script, Bazel), with Procfile processes receiving auto-assigned ports. |
 
 ## Related examples
 

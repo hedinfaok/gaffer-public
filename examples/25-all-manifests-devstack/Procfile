@@ -1,0 +1,3 @@
+web: node web/serve.js
+api: python3 api/serve.py
+worker: cargo run --quiet --manifest-path worker/Cargo.toml

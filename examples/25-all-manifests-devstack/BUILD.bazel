@@ -1,0 +1,12 @@
+genrule(
+    name = "app",
+    outs = ["app.txt"],
+    cmd = "echo 'built by bazel' > $@",
+)
+
+genrule(
+    name = "test",
+    srcs = [":app"],
+    outs = ["test.txt"],
+    cmd = "grep -q 'built by bazel' $(location :app) && echo 'bazel: test passed' > $@",
+)

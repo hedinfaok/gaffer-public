@@ -34,6 +34,7 @@ to the examples that demonstrate it.
 | Remote cache (real round-trip) | [22](examples/22-remote-cache-s3/) |
 | Alternate manifests (Taskfile, justfile) | [23](examples/23-alternate-manifests/) |
 | Container build graphs | [24](examples/24-docker-build-graph/) |
+| All manifest types + Procfile + auto ports | [25](examples/25-all-manifests-devstack/) |
 
 For per-example descriptions and longer notes, see
 [docs/example-index.md](docs/example-index.md).

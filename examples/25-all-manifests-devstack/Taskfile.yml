@@ -1,0 +1,16 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the taskfile layer artifact
+    cmds:
+      - mkdir -p build/taskfile
+      - echo "taskfile build artifact" > build/taskfile/out.txt
+
+  test:
+    desc: Verify the taskfile layer artifact
+    deps:
+      - build
+    cmds:
+      - grep -q "taskfile build artifact" build/taskfile/out.txt
+      - echo "taskfile: test passed"
