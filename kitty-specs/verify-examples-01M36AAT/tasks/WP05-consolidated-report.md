@@ -1,10 +1,16 @@
 ---
 work_package_id: WP05
 title: Consolidated report + defect disposition
-dependencies: []
+dependencies:
+- WP02
+- WP03
+- WP04
 requirement_refs:
 - FR-006
 - FR-007
+planning_base_branch: verify-examples
+merge_target_branch: verify-examples
+branch_strategy: Planning artifacts for this mission were generated on verify-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into verify-examples unless the human explicitly redirects the landing branch.
 subtasks:
 - T022
 - T023
@@ -15,13 +21,13 @@ history:
   actor: system
   action: Prompt generated via /spec-kitty.tasks
 agent_profile: reviewer-renata
-authoritative_surface: kitty-specs/verify-examples-01M36AAT/
+authoritative_surface: docs/
 create_intent:
-- kitty-specs/verify-examples-01M36AAT/verification-report.md
-execution_mode: planning_artifact
+- docs/verify-examples-report.md
+execution_mode: code_change
 model: ''
 owned_files:
-- kitty-specs/verify-examples-01M36AAT/verification-report.md
+- docs/verify-examples-report.md
 role: reviewer
 tags: []
 task_type: review
@@ -40,7 +46,7 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 
 ## Objectives & Success Criteria
 
-- Publish `kitty-specs/verify-examples-01M36AAT/verification-report.md` listing all 10 examples with status, evidence command, and outcome.
+- Publish `docs/verify-examples-report.md` listing all 10 examples with status, evidence command, and outcome.
 - Ensure every `fail` has a disposition (fixed or quarantined with rationale).
 - Confirm SC-001..SC-005 from the spec.
 

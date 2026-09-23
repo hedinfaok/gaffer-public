@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "mission_slug": "verify-examples-01M36AAT",
+  "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0",
+  "mission_branch": "kitty/mission-verify-examples-01M36AAT",
+  "target_branch": "verify-examples",
+  "lanes": [
+    {
+      "lane_id": "lane-planning",
+      "wp_ids": [
+        "WP01"
+      ],
+      "write_scope": [
+        "kitty-specs/verify-examples-01M36AAT/results/**",
+        "kitty-specs/verify-examples-01M36AAT/verify.sh"
+      ],
+      "predicted_surfaces": [
+        "planning"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "examples/01-monorepo-build/**",
+        "examples/03-multi-language-build/**",
+        "examples/04-incremental-testing/**",
+        "examples/05-ml-workflows/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [
+        "lane-planning"
+      ],
+      "parallel_group": 1
+    },
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP03"
+      ],
+      "write_scope": [
+        "examples/02-distributed-build/**",
+        "examples/06-local-dev-environment/**",
+        "examples/18-network-aware-builds/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "legacy-cleanup"
+      ],
+      "depends_on_lanes": [
+        "lane-planning"
+      ],
+      "parallel_group": 1
+    },
+    {
+      "lane_id": "lane-c",
+      "wp_ids": [
+        "WP04"
+      ],
+      "write_scope": [
+        "examples/07-watch-workflows/**",
+        "examples/08-multi-language-task-running/**",
+        "examples/19-cross-platform-builds/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [
+        "lane-planning"
+      ],
+      "parallel_group": 1
+    },
+    {
+      "lane_id": "lane-d",
+      "wp_ids": [
+        "WP05"
+      ],
+      "write_scope": [
+        "docs/verify-examples-report.md"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [
+        "lane-a",
+        "lane-b",
+        "lane-c"
+      ],
+      "parallel_group": 2
+    }
+  ],
+  "computed_at": "2026-09-23T05:11:43.788622+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": [
+    "WP01"
+  ],
+  "planning_commit_sha": "092e44e7fd1dc45f77f024505cf451aa165ed802"
+}

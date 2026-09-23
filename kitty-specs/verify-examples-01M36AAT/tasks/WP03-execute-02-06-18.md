@@ -1,10 +1,14 @@
 ---
 work_package_id: WP03
 title: Execute examples 02, 06, 18 (service-dependent)
-dependencies: []
+dependencies:
+- WP01
 requirement_refs:
 - FR-003
 - FR-005
+planning_base_branch: verify-examples
+merge_target_branch: verify-examples
+branch_strategy: Planning artifacts for this mission were generated on verify-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into verify-examples unless the human explicitly redirects the landing branch.
 subtasks:
 - T012
 - T013
@@ -18,15 +22,13 @@ history:
   action: Prompt generated via /spec-kitty.tasks
 agent_profile: implementer-ivan
 authoritative_surface: examples/
-create_intent:
-- kitty-specs/verify-examples-01M36AAT/results/wp03-results.json
+create_intent: []
 execution_mode: code_change
 model: ''
 owned_files:
 - examples/02-distributed-build/**
 - examples/06-local-dev-environment/**
 - examples/18-network-aware-builds/**
-- kitty-specs/verify-examples-01M36AAT/results/wp03-results.json
 role: implementer
 tags: []
 task_type: implement
