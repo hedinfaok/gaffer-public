@@ -4,6 +4,9 @@ title: Root README + index integration
 dependencies: []
 requirement_refs:
 - FR-006
+planning_base_branch: all-manifests-devstack
+merge_target_branch: all-manifests-devstack
+branch_strategy: Planning artifacts for this mission were generated on all-manifests-devstack. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into all-manifests-devstack unless the human explicitly redirects the landing branch.
 subtasks:
 - T007
 - T008

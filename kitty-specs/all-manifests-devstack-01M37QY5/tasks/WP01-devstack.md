@@ -8,6 +8,9 @@ requirement_refs:
 - FR-003
 - FR-004
 - FR-005
+planning_base_branch: all-manifests-devstack
+merge_target_branch: all-manifests-devstack
+branch_strategy: Planning artifacts for this mission were generated on all-manifests-devstack. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into all-manifests-devstack unless the human explicitly redirects the landing branch.
 subtasks:
 - T001
 - T002

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "mission_slug": "all-manifests-devstack-01M37QY5",
+  "mission_id": "01M37QY53HX161HDHQE8DP1C2D",
+  "mission_branch": "kitty/mission-all-manifests-devstack-01M37QY5",
+  "target_branch": "all-manifests-devstack",
+  "lanes": [
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP01"
+      ],
+      "write_scope": [
+        "examples/25-all-manifests-devstack/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "workspace"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "README.md",
+        "docs/example-index.md"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    }
+  ],
+  "computed_at": "2026-09-23T18:21:12.723447+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": [],
+  "planning_commit_sha": "44b7c161f8613bd254fcd5733e793026250b04af"
+}
