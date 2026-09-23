@@ -10,5 +10,7 @@
   "purpose_tldr": "Independently verify every gaffer-exec example builds, tests, and runs against the shipped CLI.",
   "slug": "verify-examples-01M36AAT",
   "target_branch": "verify-examples",
-  "topology": "single_branch"
+  "topology": "single_branch",
+  "vcs": "git",
+  "vcs_locked_at": "2026-09-23T05:16:29.238823+00:00"
 }
