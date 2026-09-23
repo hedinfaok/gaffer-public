@@ -110,3 +110,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T05:05:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:21:36Z – opencode – Executed examples 02/06/18 (Docker up). 06 pass (10/10) after a transient first-run DB-start failure; rerun green. 18 pass (test.sh exit 0) after fixing two defects: (a) docker-compose mounted /tmp/localstack with DATA_DIR, which modern LocalStack cannot clear -> switched to /var/lib/localstack; (b) start-regions.sh health check compared 'ok' but curl -sf emitted the JSON body ('{json}ok') so readiness never passed -> redirected curl output. 02 blocked (environment: azure-cli 'az' and gsutil missing) but a real LocalStack defect was fixed (same /tmp/localstack -> /var/lib/localstack change); AWS path now starts healthy.
