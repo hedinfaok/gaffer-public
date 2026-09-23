@@ -6,7 +6,7 @@ import {
   createErrorResponse,
   isValidEmail,
   generateId,
-} from '../../../shared-lib/dist/index';
+} from '../../shared-lib/dist/index';
 
 const app = express();
 const PORT = 4000;
