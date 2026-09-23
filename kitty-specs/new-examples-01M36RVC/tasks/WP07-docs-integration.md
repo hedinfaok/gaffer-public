@@ -7,6 +7,9 @@ requirement_refs:
 planning_base_branch: new-examples
 merge_target_branch: new-examples
 branch_strategy: Planning artifacts for this mission were generated on new-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into new-examples unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-new-examples-01M36RVC
+base_commit: 011ac2a2f7d6223aeb3ca099a660eff1b0f96456
+created_at: '2026-09-23T09:41:05.759175+00:00'
 subtasks:
 - T019
 - T020
@@ -78,3 +81,4 @@ Add the six new examples to the root README feature table and `docs/example-inde
 ## Activity Log
 
 - 2026-09-23T09:30:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T09:42:51Z – opencode – Built and verified.

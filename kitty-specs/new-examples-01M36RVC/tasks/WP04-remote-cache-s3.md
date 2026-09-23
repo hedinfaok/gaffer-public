@@ -84,3 +84,4 @@ Demonstrate a real remote cache round-trip using MinIO via `--cache-get-remote`/
 ## Activity Log
 
 - 2026-09-23T09:30:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T09:42:18Z – opencode – Built and verified.

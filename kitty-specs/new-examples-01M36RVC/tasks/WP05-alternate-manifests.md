@@ -84,3 +84,4 @@ Show gaffer-exec consuming non-Make manifests: a `Taskfile.yml` and a `justfile`
 ## Activity Log
 
 - 2026-09-23T09:30:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T09:42:30Z – opencode – Built and verified.
