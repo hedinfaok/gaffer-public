@@ -1,11 +1,11 @@
 // Tiny static file server for the web workspace.
-// Reads PORT (assigned by gaffer-exec --auto-port) and serves web/dist,
+// Reads WEB_PORT (assigned by gaffer-exec --auto-port --port-registry-template '{name}_PORT') and serves web/dist,
 // falling back to web/src when the build has not run yet.
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const port = Number(process.env.PORT || 3000);
+const port = Number(process.env.WEB_PORT || process.env.PORT || 3000);
 const root = fs.existsSync(path.join(__dirname, "dist"))
   ? path.join(__dirname, "dist")
   : path.join(__dirname, "src");

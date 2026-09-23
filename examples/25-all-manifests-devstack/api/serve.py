@@ -1,6 +1,6 @@
 """Minimal HTTP API for the all-manifests dev stack.
 
-Reads PORT (assigned by gaffer-exec --auto-port) and answers two routes:
+Reads API_PORT (assigned by gaffer-exec --auto-port) and answers two routes:
   GET /health  -> {"status": "ok"}
   GET /        -> {"service": "api", "port": <port>}
 """
@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 def payload_for(path):
     if path == "/health":
         return {"status": "ok"}
-    return {"service": "api", "port": int(os.environ.get("PORT", "3000"))}
+    return {"service": "api", "port": int(os.environ.get("API_PORT", os.environ.get("PORT", "3000")))}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -29,7 +29,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    port = int(os.environ.get("PORT", "3000"))
+    port = int(os.environ.get("API_PORT", os.environ.get("PORT", "3000")))
     server = HTTPServer(("127.0.0.1", port), Handler)
     print(f"api listening on http://localhost:{port}")
     server.serve_forever()

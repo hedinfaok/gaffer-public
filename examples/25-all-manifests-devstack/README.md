@@ -7,8 +7,8 @@ What this shows: a single local-dev web stack in which every gaffer-exec manifes
 - How gaffer-exec unifies ten manifest types into one task graph: Makefile, npm, Turborepo, Cargo, Python, Procfile, Taskfile, justfile, shell scripts, and Bazel.
 - How manifest namespaces become graph id prefixes: `make:`, `npm:`, `turbo:`, `cargo:`, `python:`, `procfile:`, `taskfile:`, `just:`, `script:`, `bazel:`.
 - How to filter discovery per manifest type with `list -t <type>`.
-- How a Procfile becomes a composite graph (`procfile:start`) whose children (`procfile:start:web`, `procfile:start:api`, `procfile:start:worker`) each see a `PORT` environment variable.
-- How `--auto-port` plus `--port-patterns` assigns a free port per process instead of hard-coding one.
+- How a Procfile becomes a composite graph (`procfile:start`) whose children (`procfile:start:web`, `procfile:start:api`, `procfile:start:worker`) each see a port environment variable (`WEB_PORT`, `API_PORT`, `WORKER_PORT`).
+- How `--auto-port` plus `--port-patterns` and `--port-registry-template '{name}_PORT'` assign a distinct free port per process instead of hard-coding one.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ The discovery and dry-run checks in `test.sh` need none of the language toolchai
 
 ```bash
 # Start the whole stack. Procfile processes get ports at or above 3000.
-gaffer-exec --workspace-root . run --auto-port 3000 --port-patterns 'procfile:*' procfile:start
+gaffer-exec --workspace-root . run --auto-port 3000 --port-patterns '*' --port-registry-template '{name}_PORT' procfile:start
 
 # Or through the Makefile orchestration (same command):
 gaffer-exec --workspace-root . run make:dev
@@ -56,7 +56,7 @@ gaffer-exec --workspace-root . list -t bazel
 | Manifest type | Filter (`list -t`) | Graph id | Role in the stack |
 |---------------|--------------------|----------|-------------------|
 | Makefile | `makefile` | `make:build-all`, `make:dev`, `make:test-all`, `make:clean`, `make:ports` | Orchestration: fans out to every other manifest graph and starts the stack |
-| Procfile | `procfile` | `procfile:start` | Runs `web`, `api`, and `worker` as long-running processes with `$PORT` |
+| Procfile | `procfile` | `procfile:start` | Runs `web`, `api`, and `worker` as long-running processes, each reading its own port var |
 | npm | `npm` | `npm:build`, `npm:test`, `npm:start`, `npm:install` | Root workspace scripts plus the `web` package |
 | Turborepo | `turborepo` | `turbo:build`, `turbo:test` | Pipeline that runs the workspace `build`/`test` tasks |
 | Cargo | `cargo` | `cargo:build`, `cargo:test` | Builds and tests the Rust `worker` |
@@ -78,7 +78,7 @@ api: python3 api/serve.py
 worker: cargo run --quiet --manifest-path worker/Cargo.toml
 ```
 
-gaffer-exec discovers them as the composite `procfile:start` with children `procfile:start:web`, `procfile:start:api`, and `procfile:start:worker`. When you pass `--auto-port 3000 --port-patterns 'procfile:*'`, gaffer-exec walks the matching graphs, checks that each candidate port is free, and injects a distinct `PORT` into each child's environment starting at the base port. The processes read `PORT` themselves; nothing in the Procfile hard-codes a port. Because the three processes are declared in order, they receive consecutive free ports (3000, 3001, 3002 when all are free), and if a port is already taken gaffer-exec moves to the next one.
+gaffer-exec discovers them as the composite `procfile:start` with children `procfile:start:web`, `procfile:start:api`, and `procfile:start:worker`. When you pass `--auto-port 3000 --port-patterns '*' --port-registry-template '{name}_PORT'`, gaffer-exec walks the matching graphs, checks that each candidate port is free, and injects a distinct per-process variable (`WEB_PORT`, `API_PORT`, `WORKER_PORT`) starting at the base port. The processes read their own variable; nothing in the Procfile hard-codes a port. (The default registry template keys on the working directory, which collides for sibling Procfile processes, hence the `{name}_PORT` template.) Because the three processes are declared in order, they receive consecutive free ports (3000, 3001, 3002 when all are free), and if a port is already taken gaffer-exec moves to the next one.
 
 ## Expected output
 

@@ -46,7 +46,7 @@ build-db:
 # Start the stack. Procfile processes receive PORT automatically from the
 # free ports found at or above 3000 for graphs matching 'procfile:*'.
 dev:
-	gaffer-exec --workspace-root . run --auto-port 3000 --port-patterns 'procfile:*' procfile:start
+	gaffer-exec --workspace-root . run --auto-port 3000 --port-patterns '*' --port-registry-template '{name}_PORT' procfile:start
 
 test-all: test-npm test-cargo test-python test-taskfile test-just
 	@echo "test-all: every manifest test graph completed"
