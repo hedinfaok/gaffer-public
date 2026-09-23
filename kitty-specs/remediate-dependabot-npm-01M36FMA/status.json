@@ -61,7 +61,8 @@
       "last_transition_at": "2026-09-23T06:46:23.022814+00:00",
       "model": "__resolved_model_absent__",
       "notes": [
-        "Reviewed: 08 26->4, 04 11->1; builds/tests verified; residuals documented."
+        "Reviewed: 08 26->4, 04 11->1; builds/tests verified; residuals documented.",
+        "Done override: Lane merge deferred to mission merge"
       ],
       "provider": "__resolved_provider_absent__",
       "review_result": {
