@@ -56,7 +56,7 @@ echo ""
 # Test 2: Verify essential files exist
 echo "Test 2: Essential Files"
 echo "-----------------------"
-assert_file_exists "graph.json"
+assert_file_exists "Makefile"
 assert_file_exists "shared-lib/package.json"
 assert_file_exists "shared-lib/tsconfig.json"
 assert_file_exists "api-service/package.json"
@@ -87,56 +87,51 @@ for script in watch-shared-lib.sh watch-api.sh watch-frontend.sh watch-all.sh; d
 done
 echo ""
 
-# Test 4: Verify graph.json structure
+# Test 4: Verify Makefile task targets
 echo "Test 4: Task Graph Structure"
 echo "-----------------------------"
-if command -v jq &> /dev/null; then
-    # Check for version field
-    if jq -e '.version' graph.json > /dev/null 2>&1; then
-        echo "  ✅ Version field present"
-        ((TESTS_PASSED++))
-    else
-        echo "  ❌ Version field missing"
-        ((TESTS_FAILED++))
-    fi
-    
-    # Check for required tasks
+if [ -f Makefile ]; then
+    echo "  ✅ Makefile exists"
+    ((TESTS_PASSED++))
+
+    # Check for required targets
     for task in clean build-shared-lib build-api build-frontend rebuild-shared-lib rebuild-api rebuild-frontend; do
-        if jq -e ".graphs.\"$task\"" graph.json > /dev/null 2>&1; then
-            echo "  ✅ Task defined: $task"
+        if grep -qE "^$task:" Makefile; then
+            echo "  ✅ Target defined: $task"
             ((TESTS_PASSED++))
         else
-            echo "  ❌ Task missing: $task"
+            echo "  ❌ Target missing: $task"
             ((TESTS_FAILED++))
         fi
     done
 else
-    echo "  ⚠️  jq not installed, skipping graph.json validation"
+    echo "  ❌ Makefile missing"
+    ((TESTS_FAILED++))
 fi
 echo ""
 
-# Test 5: Validate gaffer-exec graph schema
+# Test 5: Validate gaffer-exec Makefile discovery
 echo "Test 5: Gaffer-exec Schema Validation"
 echo "--------------------------------------"
 if command -v gaffer-exec &> /dev/null; then
     echo "  ✅ gaffer-exec is installed"
     ((TESTS_PASSED++))
     
-    # Test that gaffer-exec can parse the graph
-    if gaffer-exec --workspace-root . --graph-override graph.json list > /dev/null 2>&1; then
-        echo "  ✅ Graph schema is valid (gaffer-exec list)"
+    # Test that gaffer-exec discovers the Makefile graph
+    if gaffer-exec --workspace-root . list -t makefile > /dev/null 2>&1; then
+        echo "  ✅ Makefile graph is valid (gaffer-exec list -t makefile)"
         ((TESTS_PASSED++))
     else
-        echo "  ❌ Graph schema validation failed"
+        echo "  ❌ Makefile graph validation failed"
         ((TESTS_FAILED++))
     fi
     
-    # Test that clean task can be executed
-    if gaffer-exec --workspace-root . --graph-override graph.json run clean > /dev/null 2>&1; then
-        echo "  ✅ Clean task executes successfully"
+    # Test that clean target can be executed
+    if gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1; then
+        echo "  ✅ Clean target executes successfully"
         ((TESTS_PASSED++))
     else
-        echo "  ❌ Clean task execution failed"
+        echo "  ❌ Clean target execution failed"
         ((TESTS_FAILED++))
     fi
 else

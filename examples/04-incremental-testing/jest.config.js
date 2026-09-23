@@ -8,7 +8,7 @@ module.exports = {
   ],
   
   // Coverage configuration
-  collectCoverage: false, // Enabled per-command in graph.json
+  collectCoverage: false, // Enabled per-target in Makefile
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   collectCoverageFrom: [

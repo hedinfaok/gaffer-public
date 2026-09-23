@@ -8,7 +8,7 @@ All requirements from gaffer-public-c40 have been successfully implemented.
 
 ### What Existed Before:
 - ✅ Basic test structure (unit, integration, e2e)
-- ✅ Test dependency ordering in graph.json
+- ✅ Test dependency ordering in the Makefile
 - ✅ Jest configuration with coverage
 - ✅ Real test implementations (5 test files)
 - ✅ HTML test reports
@@ -24,7 +24,7 @@ All requirements from gaffer-public-c40 have been successfully implemented.
 
 ## 🔧 What Was Implemented
 
-### 1. Enhanced graph.json
+### 1. Enhanced Makefile task graph
 **Added:**
 - ✅ Retry configuration for 7 tasks with exponential backoff
 - ✅ Input hashes for 10 tasks (merkle tree caching)
@@ -145,7 +145,7 @@ All requirements from gaffer-public-c40 have been successfully implemented.
 - ✅ Parallel execution testing
 - ✅ Dependency ordering verification
 - ✅ Metrics aggregation testing
-- ✅ Graph.json feature verification
+- ✅ Makefile feature verification
 - ✅ Performance metrics display
 
 ### 8. Demo Script (demo.sh)
@@ -193,20 +193,20 @@ cd examples/04-incremental-testing
 ### Individual Features:
 ```bash
 # Run all tests with intelligent orchestration
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
 
 # Demonstrate flaky test retry
 rm -f .flaky-test-results.json
-gaffer-exec run unit-tests-flaky --graph graph.json
+gaffer-exec --workspace-root . run make:unit-tests-flaky
 
 # Performance benchmark
-gaffer-exec run performance-benchmark --graph graph.json
+gaffer-exec --workspace-root . run make:performance-benchmark
 
 # Signal handling demo
-gaffer-exec run test-signal-handling --graph graph.json
+gaffer-exec --workspace-root . run make:test-signal-handling
 
 # Full CI pipeline
-gaffer-exec run test-ci --graph graph.json
+gaffer-exec --workspace-root . run make:test-ci
 ```
 
 ## ✅ Acceptance Criteria Verification
@@ -263,7 +263,7 @@ gaffer-exec run test-ci --graph graph.json
 - `COMPLETION.md` (this file)
 
 ### Modified:
-- `graph.json` - Added retry, inputs, parallelism configs
+- `Makefile` - Added retry, inputs, parallelism configs
 - `README.md` - Complete rewrite with all features
 - `test.sh` - Enhanced from 7 to 11 comprehensive tests
 

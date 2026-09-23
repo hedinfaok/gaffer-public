@@ -35,7 +35,7 @@ measure_time() {
 
 # Clean everything first
 echo "Cleaning workspace..."
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 rm -rf node-frontend/node_modules 2>/dev/null || true
 
 echo ""
@@ -60,12 +60,12 @@ echo -e "${YELLOW}Time:${NC} ${TRADITIONAL_TIMES[install]}ms"
 echo ""
 
 # Clean for fair comparison
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 
 # Gaffer approach (parallel)
 echo -e "${BLUE}[Gaffer]${NC} Installing dependencies (parallel)..."
 GAFFER_INSTALL_START=$(date +%s%N)
-gaffer-exec run install-all --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:install-all > /dev/null 2>&1 || true
 GAFFER_INSTALL_END=$(date +%s%N)
 GAFFER_TIMES[install]=$(( ($GAFFER_INSTALL_END - $GAFFER_INSTALL_START) / 1000000 ))
 echo -e "${YELLOW}Time:${NC} ${GAFFER_TIMES[install]}ms"
@@ -96,12 +96,12 @@ echo -e "${YELLOW}Time:${NC} ${TRADITIONAL_TIMES[build]}ms"
 echo ""
 
 # Clean for fair comparison
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 
 # Gaffer approach
 echo -e "${BLUE}[Gaffer]${NC} Building (parallel + smart deps)..."
 GAFFER_BUILD_START=$(date +%s%N)
-gaffer-exec run build-all --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:build-all > /dev/null 2>&1
 GAFFER_BUILD_END=$(date +%s%N)
 GAFFER_TIMES[build]=$(( ($GAFFER_BUILD_END - $GAFFER_BUILD_START) / 1000000 ))
 echo -e "${YELLOW}Time:${NC} ${GAFFER_TIMES[build]}ms"
@@ -136,7 +136,7 @@ echo ""
 # Gaffer approach
 echo -e "${BLUE}[Gaffer]${NC} Running tests (parallel)..."
 GAFFER_TEST_START=$(date +%s%N)
-gaffer-exec run test-all --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:test-all > /dev/null 2>&1
 GAFFER_TEST_END=$(date +%s%N)
 GAFFER_TIMES[test]=$(( ($GAFFER_TEST_END - $GAFFER_TEST_START) / 1000000 ))
 echo -e "${YELLOW}Time:${NC} ${GAFFER_TIMES[test]}ms"
@@ -171,7 +171,7 @@ echo ""
 # Gaffer (with caching)
 echo -e "${BLUE}[Gaffer]${NC} Re-running build (with caching)..."
 GAFFER_CACHE_START=$(date +%s%N)
-gaffer-exec run build-all --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:build-all > /dev/null 2>&1
 GAFFER_CACHE_END=$(date +%s%N)
 GAFFER_TIMES[cache]=$(( ($GAFFER_CACHE_END - $GAFFER_CACHE_START) / 1000000 ))
 echo -e "${YELLOW}Time:${NC} ${GAFFER_TIMES[cache]}ms (cached)"

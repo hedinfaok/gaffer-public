@@ -21,16 +21,16 @@ echo "📦 FEATURE 1: Merkle Tree Caching (Cache-Based Test Optimization)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Clean previous runs to demonstrate cold vs warm execution..."
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1
 npm install > /dev/null 2>&1
 
 echo "▶️  Cold run (no cache)..."
 TIMEFORMAT='%R seconds'
-time { gaffer-exec run test-all --graph graph.json > /dev/null 2>&1; }
+time { gaffer-exec --workspace-root . run make:test-all > /dev/null 2>&1; }
 echo ""
 
 echo "▶️  Warm run (with cache - no changes)..."
-time { gaffer-exec run test-all --graph graph.json > /dev/null 2>&1; }
+time { gaffer-exec --workspace-root . run make:test-all > /dev/null 2>&1; }
 echo ""
 echo "✅ Cache optimization demonstrated!"
 echo "   → Unchanged tests are skipped via merkle tree hashing"
@@ -49,7 +49,7 @@ echo ""
 rm -f .flaky-test-results.json
 
 echo "Attempt 1 (Expected to FAIL):"
-gaffer-exec run unit-tests-flaky --graph graph.json 2>&1 | grep -A 5 "Exponential Backoff" || echo "Failed as expected"
+gaffer-exec --workspace-root . run make:unit-tests-flaky 2>&1 | grep -A 5 "Exponential Backoff" || echo "Failed as expected"
 echo ""
 
 echo "gaffer-exec will automatically retry with exponential backoff:"
@@ -67,7 +67,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "⚡ FEATURE 3: Resource-Aware Parallel Test Execution"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "Parallel configuration from graph.json:"
+echo "Parallel configuration from the Makefile:"
 echo ""
 echo "  unit-tests-lib:  4 workers, 512MB/worker = 2GB total"
 echo "  unit-tests-api:  4 workers, 512MB/worker = 2GB total"
@@ -76,7 +76,9 @@ echo "  integration:     2 workers, 1024MB/worker = 2GB total"
 echo "  e2e:             1 worker,  2048MB/worker = 2GB total"
 echo ""
 echo "Running unit tests in parallel..."
-gaffer-exec run unit-tests-lib unit-tests-api unit-tests-ui --graph graph.json 2>&1 | grep "Running" || echo "Tests executed"
+for suite in unit-tests-lib unit-tests-api unit-tests-ui; do
+    gaffer-exec --workspace-root . run make:$suite 2>&1 | grep "Running" || echo "Tests executed"
+done
 echo ""
 echo "✅ Parallel execution demonstrated!"
 echo "   → Unit tests run concurrently (independent)"
@@ -97,7 +99,7 @@ echo "  3. e2e-tests                 - wait for integration tests"
 echo "  4. test-all                  - aggregates all results"
 echo ""
 echo "Running integration tests (will wait for unit tests)..."
-gaffer-exec run integration-tests --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:integration-tests > /dev/null 2>&1
 echo "✅ Integration tests completed (after unit tests)"
 echo ""
 echo "✅ Dependency ordering demonstrated!"
@@ -125,7 +127,7 @@ echo "  5. Release all resources"
 echo ""
 echo "✅ Signal handling demonstrated!"
 echo "   → See scripts/test-signal-handling.js for full demo"
-echo "   → Run: gaffer-exec run test-signal-handling --graph graph.json"
+echo "   → Run: gaffer-exec --workspace-root . run make:test-signal-handling"
 echo "   → Then press Ctrl+C to trigger graceful shutdown"
 echo ""
 
@@ -189,9 +191,9 @@ echo "   • coverage/                  - Test coverage reports"
 echo "   • performance-metrics.json   - Benchmark results"
 echo ""
 echo "🚀 Next steps:"
-echo "   • Run full CI pipeline: gaffer-exec run test-ci --graph graph.json"
-echo "   • Watch mode for dev: gaffer-exec run test-watch --graph graph.json"
-echo "   • Debug tests: gaffer-exec run test-debug --graph graph.json"
+echo "   • Run full CI pipeline: gaffer-exec --workspace-root . run make:test-ci"
+echo "   • Watch mode for dev: gaffer-exec --workspace-root . run make:test-watch"
+echo "   • Debug tests: gaffer-exec --workspace-root . run make:test-debug"
 echo ""
 echo "📖 Documentation: See README.md for detailed usage"
 echo ""

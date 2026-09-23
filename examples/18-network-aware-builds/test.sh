@@ -47,6 +47,22 @@ else
     USE_GAFFER=true
 fi
 
+# Verify the Makefile task graph exists and is discoverable
+if [ ! -f Makefile ]; then
+    echo "❌ Makefile not found"
+    exit 1
+fi
+echo "   ✅ Makefile: Found"
+
+if [ "$USE_GAFFER" = true ]; then
+    if gaffer-exec --workspace-root . list -t makefile >/dev/null 2>&1; then
+        echo "   ✅ gaffer-exec Makefile targets: Discovered"
+    else
+        echo "❌ gaffer-exec failed to discover Makefile targets"
+        exit 1
+    fi
+fi
+
 echo ""
 
 # Cleanup function

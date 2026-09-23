@@ -54,7 +54,7 @@ The code is **real, executable TypeScript** - not mock/toy examples. Each packag
 │       │   ├── index.ts
 │       │   ├── components.ts
 │       │   └── state.ts
-├── graph.json               # gaffer-exec build graph
+├── Makefile                 # gaffer-exec build graph
 ├── package.json             # npm workspaces configuration
 ├── tsconfig.json            # TypeScript project references
 ├── demo-parallel.sh         # Demo: Parallel vs Sequential
@@ -104,7 +104,7 @@ npm install
 
 ```bash
 # Build all packages with visual output
-gaffer-exec --graph graph.json --workspace-root . run build-all
+gaffer-exec --workspace-root . run make:build-all
 ```
 
 **Example Output:**
@@ -133,7 +133,7 @@ Note how **auth-service** and **user-service** output appears together - they bu
 
 ```bash
 # Run the web app (builds first if needed)
-gaffer-exec --graph graph.json --workspace-root . run start
+gaffer-exec --workspace-root . run make:start
 ```
 
 ## Interactive Demos
@@ -241,37 +241,37 @@ gaffer-exec (parallel, cached)                45      6.22x
 
 ```bash
 # One command to build all packages
-gaffer-exec --graph graph.json --workspace-root . run build-all
+gaffer-exec --workspace-root . run make:build-all
 ```
 
 ### Build Individual Packages
 
 ```bash
 # Build just shared-lib
-gaffer-exec --graph graph.json --workspace-root . run shared-lib
+gaffer-exec --workspace-root . run make:shared-lib
 
 # Build auth-service (builds shared-lib first if needed)
-gaffer-exec --graph graph.json --workspace-root . run auth-service
+gaffer-exec --workspace-root . run make:auth-service
 
 # Build up to api-gateway (builds all dependencies)
-gaffer-exec --graph graph.json --workspace-root . run api-gateway
+gaffer-exec --workspace-root . run make:api-gateway
 ```
 
 ### Visualize the Build Graph
 
 ```bash
 # See the dependency graph
-gaffer-exec --graph graph.json --workspace-root . graph build-all --format dot
+gaffer-exec --workspace-root . show make:build-all --format dot
 
 # Export as JSON for programmatic use
-gaffer-exec --graph graph.json --workspace-root . graph build-all --format json
+gaffer-exec --workspace-root . show make:build-all --format json
 ```
 
 ### Clean Build Artifacts
 
 ```bash
 # Clean all dist/ directories
-gaffer-exec --graph graph.json --workspace-root . run clean
+gaffer-exec --workspace-root . run make:clean
 
 # Or using npm
 npm run clean
@@ -384,7 +384,7 @@ Based on running all demos on a modern development machine:
 
 ### vs. Rush
 - ✅ Similar: Both handle large monorepos well
-- ✅ gaffer-exec: Simpler configuration (graph.json)
+- ✅ gaffer-exec: Simpler configuration (Makefile)
 - ✅ gaffer-exec: Better for mixed-language projects
 
 ## When to Use gaffer-exec
@@ -404,7 +404,7 @@ Based on running all demos on a modern development machine:
 ## Next Steps
 
 1. **Run the demos** - See the performance benefits firsthand
-2. **Examine graph.json** - Understand the task definitions
+2. **Examine the Makefile** - Understand the task definitions
 3. **Look at the code** - See how packages import each other
 4. **Try modifying** - Change a file and run incremental build
 5. **Check other examples** - See multi-language builds, distributed builds, etc.
@@ -443,7 +443,7 @@ This is substantial enough to demonstrate real build time and meaningful paralle
 
 ## Learn More
 
-- **Graph Definition:** See [graph.json](graph.json) for task definitions
+- **Task Definitions:** See [Makefile](Makefile) for the build targets
 - **TypeScript Config:** See [tsconfig.json](tsconfig.json) and package tsconfig files
 - **Package Config:** See [package.json](package.json) for workspace setup
 - **Other Examples:** Check sibling directories for more advanced use cases
@@ -455,20 +455,20 @@ This is substantial enough to demonstrate real build time and meaningful paralle
 - **Visualization**: See the entire build graph
 
 ### vs. Turborepo/Nx
-- **Simpler**: No need for complex configuration
+- **Simpler**: No need for complex framework configuration
 - **Tool-agnostic**: Works with any build tool (npm, tsc, cargo, make, etc.)
-- **Explicit**: Dependency graph is clearly defined in JSON
+- **Explicit**: Dependency graph is clearly defined in the Makefile
 
-### vs. Makefile
-- **Better caching**: Content-based (not timestamp-based)
-- **Cross-platform**: Works on Windows/macOS/Linux without GNU Make
-- **Modern syntax**: JSON instead of Makefile syntax
+### vs. plain Make
+- **Better caching**: Content-based (not timestamp-based), and cached outputs are restored
+- **Dependency-aware scheduling**: gaffer-exec plans the whole graph and runs independent targets in parallel
+- **Same manifest**: gaffer-exec reads a standard Makefile, so there is no new syntax to learn
 
 ## Files and What They Do
 
 - **package.json** - Root workspace configuration, defines npm workspaces
 - **tsconfig.json** - Root TypeScript config with project references
-- **graph.json** - gaffer-exec build orchestration graph
+- **Makefile** - gaffer-exec build orchestration targets
 - **packages/*/package.json** - Individual package manifests
 - **packages/*/tsconfig.json** - TypeScript configuration per package
 - **packages/*/src/index.ts** - Source code with real TypeScript
@@ -485,5 +485,4 @@ This example shows how gaffer-exec can replace complex build orchestration tools
 
 - Try modifying source files and rebuilding (see incremental behavior)
 - Add caching with `--cache sha256` for even faster rebuilds
-- Export to different formats: `gaffer-exec export build-all --format makefile`
-- Integrate with CI: `gaffer-exec export build-all --format github-actions`
+- Export the task graph to CI: `gaffer-exec --workspace-root . export make:build-all --format github-actions`

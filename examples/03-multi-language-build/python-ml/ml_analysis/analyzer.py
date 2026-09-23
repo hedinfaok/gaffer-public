@@ -84,7 +84,7 @@ def fetch_and_analyze_metrics() -> Dict[str, Any]:
             'success': False,
             'error': 'Backend connection failed',
             'message': 'Rust backend may not be running',
-            'suggestion': 'Start backend with: gaffer-exec run rust-backend',
+            'suggestion': 'Start backend with: gaffer-exec --workspace-root . run make:rust-backend',
         }
     except Exception as e:
         return {

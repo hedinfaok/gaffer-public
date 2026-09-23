@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Platform detection script for cross-platform builds
+# Platform detection script for cross-platform builds.
+# Invoked by the Makefile `detect-platform` target:
+#   gaffer-exec --workspace-root . run make:detect-platform   /   make detect-platform
 
 set -e
 

@@ -9,7 +9,7 @@ echo ""
 # Test 1: Clean build
 echo "Test 1: Full clean build..."
 rm -rf packages/*/dist
-output=$(gaffer-exec --graph graph.json --workspace-root . run build-all 2>&1)
+output=$(gaffer-exec --workspace-root . run make:build-all 2>&1)
 if echo "$output" | grep -q "All packages built successfully"; then
     echo "✓ Build completed successfully"
 else
@@ -38,14 +38,14 @@ done
 # Test 3: Cached build should be fast
 echo "Test 3: Testing cache (rebuild without changes)..."
 start=$(date +%s)
-gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all >/dev/null 2>&1
+gaffer-exec --workspace-root . run --cache sha256 make:build-all >/dev/null 2>&1
 end=$(date +%s)
 cached_time=$((end - start))
 echo "✓ Cached build completed in ${cached_time}s"
 
 # Test 4: Graph visualization works
 echo "Test 4: Graph visualization..."
-graph_output=$(gaffer-exec --graph graph.json --workspace-root . graph build-all --format dot 2>&1)
+graph_output=$(gaffer-exec --workspace-root . show make:build-all --format dot 2>&1)
 if echo "$graph_output" | grep -q "digraph\|web-app\|build"; then
     echo "✓ Graph visualization works"
 else

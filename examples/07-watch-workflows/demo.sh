@@ -36,10 +36,6 @@ if ! command -v gaffer-exec &> /dev/null; then
 fi
 echo "✅ gaffer-exec: installed"
 
-if ! command -v jq &> /dev/null; then
-    echo "⚠️  jq not installed (optional, but recommended)"
-fi
-
 echo ""
 
 # Show the project structure
@@ -80,32 +76,26 @@ echo "│    --latency 0.5 \\        # Debounce 500ms        │"
 echo "│    --include '\\.ts\$' \\    # Watch TypeScript      │"
 echo "│    shared-lib/src/ |                               │"
 echo "│  while read -r file; do                            │"
-echo "│    gaffer-exec run rebuild-shared-lib              │"
+echo "│    gaffer-exec --workspace-root . \\                │"
+echo "│      run make:rebuild-shared-lib                    │"
 echo "│  done                                               │"
 echo "└─────────────────────────────────────────────────────┘"
 echo ""
 
 # Show dependency cascade
-echo "Step 5: Dependency Cascade in graph.json"
-echo "-----------------------------------------"
+echo "Step 5: Dependency Cascade in the Makefile"
+echo "-------------------------------------------"
 echo ""
-echo "The magic happens in graph.json:"
+echo "The magic happens in the Makefile targets:"
 echo ""
-if command -v jq &> /dev/null; then
-    echo "rebuild-shared-lib:"
-    jq '.tasks["rebuild-shared-lib"]' graph.json
-    echo ""
-    echo "rebuild-api (depends on shared-lib):"
-    jq '.tasks["rebuild-api"]' graph.json
-    echo ""
-    echo "rebuild-frontend (depends on shared-lib):"
-    jq '.tasks["rebuild-frontend"]' graph.json
-else
-    grep -A 3 '"rebuild-shared-lib"' graph.json | head -4
-    echo "  ..."
-    grep -A 3 '"rebuild-api"' graph.json | head -4
-    echo "  ..."
-fi
+echo "rebuild-shared-lib:"
+grep -A 1 '^rebuild-shared-lib:' Makefile
+echo ""
+echo "rebuild-api (depends on shared-lib):"
+grep -A 1 '^rebuild-api:' Makefile
+echo ""
+echo "rebuild-frontend (depends on shared-lib):"
+grep -A 1 '^rebuild-frontend:' Makefile
 echo ""
 
 # Show how to use it

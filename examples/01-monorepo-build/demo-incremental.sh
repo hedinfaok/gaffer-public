@@ -19,7 +19,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 INITIAL_START=$(date +%s%3N)
-gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all
+gaffer-exec --workspace-root . run --cache sha256 make:build-all
 INITIAL_END=$(date +%s%3N)
 INITIAL_TOTAL=$((INITIAL_END - INITIAL_START))
 
@@ -65,7 +65,7 @@ INCREMENTAL_START=$(date +%s%3N)
 # - api-gateway depends on auth-service -> rebuild
 # - web-app depends on api-gateway -> rebuild
 
-gaffer-exec --graph graph.json --workspace-root . run --cache sha256 build-all
+gaffer-exec --workspace-root . run --cache sha256 make:build-all
 
 INCREMENTAL_END=$(date +%s%3N)
 INCREMENTAL_TOTAL=$((INCREMENTAL_END - INCREMENTAL_START))

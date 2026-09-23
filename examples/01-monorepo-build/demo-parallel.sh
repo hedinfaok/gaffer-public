@@ -70,7 +70,7 @@ echo ""
 
 PARALLEL_START=$(date +%s%3N)
 
-gaffer-exec --graph graph.json --workspace-root . run build-all
+gaffer-exec --workspace-root . run make:build-all
 
 PARALLEL_END=$(date +%s%3N)
 PARALLEL_TOTAL=$((PARALLEL_END - PARALLEL_START))

@@ -55,28 +55,22 @@ fswatch \
   --include '\.ts$' \       # Include .ts files
   --exclude 'node_modules' \ # Exclude dependencies
   shared-lib/src/ | while read -r file; do
-    gaffer-exec run rebuild-shared-lib
+    gaffer-exec --workspace-root . run make:rebuild-shared-lib
 done
 ```
 
 ### 2. Task Orchestration (`gaffer-exec`)
 
-The `graph.json` defines rebuild tasks with dependencies:
-```json
-{
-  "rebuild-shared-lib": {
-    "command": "cd shared-lib && npm run build",
-    "deps": []
-  },
-  "rebuild-api": {
-    "command": "cd api-service && npm run build",
-    "deps": ["rebuild-shared-lib"]  // ← Depends on shared-lib
-  },
-  "rebuild-frontend": {
-    "command": "cd frontend && npm run build",
-    "deps": ["rebuild-shared-lib"]  // ← Depends on shared-lib
-  }
-}
+The `Makefile` defines rebuild targets with dependencies:
+```make
+rebuild-shared-lib:
+	cd shared-lib && npm run build
+
+rebuild-api: rebuild-shared-lib
+	cd api-service && npm run build
+
+rebuild-frontend: rebuild-shared-lib
+	cd frontend && npm run build
 ```
 
 When `rebuild-api` is triggered:
@@ -100,7 +94,7 @@ The `watch-all.sh` script manages multiple watchers and cleans up on exit.
 
 Install dependencies and build all services:
 ```bash
-gaffer-exec --graph graph.json run build-all
+gaffer-exec --workspace-root . run make:build-all
 ```
 
 ### Development Workflow
@@ -138,8 +132,8 @@ cd frontend && npx serve -s build -p 3000
 
 Or use gaffer to start them:
 ```bash
-gaffer-exec --graph graph.json run start-api &
-gaffer-exec --graph graph.json run start-frontend &
+gaffer-exec --workspace-root . run make:start-api &
+gaffer-exec --workspace-root . run make:start-frontend &
 ```
 
 ### Making Changes
@@ -212,7 +206,7 @@ Each watcher excludes irrelevant files:
 ```
 
 ### 3. Dependency Cascade
-Thanks to `graph.json` dependencies:
+Thanks to `Makefile` target dependencies:
 - Changing `shared-lib` automatically rebuilds dependents
 - Changing a service only rebuilds that service
 - No manual intervention required
@@ -253,13 +247,13 @@ watchman-make -p 'shared-lib/src/**/*.ts' -t rebuild-shared-lib
 **inotify-tools (Linux only):**
 ```bash
 inotifywait -m -r shared-lib/src/ | while read -r file; do
-    gaffer-exec run rebuild-shared-lib
+    gaffer-exec --workspace-root . run make:rebuild-shared-lib
 done
 ```
 
 **chokidar-cli (Node.js):**
 ```bash
-chokidar 'shared-lib/src/**/*.ts' -c 'gaffer-exec run rebuild-shared-lib'
+chokidar 'shared-lib/src/**/*.ts' -c 'gaffer-exec --workspace-root . run make:rebuild-shared-lib'
 ```
 
 The pattern is the same: file watcher → filter events → trigger `gaffer-exec`.
@@ -280,7 +274,7 @@ This verifies:
 
 Remove build artifacts:
 ```bash
-gaffer-exec --graph graph.json run clean
+gaffer-exec --workspace-root . run make:clean
 ```
 
 ## Learn More

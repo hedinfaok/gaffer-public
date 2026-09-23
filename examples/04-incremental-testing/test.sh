@@ -56,7 +56,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 3: Running incremental test suite with caching..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 cold_start=$(get_timestamp_ms)
-output=$(gaffer-exec run test-all --graph graph.json 2>&1)
+output=$(gaffer-exec --workspace-root . run make:test-all 2>&1)
 cold_end=$(get_timestamp_ms)
 cold_time=$((cold_end - cold_start))
 
@@ -74,7 +74,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 4: Testing cache optimization (warm run - no changes)..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 warm_start=$(get_timestamp_ms)
-warm_output=$(gaffer-exec run test-all --graph graph.json 2>&1)
+warm_output=$(gaffer-exec --workspace-root . run make:test-all 2>&1)
 warm_end=$(get_timestamp_ms)
 warm_time=$((warm_end - warm_start))
 
@@ -94,7 +94,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 # Modify a source file to invalidate cache
 echo "// Cache test" >> src/lib/math.js
 invalidate_start=$(get_timestamp_ms)
-gaffer-exec run test-all --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:test-all > /dev/null 2>&1
 invalidate_end=$(get_timestamp_ms)
 invalidate_time=$((invalidate_end - invalidate_start))
 # Restore original file
@@ -112,7 +112,7 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Test 5: Demonstrating flaky test retry with exponential backoff..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-gaffer-exec run unit-tests-flaky --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:unit-tests-flaky > /dev/null 2>&1 || true
 if [ -f ".flaky-test-results.json" ]; then
     attempts=$(grep -o '"attemptNumber":[0-9]*' .flaky-test-results.json | grep -o '[0-9]*' || echo "0")
     attempts=$((attempts + 1))
@@ -128,7 +128,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 6: Testing resource-aware parallel execution..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 for suite in "unit-tests-lib" "unit-tests-api" "unit-tests-ui"; do
-    suite_output=$(gaffer-exec run $suite --graph graph.json 2>&1)
+    suite_output=$(gaffer-exec --workspace-root . run make:$suite 2>&1)
     if echo "$suite_output" | grep -q "$suite"; then
         echo "✅ $suite executed (parallel: 4 workers, 512MB limit)"
     else
@@ -141,7 +141,7 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Test 7: Testing dependency-aware test ordering..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-integration_output=$(gaffer-exec run integration-tests --graph graph.json 2>&1)
+integration_output=$(gaffer-exec --workspace-root . run make:integration-tests 2>&1)
 if echo "$integration_output" | grep -q "integration"; then
     echo "✅ Integration tests run after unit tests (dependency ordering)"
     echo "   Retry config: 4 attempts, exponential backoff"
@@ -211,16 +211,33 @@ else
 fi
 echo ""
 
-# Test 11: Verify graph.json structure and CLI features
+# Test 11: Verify Makefile structure and CLI features
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Test 11: Verifying graph.json structure and gaffer-exec features..."
+echo "Test 11: Verifying Makefile task graph and gaffer-exec features..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-task_count=$(grep -c '"command"' graph.json 2>/dev/null || echo "0")
-dep_count=$(grep -c '"deps"' graph.json 2>/dev/null || echo "0")
+if [ ! -f "Makefile" ]; then
+    echo "❌ Makefile not found"
+    exit 1
+fi
 
-echo "✅ Test tasks defined: $task_count tasks"
+if ! grep -qE '^test-all:' Makefile; then
+    echo "❌ Missing test-all target in Makefile"
+    exit 1
+fi
+
+task_count=$(grep -cE '^[A-Za-z0-9_-]+:' Makefile 2>/dev/null || echo "0")
+dep_count=$(grep -cE '^[A-Za-z0-9_-]+: .+' Makefile 2>/dev/null || echo "0")
+
+if gaffer-exec --workspace-root . list -t makefile > /dev/null 2>&1; then
+    echo "✅ Makefile targets loadable by gaffer-exec"
+else
+    echo "❌ gaffer-exec could not load Makefile targets"
+    exit 1
+fi
+
+echo "✅ Test tasks defined: $task_count targets"
 echo "✅ Dependency relationships: $dep_count configured"
-echo "✅ Orchestration graph validated"
+echo "✅ Orchestration task graph validated"
 echo ""
 echo "Advanced features available via CLI flags:"
 echo "  • Retry: --retry N (intelligent retry handling)"
@@ -238,7 +255,7 @@ echo "✅ VERIFIED FEATURES:"
 echo "   • Retry Logic (--retry flag): Intelligent handling of flaky tests"
 echo "   • Merkle Caching (--cache merkle): ${speedup}x speedup on warm runs"
 echo "   • Auto Parallelism (-j auto): Concurrent independent test suites"
-echo "   • Dependency-Aware Test Ordering: Unit → Integration → E2E (graph.json)"
+echo "   • Dependency-Aware Test Ordering: Unit → Integration → E2E (Makefile targets)"
 echo "   • Graceful Signal Handling (--signal-mode graceful)"
 echo "   • Flaky Test Demonstration: ${attempts} attempts tracked"
 echo "   • Test Metrics Aggregation"
@@ -255,29 +272,29 @@ echo ""
 echo "🚀 QUICK START COMMANDS:"
 echo ""
 echo "# Run all tests with intelligent orchestration:"
-echo "   gaffer-exec --graph graph.json run test-all"
+echo "   gaffer-exec --workspace-root . run make:test-all"
 echo ""
 echo "# Run with retry, caching, and parallelism:"
-echo "   gaffer-exec --graph graph.json --retry 3 --cache merkle -j auto run test-all"
+echo "   gaffer-exec --workspace-root . run --retry 3 --cache merkle -j auto make:test-all"
 echo ""
 echo "# Demonstrate flaky test retry:"
-echo "   gaffer-exec --graph graph.json --retry 5 run unit-tests-flaky"
+echo "   gaffer-exec --workspace-root . run --retry 5 make:unit-tests-flaky"
 echo ""
 echo "# Run performance benchmarks:"
-echo "   gaffer-exec --graph graph.json run performance-benchmark"
+echo "   gaffer-exec --workspace-root . run make:performance-benchmark"
 echo ""
 echo "📖 See README.md for detailed documentation"
 echo ""
 echo "   npm install"
-echo "   gaffer-exec run test-all --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:test-all"
 echo ""
 echo "📋 Individual test commands:"
-echo "   gaffer-exec run unit-tests-lib --graph graph.json"
-echo "   gaffer-exec run unit-tests-api --graph graph.json"
-echo "   gaffer-exec run unit-tests-ui --graph graph.json"
-echo "   gaffer-exec run integration-tests --graph graph.json"
-echo "   gaffer-exec run e2e-tests --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:unit-tests-lib"
+echo "   gaffer-exec --workspace-root . run make:unit-tests-api"
+echo "   gaffer-exec --workspace-root . run make:unit-tests-ui"
+echo "   gaffer-exec --workspace-root . run make:integration-tests"
+echo "   gaffer-exec --workspace-root . run make:e2e-tests"
 echo ""
 echo "💡 For development:"
-echo "   gaffer-exec run test-watch --graph graph.json"
-echo "   gaffer-exec run test-debug --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:test-watch"
+echo "   gaffer-exec --workspace-root . run make:test-debug"

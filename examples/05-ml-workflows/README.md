@@ -27,7 +27,7 @@ This follows ML workflow patterns used by:
 ├── notebooks/
 │   └── explore_data.ipynb   # Jupyter notebook for EDA
 ├── requirements.txt         # Python dependencies
-├── graph.json              # gaffer-exec ML pipeline
+├── Makefile                 # gaffer-exec ML pipeline targets
 └── mlflow_tracking.py      # MLflow experiment tracking
 ```
 
@@ -58,24 +58,24 @@ model-comparison ←─────────┴─────> model-registr
 
 ```bash
 # Install ML dependencies (runs automatically as dependency, but can run standalone)
-gaffer-exec run setup --graph graph.json
+gaffer-exec --workspace-root . run make:setup
 
 # Run full ML pipeline
-gaffer-exec run pipeline --graph graph.json
+gaffer-exec --workspace-root . run make:pipeline
 
 # Run just data preparation
-gaffer-exec run data-prep --graph graph.json
+gaffer-exec --workspace-root . run make:data-prep
 
 # Run training and evaluation only (skips data prep if already done)
-gaffer-exec run train-only --graph graph.json
+gaffer-exec --workspace-root . run make:train-only
 
 # Run individual pipeline stages
-gaffer-exec run feature-engineering --graph graph.json  # Feature engineering only
-gaffer-exec run train-models --graph graph.json         # Model training only
-gaffer-exec run evaluate-models --graph graph.json      # Model evaluation only
+gaffer-exec --workspace-root . run make:feature-engineering  # Feature engineering only
+gaffer-exec --workspace-root . run make:train-models         # Model training only
+gaffer-exec --workspace-root . run make:evaluate-models      # Model evaluation only
 
 # Clean up generated data
-gaffer-exec run clean --graph graph.json
+gaffer-exec --workspace-root . run make:clean
 ```
 
 ## Expected Output

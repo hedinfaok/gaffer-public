@@ -1,6 +1,6 @@
 # Before & After Comparison
 
-This document shows the transformation from traditional multi-tool task running to unified gaffer-exec orchestration.
+This document shows the transformation from scattered multi-tool task running to a single top-level `Makefile` task graph that gaffer-exec reads and schedules.
 
 ## Before: Scattered Configuration
 
@@ -51,9 +51,9 @@ clean:
 ```
 
 **Problems:**
-- Different syntax than npm scripts
+- Scoped to one language
 - Can't easily call Node.js tasks
-- Developers must know Makefile conventions
+- No cross-language dependency management
 - No smart caching
 
 ### Go - Shell Scripts
@@ -147,13 +147,13 @@ cd ..
 
 **Time:** ~5-10 minutes (sequential execution)
 
-### After: Unified Gaffer Workflow
+### After: Unified Makefile + Gaffer Workflow
 
 ```bash
 # Developer's mental model:
 # "How do I run tests for everything?"
 
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
 ```
 
 **Benefits:**
@@ -192,11 +192,11 @@ project/
 - No single source of truth
 - Hard to understand full workflow
 
-### After: Single Graph Configuration
+### After: Single Makefile Task Graph
 
 ```
 project/
-├── graph.json                ← ALL task orchestration
+├── Makefile                  ← ALL task orchestration (read by gaffer-exec)
 ├── node-frontend/
 │   ├── package.json          ← only dependencies
 │   └── .eslintrc.json        ← tool-specific config
@@ -211,9 +211,10 @@ project/
 
 **Benefits:**
 - Single task orchestration file
+- Standard GNU Make syntax
 - Clear dependency graph
 - Same format across all languages
-- Easy to understand workflow
+- gaffer-exec adds parallelism and caching on top
 
 ## Common Task Examples
 
@@ -229,7 +230,7 @@ cd rust-cli && cargo fetch && cd ..
 
 **After:**
 ```bash
-gaffer-exec run install-all --graph graph.json
+gaffer-exec --workspace-root . run make:install-all
 ```
 
 ### Build Everything
@@ -244,7 +245,7 @@ cd rust-cli && cargo build --release && cd ..
 
 **After:**
 ```bash
-gaffer-exec run build-all --graph graph.json
+gaffer-exec --workspace-root . run make:build-all
 ```
 
 ### Run All Tests
@@ -259,7 +260,7 @@ cd rust-cli && cargo test && cd ..
 
 **After:**
 ```bash
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
 ```
 
 ### Lint Everything
@@ -274,7 +275,7 @@ cd rust-cli && cargo clippy && cd ..
 
 **After:**
 ```bash
-gaffer-exec run lint-all --graph graph.json
+gaffer-exec --workspace-root . run make:lint-all
 ```
 
 ## CI/CD Comparison
@@ -336,7 +337,7 @@ jobs:
         run: npm install -g @gaffer/cli
         
       - name: Run all tests
-        run: gaffer-exec run test-all --graph graph.json
+        run: gaffer-exec --workspace-root . run make:test-all
 ```
 
 **Benefits:**
@@ -400,10 +401,10 @@ Overall: 18 seconds (64% faster!)
 
 ## Key Advantages Summary
 
-| Aspect | Before (Traditional) | After (Gaffer) |
+| Aspect | Before (Traditional) | After (Makefile + Gaffer) |
 |--------|---------------------|----------------|
 | **Commands to learn** | 15+ different commands | 1 unified interface |
-| **Config files** | 9+ scattered files | 1 graph.json |
+| **Config files** | 9+ scattered files | 1 Makefile |
 | **Execution** | Sequential | Automatic parallel |
 | **Caching** | Per-tool or none | Unified smart caching |
 | **CI complexity** | High (multiple jobs) | Low (single job) |
@@ -426,15 +427,15 @@ Developers need to know:
 ### After: Simplified Workflow
 
 Developers need to know:
-- `gaffer-exec run <task-name> --graph graph.json`
-- Look at graph.json to see available tasks
+- `gaffer-exec --workspace-root . run make:<task-name>`
+- Look at the Makefile to see available targets
 - Everything else is automatic
 
 ## Conclusion
 
-The unified gaffer-exec approach provides:
+The unified Makefile + gaffer-exec approach provides:
 
-✅ **Simplicity**: One tool, one way to run tasks  
+✅ **Simplicity**: One task graph, one way to run tasks  
 ✅ **Performance**: Automatic parallelization  
 ✅ **Consistency**: Same interface across languages  
 ✅ **Maintainability**: Single source of truth  

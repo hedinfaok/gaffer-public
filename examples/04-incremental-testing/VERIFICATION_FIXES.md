@@ -51,7 +51,7 @@ $ bash test.sh | grep "cold run"
 
 **Issue:** Documentation claimed "8 retry configurations" but actual count is 7
 
-**Evidence:** `grep -c '"retry"' graph.json` returns 7 (lines 20, 33, 50, 67, 84, 97, 114)
+**Evidence:** 7 tasks are documented as using retry (see `README.md`).
 
 **Fix Applied:**
 - Updated COMPLETION.md line 28: "8 tasks" → "7 tasks"
@@ -114,12 +114,12 @@ $ bash test.sh | grep "Cache speedup"
 
 **Before:**
 ```bash
-flaky_output=$(gaffer-exec run unit-tests-flaky --graph graph.json 2>&1 || true)
+flaky_output=$(gaffer-exec --workspace-root . run make:unit-tests-flaky 2>&1 || true)
 ```
 
 **After:**
 ```bash
-gaffer-exec run unit-tests-flaky --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:unit-tests-flaky > /dev/null 2>&1 || true
 ```
 
 **Additional Shellcheck Fixes:**
@@ -167,7 +167,7 @@ Added new Test 4.5 that demonstrates cache invalidation:
 # Modify a source file to invalidate cache
 echo "// Cache test" >> src/lib/math.js
 invalidate_start=$(get_timestamp_ms)
-gaffer-exec run test-all --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:test-all > /dev/null 2>&1
 invalidate_end=$(get_timestamp_ms)
 invalidate_time=$((invalidate_end - invalidate_start))
 # Restore original file
@@ -253,13 +253,13 @@ shellcheck test.sh
 ### Verify Cache Invalidation
 ```bash
 # Run test suite
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
 
 # Modify a file
 echo "// test" >> src/lib/math.js
 
 # Run again - should re-run tests
-gaffer-exec run test-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
 
 # Restore
 git checkout src/lib/math.js

@@ -72,13 +72,13 @@ echo "// Test change" >> shared-lib/src/index.ts
 Watch the first terminal — you'll see:
 ```
 🔄 Changed: shared-lib/src/index.ts
-   Running: gaffer-exec run rebuild-shared-lib
+   Running: gaffer-exec --workspace-root . run make:rebuild-shared-lib
 ✅ Rebuild complete
 
-🔄 Running: gaffer-exec run rebuild-api
+🔄 Running: gaffer-exec --workspace-root . run make:rebuild-api
 ✅ Rebuild complete
 
-🔄 Running: gaffer-exec run rebuild-frontend
+🔄 Running: gaffer-exec --workspace-root . run make:rebuild-frontend
 ✅ Rebuild complete
 ```
 
@@ -94,7 +94,7 @@ echo "// Test change" >> api-service/src/server.ts
 You'll see:
 ```
 🔄 Changed: api-service/src/server.ts
-   Running: gaffer-exec run rebuild-api
+   Running: gaffer-exec --workspace-root . run make:rebuild-api
 ✅ Rebuild complete
 ```
 
@@ -153,12 +153,12 @@ Now you have:
 
 **Clean everything:**
 ```bash
-gaffer-exec --graph graph.json run clean
+gaffer-exec --workspace-root . run make:clean
 ```
 
 **Rebuild everything:**
 ```bash
-gaffer-exec --graph graph.json run build-all
+gaffer-exec --workspace-root . run make:build-all
 ```
 
 **Watch individual service:**
@@ -182,7 +182,7 @@ Press `Ctrl+C` in the terminal running watch mode.
 
 ```
 🔄 Changed: shared-lib/src/index.ts
-   Running: gaffer-exec run rebuild-shared-lib
+   Running: gaffer-exec --workspace-root . run make:rebuild-shared-lib
 ✅ Rebuild complete
 ```
 
@@ -226,7 +226,7 @@ Install gaffer-exec or ensure it's in your PATH.
 
 - Read [README.md](README.md) for detailed explanation
 - Read [ARCHITECTURE.md](ARCHITECTURE.md) for technical details
-- Modify graph.json to add custom tasks
+- Modify the Makefile to add custom targets
 - Create watch scripts for new services
 - Integrate with your IDE
 
@@ -238,7 +238,7 @@ You now have a powerful development workflow:
 |------|-----|
 | **File watching** | fswatch (fast, native) |
 | **Task orchestration** | gaffer-exec (smart, cached) |
-| **Dependency cascade** | Automatic via graph.json |
+| **Dependency cascade** | Automatic via Makefile targets |
 | **Debouncing** | Built-in (--latency 0.5) |
 | **Multi-service** | Three parallel watchers |
 

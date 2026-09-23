@@ -32,16 +32,16 @@ This example demonstrates how to use **gaffer-exec** to orchestrate a complete l
 cd examples/06-local-dev-environment
 
 # Setup environment (first time)
-gaffer-exec --graph graph.json run setup
+gaffer-exec --workspace-root . run make:setup
 
 # Start the complete development stack
 ./scripts/dev-full.sh
 
 # OR manually step-by-step:
-gaffer-exec --graph graph.json run db:start
-gaffer-exec --graph graph.json run api:start
-gaffer-exec --graph graph.json run frontend:start
-gaffer-exec --graph graph.json run dev
+gaffer-exec --workspace-root . run make:db-start
+gaffer-exec --workspace-root . run make:api-start
+gaffer-exec --workspace-root . run make:frontend-start
+gaffer-exec --workspace-root . run make:dev
 ```
 
 The system will:
@@ -56,49 +56,49 @@ The system will:
 ### Core Development Commands
 ```bash
 # Setup environment (first time only)
-gaffer-exec --graph graph.json run setup
+gaffer-exec --workspace-root . run make:setup
 
 # Start complete development stack (recommended)
 ./scripts/dev-full.sh
 
 # OR run dev validation (after services started)
-gaffer-exec --graph graph.json run dev
+gaffer-exec --workspace-root . run make:dev
 
 # Run integration tests (requires services running)
-gaffer-exec --graph graph.json run test
+gaffer-exec --workspace-root . run make:test
 
 # Stop all services gracefully  
-gaffer-exec --graph graph.json run stop
+gaffer-exec --workspace-root . run make:stop
 
 # Clean up all generated files
-gaffer-exec --graph graph.json run clean
+gaffer-exec --workspace-root . run make:clean
 ```
 
 ### Individual Service Commands
 ```bash
 # Setup environment only
-gaffer-exec --graph graph.json run setup
+gaffer-exec --workspace-root . run make:setup
 
 # Install dependencies
-gaffer-exec --graph graph.json run install-deps
+gaffer-exec --workspace-root . run make:install-deps
 
 # Start services individually
-gaffer-exec --graph graph.json run db:start
-gaffer-exec --graph graph.json run api:start  
-gaffer-exec --graph graph.json run frontend:start
+gaffer-exec --workspace-root . run make:db-start
+gaffer-exec --workspace-root . run make:api-start  
+gaffer-exec --workspace-root . run make:frontend-start
 ```
 
 ### NPM Shortcuts (Optional)
 ```bash
-npm run dev     # Same as gaffer-exec run dev
-npm run test    # Same as gaffer-exec run test  
-npm run stop    # Same as gaffer-exec run stop
-npm run clean   # Same as gaffer-exec run clean
+npm run dev     # Same as gaffer-exec --workspace-root . run make:dev
+npm run test    # Same as gaffer-exec --workspace-root . run make:test  
+npm run stop    # Same as gaffer-exec --workspace-root . run make:stop
+npm run clean   # Same as gaffer-exec --workspace-root . run make:clean
 ```
 
 ## What You'll See
 
-Once `gaffer-exec run dev` completes successfully:
+Once `gaffer-exec --workspace-root . run make:dev` completes successfully:
 
 ```
 🎉 All services are ready!
@@ -160,7 +160,7 @@ This runs 10 test cases including:
 The integration test suite validates:
 
 ```bash
-gaffer-exec run test
+gaffer-exec --workspace-root . run make:test
 ```
 
 **Test Coverage:**
@@ -181,8 +181,8 @@ The setup discovers available ports starting from standard defaults:
 ### 2. **Dependency Chain**
 gaffer-exec manages startup dependencies:
 ```
-setup → install-deps → db:start → api:start
-                   └→ frontend:start
+setup → install-deps → db-start → api-start
+                   └→ frontend-start
                       ↓  
                      dev (wait for all)
 ```
@@ -194,7 +194,7 @@ Each service validates readiness:
 - **Frontend**: Static asset availability
 
 ### 4. **Graceful Shutdown**
-`gaffer-exec run stop` cleanly terminates:
+`gaffer-exec --workspace-root . run make:stop` cleanly terminates:
 1. Frontend development server
 2. API server (with connection cleanup)  
 3. PostgreSQL Docker container
@@ -203,7 +203,7 @@ Each service validates readiness:
 
 ```
 06-local-dev-environment/
-├── graph.json              # gaffer-exec task definitions
+├── Makefile                # gaffer-exec task definitions
 ├── package.json            # Root project configuration
 ├── README.md              # This file
 ├── scripts/               # Orchestration scripts
@@ -247,9 +247,9 @@ API_URL=http://localhost:3001
 ### Port Conflicts
 If services fail to start due to port conflicts:
 ```bash
-gaffer-exec run clean
-gaffer-exec run setup  # Will find new available ports
-gaffer-exec run dev
+gaffer-exec --workspace-root . run make:clean
+gaffer-exec --workspace-root . run make:setup  # Will find new available ports
+gaffer-exec --workspace-root . run make:dev
 ```
 
 ### Database Issues
@@ -314,7 +314,7 @@ cd frontend && npm start &
 
 With **gaffer-exec**:
 ```bash
-gaffer-exec run dev  # Everything coordinated automatically
+gaffer-exec --workspace-root . run make:dev  # Everything coordinated automatically
 ```
 
 **Benefits:**

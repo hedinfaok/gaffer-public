@@ -1,4 +1,6 @@
-# Traditional Makefile approach - we'll replace this with graph.json
+# Traditional package Makefile - kept for reference. The root Makefile
+# orchestrates this package's tasks (build-python, test-python, ...) and is
+# consumed by gaffer-exec.
 .PHONY: install build test lint format clean
 
 install:

@@ -1,88 +1,38 @@
-# Distributed Build Example Makefile
+# Distributed Build with Cloud Caching
 #
-# This demonstrates the same build orchestration that gaffer-exec provides,
-# but using traditional make. Compare with: gaffer-exec run distributed-build
+# gaffer-exec --workspace-root . run make:distributed-build
+# make distributed-build
+#
+# gaffer-exec consumes this standard Makefile and adds content-based caching,
+# dependency-aware parallel scheduling, and output caching on top of it.
 
-.PHONY: all clean build-services build-packages test
+.PHONY: clean init fetch-cache build-gateway build-auth build-users upload-cache distributed-build clean-build
 
-# Go build settings
-GO := go
-GOFLAGS := -v
+.DEFAULT_GOAL := distributed-build
 
-# Build directories
-PKG_DIR := pkg
-CMD_DIR := cmd
-CACHE_DIR := .cache
-
-# Package targets
-COMMON_PKG := $(PKG_DIR)/common/common.a
-MODELS_PKG := $(PKG_DIR)/models/models.a
-
-# Service targets  
-GATEWAY_BIN := $(CMD_DIR)/gateway/main
-AUTH_BIN := $(CMD_DIR)/auth/main
-USERS_BIN := $(CMD_DIR)/users/main
-
-# Default target - same as gaffer-exec run distributed-build
-all: build-services
-
-# Clean all artifacts
 clean:
-	@echo "🧹 Cleaning build artifacts..."
-	@rm -rf $(CMD_DIR)/*/main $(CMD_DIR)/*/*.exe
-	@rm -rf $(PKG_DIR)/*/*.a
-	@rm -rf $(CACHE_DIR)/cmd $(CACHE_DIR)/pkg
+	@rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/cmd .cache/pkg
 
-# Initialize and fetch dependencies
 init: clean
-	@echo "📦 Initializing Go modules..."
-	@$(GO) mod tidy
+	@go mod tidy
 
-# Build packages (can run in parallel)
-build-packages: $(COMMON_PKG) $(MODELS_PKG)
+fetch-cache: init
+	@chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh
 
-$(COMMON_PKG): $(PKG_DIR)/common/*.go
-	@echo "🔨 Building common package..."
-	@$(GO) build -buildmode=archive -o $@ ./$(PKG_DIR)/common
+build-gateway: fetch-cache
+	@echo '🔨 Building gateway service...' && go build -o cmd/gateway/main ./cmd/gateway
 
-$(MODELS_PKG): $(PKG_DIR)/models/*.go  
-	@echo "🔨 Building models package..."
-	@$(GO) build -buildmode=archive -o $@ ./$(PKG_DIR)/models
+build-auth: fetch-cache
+	@echo '🔨 Building auth service...' && go build -o cmd/auth/main ./cmd/auth
 
-# Build services (depends on packages)
-build-services: build-packages $(GATEWAY_BIN) $(AUTH_BIN) $(USERS_BIN)
-	@echo "✅ All microservices built successfully!"
+build-users: fetch-cache
+	@echo '🔨 Building users service...' && go build -o cmd/users/main ./cmd/users
 
-$(GATEWAY_BIN): $(CMD_DIR)/gateway/*.go $(COMMON_PKG) $(MODELS_PKG)
-	@echo "🔨 Building gateway service..."
-	@$(GO) build -o $@ ./$(CMD_DIR)/gateway
+upload-cache: build-gateway build-auth build-users
+	@chmod +x scripts/upload-cache.sh && ./scripts/upload-cache.sh
 
-$(AUTH_BIN): $(CMD_DIR)/auth/*.go $(COMMON_PKG) $(MODELS_PKG)
-	@echo "🔨 Building auth service..."
-	@$(GO) build -o $@ ./$(CMD_DIR)/auth
+distributed-build: upload-cache
+	@echo '✅ Distributed build complete!' && echo '🚀 All microservices built with caching optimization'
 
-$(USERS_BIN): $(CMD_DIR)/users/*.go $(COMMON_PKG) $(MODELS_PKG)
-	@echo "🔨 Building users service..."
-	@$(GO) build -o $@ ./$(CMD_DIR)/users
-
-# Test all services
-test: build-services
-	@echo "🧪 Testing services..."
-	@$(GO) test ./pkg/...
-	@echo "✅ All tests passed!"
-
-# Show build info
-info:
-	@echo "🏗️  Distributed Build System"
-	@echo "📁 Structure:"
-	@echo "   - Packages: common, models"  
-	@echo "   - Services: gateway, auth, users"
-	@echo ""
-	@echo "🚀 Commands:"
-	@echo "   make all          # Build everything (== gaffer-exec run distributed-build)"
-	@echo "   make clean        # Clean artifacts" 
-	@echo "   make build-packages # Build just packages"
-	@echo "   make test         # Build and test"
-	@echo ""
-	@echo "⚡ gaffer-exec equivalent:"
-	@echo "   gaffer-exec run distributed-build --graph graph.json"
+clean-build: distributed-build
+	@echo '🧹 Clean build (no cache)'

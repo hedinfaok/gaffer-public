@@ -38,18 +38,18 @@ test_result() {
     fi
 }
 
-echo "Test 1: Validate graph.json structure"
-if [ -f "graph.json" ]; then
-    if command -v jq &> /dev/null; then
-        jq empty graph.json 2>/dev/null
-        test_result "graph.json is valid JSON" $?
-    else
-        python3 -m json.tool graph.json > /dev/null 2>&1
-        test_result "graph.json is valid JSON" $?
-    fi
+echo "Test 1: Validate Makefile structure"
+if [ -f "Makefile" ]; then
+    test_result "Makefile exists" 0
 else
-    test_result "graph.json exists" 1
+    test_result "Makefile exists" 1
 fi
+
+grep -qE '^\.DEFAULT_GOAL[[:space:]]*:=[[:space:]]*build-all' Makefile
+test_result "Makefile sets build-all as default goal" $?
+
+grep -qE '^\.PHONY:' Makefile
+test_result "Makefile declares .PHONY targets" $?
 
 echo ""
 echo "Test 2: Verify platform detection script"
@@ -85,69 +85,56 @@ test_result "Node.js source exists" $?
 
 echo ""
 echo "Test 4: Verify platform-specific tasks use shell conditionals"
-if command -v jq &> /dev/null; then
-    # Check that Linux tasks have uname checks
-    jq -e '.graphs["build-c-linux"].command | contains("uname")' graph.json > /dev/null 2>&1
-    test_result "Linux C build uses uname check" $?
-    
-    # Check that macOS tasks have uname checks
-    jq -e '.graphs["build-c-macos"].command | contains("uname")' graph.json > /dev/null 2>&1
-    test_result "macOS C build uses uname check" $?
-    
-    # Check that Windows tasks have uname checks
-    jq -e '.graphs["build-c-windows"].command | contains("uname")' graph.json > /dev/null 2>&1
-    test_result "Windows C build uses uname check" $?
-    
-    # Verify no platforms field exists
-    ! jq -e '.graphs["build-c-linux"].platforms' graph.json > /dev/null 2>&1
-    test_result "Linux task has no platforms field" $?
-    
-    ! jq -e '.graphs["build-c-macos"].platforms' graph.json > /dev/null 2>&1
-    test_result "macOS task has no platforms field" $?
+if grep -qE '^build-c-linux:' Makefile && grep -q 'Skipping build-c-linux' Makefile; then
+    test_result "Linux C build target has uname check" 0
 else
-    echo -e "${YELLOW}⊗${NC} Skipping platform check validation (jq not installed)"
+    test_result "Linux C build target has uname check" 1
+fi
+
+if grep -qE '^build-c-macos:' Makefile && grep -q 'Skipping build-c-macos' Makefile; then
+    test_result "macOS C build target has uname check" 0
+else
+    test_result "macOS C build target has uname check" 1
+fi
+
+if grep -qE '^build-c-windows:' Makefile && grep -q 'Skipping build-c-windows' Makefile; then
+    test_result "Windows C build target has uname check" 0
+else
+    test_result "Windows C build target has uname check" 1
 fi
 
 echo ""
-echo "Test 5: Verify cross-compilation tasks"
-if command -v jq &> /dev/null; then
-    jq -e '.graphs["build-go-linux-amd64"]' graph.json > /dev/null 2>&1
-    test_result "Go Linux AMD64 cross-compile task exists" $?
-    
-    jq -e '.graphs["build-go-darwin-arm64"]' graph.json > /dev/null 2>&1
-    test_result "Go Darwin ARM64 cross-compile task exists" $?
-    
-    jq -e '.graphs["cross-compile-go"]' graph.json > /dev/null 2>&1
-    test_result "Cross-compile aggregator task exists" $?
-else
-    echo -e "${YELLOW}⊗${NC} Skipping cross-compilation validation (jq not installed)"
-fi
+echo "Test 5: Verify cross-compilation targets"
+grep -qE '^build-go-linux-amd64:' Makefile
+test_result "Go Linux AMD64 cross-compile target exists" $?
+
+grep -qE '^build-go-darwin-arm64:' Makefile
+test_result "Go Darwin ARM64 cross-compile target exists" $?
+
+grep -qE '^cross-compile-go:' Makefile
+test_result "Cross-compile aggregator target exists" $?
 
 echo ""
 echo "Test 6: Verify platform-agnostic tasks have no platform checks"
-if command -v jq &> /dev/null; then
-    # detect-platform should not have uname conditionals
-    ! jq -e '.graphs["detect-platform"].command | contains("[ \\\"$(uname)")' graph.json > /dev/null 2>&1
-    test_result "detect-platform has no platform conditional" $?
-    
-    # clean should not have uname conditionals
-    ! jq -e '.graphs["clean"].command | contains("[ \\\"$(uname)")' graph.json > /dev/null 2>&1
-    test_result "clean has no platform conditional" $?
+if awk '/^detect-platform:/{getline; print}' Makefile | grep -q uname; then
+    test_result "detect-platform has no platform conditional" 1
 else
-    echo -e "${YELLOW}⊗${NC} Skipping platform-agnostic validation (jq not installed)"
+    test_result "detect-platform has no platform conditional" 0
+fi
+
+if awk '/^clean:/{getline; print}' Makefile | grep -q uname; then
+    test_result "clean has no platform conditional" 1
+else
+    test_result "clean has no platform conditional" 0
 fi
 
 echo ""
 echo "Test 7: Verify task dependencies"
-if command -v jq &> /dev/null; then
-    jq -e '.graphs["build-all"].deps' graph.json > /dev/null 2>&1
-    test_result "build-all has dependencies" $?
-    
-    jq -e '.graphs["build-c"].deps' graph.json > /dev/null 2>&1
-    test_result "build-c aggregates platform builds" $?
-else
-    echo -e "${YELLOW}⊗${NC} Skipping dependency validation (jq not installed)"
-fi
+grep -qE '^build-all: build-c build-go build-rust build-node' Makefile
+test_result "build-all has dependencies" $?
+
+grep -qE '^build-c: build-c-linux build-c-macos build-c-windows' Makefile
+test_result "build-c aggregates platform builds" $?
 
 echo ""
 echo "Test 8: Check script executability"
@@ -231,9 +218,13 @@ fi
 echo ""
 echo "Test 14: Verify gaffer-exec compatibility"
 if command -v gaffer-exec &> /dev/null; then
-    # Try to list tasks
-    gaffer-exec --workspace-root . --graph-override graph.json list > /dev/null 2>&1
-    test_result "gaffer-exec can read graph.json" $?
+    # List discovered Makefile targets
+    gaffer-exec --workspace-root . list -t makefile > /dev/null 2>&1
+    test_result "gaffer-exec can list Makefile targets" $?
+
+    # Dry-run the primary target to validate the graph
+    gaffer-exec --workspace-root . run --dry-run make:build-all > /dev/null 2>&1
+    test_result "gaffer-exec can dry-run build-all" $?
 else
     echo -e "${YELLOW}⊗${NC} Skipping gaffer-exec test (not installed)"
 fi
@@ -259,8 +250,8 @@ else
     echo -e "${GREEN}✓ All tests passed!${NC}"
     echo ""
     echo "Next steps:"
-    echo "  1. Run: gaffer-exec --workspace-root . --graph-override graph.json run detect-platform"
-    echo "  2. Run: gaffer-exec --workspace-root . --graph-override graph.json run build-all"
-    echo "  3. Run: gaffer-exec --workspace-root . --graph-override graph.json run run-all"
+    echo "  1. Run: gaffer-exec --workspace-root . run make:detect-platform"
+    echo "  2. Run: gaffer-exec --workspace-root . run make:build-all"
+    echo "  3. Run: gaffer-exec --workspace-root . run make:run-all"
     exit 0
 fi

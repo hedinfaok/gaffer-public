@@ -27,7 +27,7 @@ This follows multi-language patterns used by:
 │   ├── requirements.txt
 │   ├── setup.py
 │   └── analyze.py
-├── graph.json              # gaffer-exec build orchestration
+├── Makefile                # gaffer-exec build orchestration
 └── docker-compose.yml      # Container orchestration
 ```
 
@@ -50,16 +50,16 @@ python-deps → python-build ───────────┘
 
 ```bash
 # Build all languages
-gaffer-exec run multi-language-build --graph graph.json
+gaffer-exec --workspace-root . run make:multi-language-build
 
 # Build individual languages
-gaffer-exec run rust-backend --graph graph.json
-gaffer-exec run go-cli --graph graph.json
-gaffer-exec run node-frontend --graph graph.json
-gaffer-exec run python-ml --graph graph.json
+gaffer-exec --workspace-root . run make:rust-backend
+gaffer-exec --workspace-root . run make:go-cli
+gaffer-exec --workspace-root . run make:node-frontend
+gaffer-exec --workspace-root . run make:python-ml
 
 # Start integrated application
-gaffer-exec run start-all --graph graph.json
+gaffer-exec --workspace-root . run make:start-all
 ```
 
 ## Expected Output
@@ -144,7 +144,7 @@ This validates:
 To force a clean rebuild from scratch:
 
 ```bash
-gaffer-exec run clean --graph graph.json
-gaffer-exec run multi-language-build --graph graph.json
+gaffer-exec --workspace-root . run make:clean
+gaffer-exec --workspace-root . run make:multi-language-build
 ```
 

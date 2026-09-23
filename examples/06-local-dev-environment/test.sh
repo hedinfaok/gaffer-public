@@ -48,7 +48,7 @@ fail_test() {
 
 # Cleanup from any previous runs
 echo -e "${YELLOW}🧹 Cleaning up from previous runs...${NC}"
-gaffer-exec --graph graph.json run clean > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 echo ""
 
 # Test 1: Prerequisites check
@@ -79,7 +79,7 @@ pass_test
 # Test 2: Setup and port assignment
 run_test "Setup and Auto Port Assignment" "Testing environment setup with automatic port discovery"
 
-if gaffer-exec --graph graph.json run setup > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:setup > /dev/null 2>&1; then
     echo "✓ Setup completed successfully"
 else
     fail_test "Setup command failed"
@@ -115,7 +115,7 @@ pass_test
 run_test "Dependency Installation" "Installing dependencies for all services"
 
 start_time=$(date +%s)
-if gaffer-exec --graph graph.json run install-deps > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:install-deps > /dev/null 2>&1; then
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     echo "✓ Dependencies installed in ${duration}s"
@@ -144,7 +144,7 @@ pass_test
 # Test 4: Start database
 run_test "Database Startup" "Starting PostgreSQL database in Docker"
 
-if gaffer-exec --graph graph.json run db:start > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:db-start > /dev/null 2>&1; then
     echo "✓ Database started successfully"
 else
     fail_test "Database startup failed"
@@ -175,7 +175,7 @@ pass_test
 # Test 5: Start API
 run_test "API Startup" "Starting Express API server"
 
-if gaffer-exec --graph graph.json run api:start > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:api-start > /dev/null 2>&1; then
     echo "✓ API started successfully"
 else
     fail_test "API startup failed"
@@ -199,7 +199,7 @@ pass_test
 # Test 6: Start frontend
 run_test "Frontend Startup" "Starting React development server"
 
-if gaffer-exec --graph graph.json run frontend:start > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:frontend-start > /dev/null 2>&1; then
     echo "✓ Frontend started successfully"
 else
     fail_test "Frontend startup failed"
@@ -281,7 +281,7 @@ pass_test
 # Test 8: Graceful shutdown
 run_test "Graceful Shutdown" "Testing proper cleanup of all services"
 
-if gaffer-exec --graph graph.json run stop > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:stop > /dev/null 2>&1; then
     echo "✓ Stop command executed successfully"
 else
     fail_test "Stop command failed"
@@ -318,7 +318,7 @@ run_test "Complete Lifecycle Test" "Testing full dev workflow with gaffer-exec"
 
 # Start the complete stack
 start_time=$(date +%s)
-if gaffer-exec --graph graph.json run dev > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:dev > /dev/null 2>&1; then
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     echo "✓ Complete development stack started in ${duration}s"
@@ -343,14 +343,14 @@ fi
 echo "✓ Frontend is running"
 
 # Run integration tests
-if gaffer-exec --graph graph.json run test > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:test > /dev/null 2>&1; then
     echo "✓ Integration tests passed"
 else
     fail_test "Integration tests failed"
 fi
 
 # Stop all services
-if gaffer-exec --graph graph.json run stop > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:stop > /dev/null 2>&1; then
     echo "✓ All services stopped gracefully"
 else
     fail_test "Failed to stop services"
@@ -361,7 +361,7 @@ pass_test
 # Test 10: Cleanup
 run_test "Cleanup" "Testing complete cleanup of environment"
 
-if gaffer-exec --graph graph.json run clean > /dev/null 2>&1; then
+if gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1; then
     echo "✓ Clean command executed successfully"
 else
     fail_test "Clean command failed"
@@ -408,9 +408,9 @@ if [ $TESTS_PASSED -eq $TESTS_RUN ]; then
     echo "  ✓ Complete cleanup"
     echo ""
     echo "To use this example:"
-    echo "  1. Run: gaffer-exec --graph graph.json run dev"
+    echo "  1. Run: gaffer-exec --workspace-root . run make:dev"
     echo "  2. Open: http://localhost:3000"
-    echo "  3. Stop: gaffer-exec --graph graph.json run stop"
+    echo "  3. Stop: gaffer-exec --workspace-root . run make:stop"
     exit 0
 else
     echo -e "${RED}❌ Some tests failed!${NC}"

@@ -2,43 +2,45 @@
 
 ## Quick Reference
 
+All tasks are targets in the root `Makefile`, addressed as `make:<target>` by gaffer-exec.
+
 ### Common Tasks
 ```bash
-gaffer-exec run install-all --graph graph.json   # Install all dependencies
-gaffer-exec run build-all --graph graph.json     # Build everything
-gaffer-exec run test-all --graph graph.json      # Run all tests
-gaffer-exec run lint-all --graph graph.json      # Lint all code
-gaffer-exec run format-all --graph graph.json    # Format all code
-gaffer-exec run clean --graph graph.json         # Clean artifacts
+gaffer-exec --workspace-root . run make:install-all   # Install all dependencies
+gaffer-exec --workspace-root . run make:build-all     # Build everything
+gaffer-exec --workspace-root . run make:test-all      # Run all tests
+gaffer-exec --workspace-root . run make:lint-all      # Lint all code
+gaffer-exec --workspace-root . run make:format-all    # Format all code
+gaffer-exec --workspace-root . run make:clean         # Clean artifacts
 ```
 
 ### Development
 ```bash
-gaffer-exec run dev --graph graph.json           # Setup dev environment
-gaffer-exec run start-api --graph graph.json     # Start API server
+gaffer-exec --workspace-root . run make:dev           # Setup dev environment
+gaffer-exec --workspace-root . run make:start-api     # Start API server
 ```
 
 ### Individual Components
 ```bash
 # Node.js
-gaffer-exec run install-node --graph graph.json
-gaffer-exec run build-node --graph graph.json
-gaffer-exec run test-node --graph graph.json
+gaffer-exec --workspace-root . run make:install-node
+gaffer-exec --workspace-root . run make:build-node
+gaffer-exec --workspace-root . run make:test-node
 
 # Python
-gaffer-exec run install-python --graph graph.json
-gaffer-exec run build-python --graph graph.json
-gaffer-exec run test-python --graph graph.json
+gaffer-exec --workspace-root . run make:install-python
+gaffer-exec --workspace-root . run make:build-python
+gaffer-exec --workspace-root . run make:test-python
 
 # Go
-gaffer-exec run install-go --graph graph.json
-gaffer-exec run build-go --graph graph.json
-gaffer-exec run test-go --graph graph.json
+gaffer-exec --workspace-root . run make:install-go
+gaffer-exec --workspace-root . run make:build-go
+gaffer-exec --workspace-root . run make:test-go
 
 # Rust
-gaffer-exec run install-rust --graph graph.json
-gaffer-exec run build-rust --graph graph.json
-gaffer-exec run test-rust --graph graph.json
+gaffer-exec --workspace-root . run make:install-rust
+gaffer-exec --workspace-root . run make:build-rust
+gaffer-exec --workspace-root . run make:test-rust
 ```
 
 ## What Makes This Different
@@ -51,7 +53,9 @@ This example focuses on **task orchestration** across languages:
 - Formatting code
 - Development workflows
 
-Compared to Example 03 (multi-language-build) which focuses solely on build orchestration.
+One top-level `Makefile` defines the whole graph; gaffer-exec reads it and adds
+dependency-aware parallel scheduling plus content-based caching. Compared to
+Example 03 (multi-language-build) which focuses solely on build orchestration.
 
 ## Performance Benefits
 

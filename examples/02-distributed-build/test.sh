@@ -90,16 +90,32 @@ echo "Test 2: Initializing Go project..."
 go mod tidy
 echo "✅ Go modules initialized"
 
+# Test 3: Validate the Makefile task graph
+echo ""
+echo "Test 3: Validating Makefile task graph..."
+if [ ! -f Makefile ]; then
+    echo "❌ Makefile not found"
+    exit 1
+fi
+for target in clean init fetch-cache build-gateway build-auth build-users upload-cache distributed-build clean-build; do
+    if ! grep -qE "^${target}:" Makefile; then
+        echo "❌ Missing Makefile target: $target"
+        exit 1
+    fi
+done
+gaffer-exec --workspace-root . list -t makefile > /dev/null
+echo "✅ Makefile targets present and discoverable"
+
 # Clean build artifacts
 echo ""
-echo "Test 3: Cleaning previous builds..."
-gaffer-exec run clean --graph graph.json
+echo "Test 4: Cleaning previous builds..."
+gaffer-exec --workspace-root . run make:clean
 echo "✅ Clean complete"
 
-# Test 4: Run the distributed build (first time - cold cache)
+# Test 5: Run the distributed build (first time - cold cache)
 echo ""
-echo "Test 4: Running distributed-build (cold cache)..."
-output=$(gaffer-exec run distributed-build --graph graph.json 2>&1)
+echo "Test 5: Running distributed-build (cold cache)..."
+output=$(gaffer-exec --workspace-root . run make:distributed-build 2>&1)
 if echo "$output" | grep -q "Distributed build complete"; then
     echo "✅ Distributed build completed (cold cache)"
 else
@@ -108,9 +124,9 @@ else
     exit 1
 fi
 
-# Test 5: Verify artifacts were uploaded to storage
+# Test 6: Verify artifacts were uploaded to storage
 echo ""
-echo "Test 5: Verifying cache upload..."
+echo "Test 6: Verifying cache upload..."
 artifact_count=$(aws --endpoint-url=$AWS_ENDPOINT_URL s3 ls s3://gaffer-build-cache/cmd/ --recursive 2>/dev/null | wc -l || echo 0)
 if [ "$artifact_count" -gt 0 ]; then
     echo "✅ Found $artifact_count artifacts in S3 cache"
@@ -119,11 +135,11 @@ else
     exit 1
 fi
 
-# Test 6: Clean local binaries and test cache restore
+# Test 7: Clean local binaries and test cache restore
 echo ""
-echo "Test 6: Testing cache restore (warm cache)..."
+echo "Test 7: Testing cache restore (warm cache)..."
 rm -f cmd/*/main
-output=$(gaffer-exec run distributed-build --graph graph.json 2>&1)
+output=$(gaffer-exec --workspace-root . run make:distributed-build 2>&1)
 if echo "$output" | grep -q "Cache hit"; then
     echo "✅ Cache hits detected - warm cache working"
 else
@@ -137,9 +153,9 @@ else
     exit 1
 fi
 
-# Test 7: Verify all services built
+# Test 8: Verify all services built
 echo ""
-echo "Test 7: Verifying service binaries..."
+echo "Test 8: Verifying service binaries..."
 services=("cmd/gateway/main" "cmd/auth/main" "cmd/users/main")
 
 for bin in "${services[@]}"; do
@@ -151,9 +167,9 @@ for bin in "${services[@]}"; do
     fi
 done
 
-# Test 8: Quick functional test of binaries
+# Test 9: Quick functional test of binaries
 echo ""
-echo "Test 8: Testing binary functionality..."
+echo "Test 9: Testing binary functionality..."
 timeout 2 ./cmd/gateway/main &
 gateway_pid=$!
 sleep 0.5
@@ -173,5 +189,5 @@ echo "🚀 To run manually:"
 echo "   ./scripts/start-storage.sh"
 echo "   export AWS_ENDPOINT_URL=http://localhost:4566"
 echo "   export STORAGE_BACKEND=s3"
-echo "   gaffer-exec run distributed-build --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:distributed-build"
 echo "   ./scripts/stop-storage.sh"

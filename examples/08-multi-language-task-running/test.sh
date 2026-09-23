@@ -60,8 +60,13 @@ check_file_exists() {
 echo "=== Preliminary Checks ==="
 echo ""
 
-# Check graph.json exists
-check_file_exists "graph.json exists" "graph.json"
+# Check the root Makefile task graph exists
+check_file_exists "Makefile exists" "Makefile"
+
+# Check expected targets are declared
+run_test "Makefile declares build-all target" "grep -qE '^build-all:' Makefile"
+run_test "Makefile declares test-all target" "grep -qE '^test-all:' Makefile"
+run_test "Makefile task graph is loadable" "gaffer-exec --workspace-root . list -t makefile"
 
 # Check all component directories exist
 check_file_exists "node-frontend directory exists" "node-frontend"
@@ -75,11 +80,11 @@ echo ""
 
 # Clean first
 echo "Cleaning previous artifacts..."
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1 || true
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 
 # Test install-all
 echo -e "${BLUE}[TEST]${NC} install-all runs successfully"
-if gaffer-exec run install-all --graph graph.json > /tmp/test-install.log 2>&1; then
+if gaffer-exec --workspace-root . run make:install-all > /tmp/test-install.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} install-all runs successfully"
   ((TESTS_PASSED++))
 else
@@ -98,7 +103,7 @@ echo ""
 
 # Test build-all
 echo -e "${BLUE}[TEST]${NC} build-all runs successfully"
-if gaffer-exec run build-all --graph graph.json > /tmp/test-build.log 2>&1; then
+if gaffer-exec --workspace-root . run make:build-all > /tmp/test-build.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} build-all runs successfully"
   ((TESTS_PASSED++))
 else
@@ -117,7 +122,7 @@ echo ""
 
 # Test test-all
 echo -e "${BLUE}[TEST]${NC} test-all runs successfully"
-if gaffer-exec run test-all --graph graph.json > /tmp/test-tests.log 2>&1; then
+if gaffer-exec --workspace-root . run make:test-all > /tmp/test-tests.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} test-all runs successfully"
   ((TESTS_PASSED++))
 else
@@ -130,7 +135,7 @@ echo ""
 
 # Test lint-all
 echo -e "${BLUE}[TEST]${NC} lint-all runs successfully"
-if gaffer-exec run lint-all --graph graph.json > /tmp/test-lint.log 2>&1; then
+if gaffer-exec --workspace-root . run make:lint-all > /tmp/test-lint.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} lint-all runs successfully"
   ((TESTS_PASSED++))
 else
@@ -143,7 +148,7 @@ echo ""
 
 # Test format-all
 echo -e "${BLUE}[TEST]${NC} format-all runs successfully"
-if gaffer-exec run format-all --graph graph.json > /tmp/test-format.log 2>&1; then
+if gaffer-exec --workspace-root . run make:format-all > /tmp/test-format.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} format-all runs successfully"
   ((TESTS_PASSED++))
 else
@@ -156,7 +161,7 @@ echo ""
 
 # Test dev task
 echo -e "${BLUE}[TEST]${NC} dev task runs successfully"
-if gaffer-exec run dev --graph graph.json > /tmp/test-dev.log 2>&1; then
+if gaffer-exec --workspace-root . run make:dev > /tmp/test-dev.log 2>&1; then
   echo -e "${GREEN}[PASS]${NC} dev task runs successfully"
   ((TESTS_PASSED++))
 else
@@ -170,7 +175,7 @@ echo ""
 # Test caching - run build-all again
 echo -e "${BLUE}[TEST]${NC} Caching works (build-all second run should be faster)"
 START_TIME=$(date +%s%N)
-gaffer-exec run build-all --graph graph.json > /tmp/test-cache.log 2>&1
+gaffer-exec --workspace-root . run make:build-all > /tmp/test-cache.log 2>&1
 END_TIME=$(date +%s%N)
 CACHE_TIME=$((($END_TIME - $START_TIME) / 1000000))
 
@@ -186,7 +191,7 @@ echo ""
 
 # Test clean
 echo -e "${BLUE}[TEST]${NC} clean removes artifacts"
-gaffer-exec run clean --graph graph.json > /dev/null 2>&1
+gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1
 if [ ! -d "node-frontend/dist" ] && [ ! -d "go-api/bin" ]; then
   echo -e "${GREEN}[PASS]${NC} clean removes artifacts"
   ((TESTS_PASSED++))

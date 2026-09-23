@@ -51,8 +51,7 @@ Before running this example, you need:
 ├── .cache/              # Local build cache
 ├── docker-compose.yml   # Cloud storage services
 ├── go.mod               # Go module definition
-├── graph.json           # gaffer-exec build graph
-└── Makefile            # Build automation
+└── Makefile             # Build automation (gaffer-exec task graph)
 ```
 
 ## Quick Start
@@ -96,10 +95,10 @@ export GCS_ENDPOINT=http://localhost:4443
 go mod tidy
 
 # Run the distributed build with cloud caching
-gaffer-exec run distributed-build --graph graph.json
+gaffer-exec --workspace-root . run make:distributed-build
 
 # Run again to see cache hits
-gaffer-exec run distributed-build --graph graph.json
+gaffer-exec --workspace-root . run make:distributed-build
 ```
 
 ### 4. Stop Services
@@ -112,10 +111,10 @@ gaffer-exec run distributed-build --graph graph.json
 
 ```
 fetch-cache (check S3/Azure/GCS)
-    ├── build-common (maybe cached)
-    └── build-models (maybe cached)
-            └──────────┼──> build-gateway build-auth build-users
-                                      └─────┼─────> upload-artifacts
+    ├── build-gateway (maybe cached)
+    ├── build-auth    (maybe cached)
+    └── build-users   (maybe cached)
+            └──────────┼─────> upload-cache
 ```
 
 ## Verifying Storage is Working
@@ -220,15 +219,15 @@ When storage services are running:
 ```bash
 # Use S3 (LocalStack)
 export STORAGE_BACKEND=s3
-gaffer-exec run distributed-build --graph graph.json
+gaffer-exec --workspace-root . run make:distributed-build
 
 # Use Azure (Azurite)
 export STORAGE_BACKEND=azure
-gaffer-exec run distributed-build --graph graph.json
+gaffer-exec --workspace-root . run make:distributed-build
 
 # Use GCS (fake-gcs-server)
 export STORAGE_BACKEND=gcs
-gaffer-exec run distributed-build --graph graph.json
+gaffer-exec --workspace-root . run make:distributed-build
 ```
 
 ## Docker Compose Services
@@ -307,10 +306,10 @@ Run the benchmark script to measure cache performance:
 
 ```bash
 # Clean build (no cache)
-time gaffer-exec run clean-build --graph graph.json
+time gaffer-exec --workspace-root . run make:clean-build
 
 # Warm cache build
-time gaffer-exec run distributed-build --graph graph.json
+time gaffer-exec --workspace-root . run make:distributed-build
 ```
 
 Expected results:
@@ -321,7 +320,7 @@ Expected results:
 ## Key Features
 
 - **Parallel microservice builds** - Gateway, auth, and users services build in parallel
-- **Dependency-aware caching** - Common and models packages cached first
+- **Dependency-aware caching** - Cache is fetched before any service build begins
 - **Multiple storage backends** - Switch between S3, Azure, and GCS
 - **Production-like behavior** - Real cloud storage APIs without cloud costs
 - **Cache efficiency metrics** - Shows hit rates and time savings
@@ -354,6 +353,6 @@ This will:
 rm -rf tmp/ .cache/
 
 # Clean build artifacts
-gaffer-exec run clean --graph graph.json
+gaffer-exec --workspace-root . run make:clean
 ```
 ```

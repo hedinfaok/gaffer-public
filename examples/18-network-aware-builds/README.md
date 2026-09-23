@@ -91,7 +91,7 @@ This follows distributed build patterns used by:
 │   ├── benchmark.sh           # Performance benchmarks
 │   └── test-failure.sh        # Test failure recovery
 ├── docker-compose.yml    # Multi-region cache infrastructure
-├── graph.json            # gaffer-exec build graph
+├── Makefile              # gaffer-exec task graph
 ├── go.mod                # Go dependencies
 ├── test.sh               # Integration tests
 └── README.md             # This file
@@ -133,7 +133,7 @@ export AWS_ENDPOINT_URL=http://localhost:4568
 go mod tidy
 
 # Run build with automatic network optimization
-gaffer-exec run network-build --graph graph.json
+gaffer-exec --workspace-root . run make:network-build
 
 # Check network performance metrics
 ./scripts/monitor-network.sh
@@ -161,7 +161,7 @@ The build system automatically detects network topology:
 
 ```bash
 # Build system detects closest region
-gaffer-exec run network-build --graph graph.json
+gaffer-exec --workspace-root . run make:network-build
 
 # Output shows:
 # 🌍 Detected region: us-east-1

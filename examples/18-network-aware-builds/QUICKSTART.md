@@ -32,7 +32,7 @@ This starts 3 simulated regions with different network characteristics.
 go mod tidy
 
 # Run build with gaffer-exec
-gaffer-exec run network-build --graph graph.json
+gaffer-exec --workspace-root . run make:network-build
 ```
 
 Or build manually:
@@ -111,7 +111,7 @@ curl http://localhost:8080/api/network/topology | jq
 rm -rf bin/ .cache/
 
 # Rebuild from scratch
-gaffer-exec run network-build --graph graph.json
+gaffer-exec --workspace-root . run make:network-build
 ```
 
 ### Warm Build (with cache)
@@ -121,7 +121,7 @@ gaffer-exec run network-build --graph graph.json
 rm -rf bin/
 
 # Rebuild with cache
-gaffer-exec run network-build --graph graph.json
+gaffer-exec --workspace-root . run make:network-build
 ```
 
 ### Change Primary Region

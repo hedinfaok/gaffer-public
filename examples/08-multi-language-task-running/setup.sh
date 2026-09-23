@@ -19,11 +19,11 @@ if ! command -v gaffer-exec &> /dev/null; then
 fi
 
 echo "Installing all dependencies..."
-gaffer-exec run install-all --graph graph.json
+gaffer-exec --workspace-root . run make:install-all
 
 echo ""
 echo "Building all components..."
-gaffer-exec run build-all --graph graph.json
+gaffer-exec --workspace-root . run make:build-all
 
 echo ""
 echo "========================================="
@@ -31,9 +31,9 @@ echo "Setup Complete!"
 echo "========================================="
 echo ""
 echo "Try these commands:"
-echo "  gaffer-exec run test-all --graph graph.json"
-echo "  gaffer-exec run lint-all --graph graph.json"
-echo "  gaffer-exec run dev --graph graph.json"
+echo "  gaffer-exec --workspace-root . run make:test-all"
+echo "  gaffer-exec --workspace-root . run make:lint-all"
+echo "  gaffer-exec --workspace-root . run make:dev"
 echo ""
 echo "Or run the tests:"
 echo "  ./test.sh"

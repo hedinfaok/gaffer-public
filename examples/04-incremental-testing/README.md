@@ -8,8 +8,8 @@ This example demonstrates **gaffer-exec's advanced test orchestration capabiliti
 ✅ **Advanced Retry Logic** - `--retry N` flag for intelligent retry handling
 ✅ **Merkle Tree Caching** - `--cache merkle` to skip unchanged test suites across runs
 ✅ **Auto-Detect Parallelization** - `-j auto` for optimal resource utilization
-✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing in graph.json
-✅ **Task Orchestration** - Coordinate multiple test tiers in a single graph
+✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing in the Makefile task graph
+✅ **Task Orchestration** - Coordinate multiple test tiers in a single Makefile task graph
 ✅ **Graceful Signal Handling** - `--signal-mode graceful` for proper cleanup
 ✅ **Test Result Aggregation** - Comprehensive metrics across all test tiers
 
@@ -45,7 +45,7 @@ This follows incremental testing patterns used by:
 │   └── test-signal-handling.js # Graceful shutdown demo
 ├── package.json            # npm test configuration
 ├── jest.config.js          # Jest configuration
-└── graph.json              # Test orchestration (dependency graph only - features via CLI flags)
+└── Makefile                # Test orchestration task graph (features via CLI flags)
 ```
 
 ## Test Dependency Graph
@@ -77,7 +77,7 @@ This follows incremental testing patterns used by:
 ```
 
 **Advanced Features (via CLI flags):**
-- ✅ **Dependency ordering** defined in graph.json ensures correct sequence
+- ✅ **Dependency ordering** defined in the Makefile ensures correct sequence
 - ✅ **Parallel execution** with `-j auto` or `-j 4` for concurrent independent tests
 - ✅ **Retry logic** with `--retry 3` for handling flaky tests
 - ✅ **Merkle tree caching** with `--cache merkle` skips unchanged test suites
@@ -94,13 +94,15 @@ This follows incremental testing patterns used by:
 npm install
 
 # Run all tests with intelligent orchestration
-gaffer-exec --graph graph.json run test-all
+gaffer-exec --workspace-root . run make:test-all
 
 # Run with retry, caching, and parallelism
-gaffer-exec --graph graph.json --retry 3 --cache merkle -j auto run test-all
+gaffer-exec --workspace-root . run --retry 3 --cache merkle -j auto make:test-all
 
 # Run just unit tests with parallelism
-gaffer-exec run unit-tests-lib unit-tests-api unit-tests-ui --graph graph.json
+gaffer-exec --workspace-root . run make:unit-tests-lib
+gaffer-exec --workspace-root . run make:unit-tests-api
+gaffer-exec --workspace-root . run make:unit-tests-ui
 ```
 
 ### Advanced Features via CLI Flags
@@ -108,32 +110,32 @@ gaffer-exec run unit-tests-lib unit-tests-api unit-tests-ui --graph graph.json
 **Retry Logic:**
 ```bash
 # Retry failed tests up to 3 times (for flaky tests)
-gaffer-exec --graph graph.json --retry 3 run test-all
+gaffer-exec --workspace-root . run --retry 3 make:test-all
 
 # Demonstrate flaky test handling
-gaffer-exec --graph graph.json --retry 5 run unit-tests-flaky
+gaffer-exec --workspace-root . run --retry 5 make:unit-tests-flaky
 ```
 
 **Merkle Tree Caching:**
 ```bash
 # First run (builds cache)
-gaffer-exec --graph graph.json --cache merkle run test-all
+gaffer-exec --workspace-root . run --cache merkle make:test-all
 
 # Second run (leverages cache - much faster!)
-gaffer-exec --graph graph.json --cache merkle run test-all
+gaffer-exec --workspace-root . run --cache merkle make:test-all
 
 # Modify a test file and see cache invalidation
 touch tests/unit/lib.test.js
-gaffer-exec --graph graph.json --cache merkle run test-all  # Re-runs only affected tests
+gaffer-exec --workspace-root . run --cache merkle make:test-all  # Re-runs only affected tests
 ```
 
 **Parallelism Control:**
 ```bash
 # Auto-detect optimal parallelism
-gaffer-exec --graph graph.json -j auto run test-all
+gaffer-exec --workspace-root . run -j auto make:test-all
 
 # Specify exact number of parallel jobs
-gaffer-exec --graph graph.json -j 4 run test-all
+gaffer-exec --workspace-root . run -j 4 make:test-all
 
 # Check optimal concurrency for your machine
 gaffer-exec detect-concurrency
@@ -142,13 +144,13 @@ gaffer-exec detect-concurrency
 **Combined Power:**
 ```bash
 # Full-featured test run (recommended for CI)
-gaffer-exec --graph graph.json --retry 3 --cache merkle -j auto --signal-mode graceful run test-all
+gaffer-exec --workspace-root . run --retry 3 --cache merkle -j auto --signal-mode graceful make:test-all
 
 # Performance benchmark vs alternatives
-gaffer-exec --graph graph.json run performance-benchmark
+gaffer-exec --workspace-root . run make:performance-benchmark
 
 # Test graceful signal handling (press Ctrl+C)
-gaffer-exec --graph graph.json --signal-mode graceful run test-signal-handling
+gaffer-exec --workspace-root . run --signal-mode graceful make:test-signal-handling
 ```
 
 ### Configuration Reference
@@ -228,19 +230,12 @@ Branches: 78.3%
 
 ## Configuration Details
 
-### Retry Configuration (graph.json)
+### Retry Configuration (CLI Flags)
 
-```json
-{
-  "unit-tests-lib": {
-    "retry": {
-      "max_attempts": 3,
-      "initial_delay_ms": 500,
-      "max_delay_ms": 5000,
-      "backoff_multiplier": 2.0
-    }
-  }
-}
+Retry behavior is controlled at run time rather than in the Makefile:
+
+```bash
+gaffer-exec --workspace-root . run --retry 3 make:test-all
 ```
 
 **Retry delays:**
@@ -252,14 +247,11 @@ Branches: 78.3%
 
 ### Cache Optimization (Merkle Tree)
 
-Tests are cached based on input file hashes:
-```json
-{
-  "unit-tests-lib": {
-    "inputs": ["src/lib/**/*.js", "tests/unit/lib/**/*.test.js"],
-    "outputs": ["coverage/lib/**"]
-  }
-}
+gaffer-exec hashes each target's inputs (the recipe and the files it reads) and
+caches the outputs:
+
+```bash
+gaffer-exec --workspace-root . run --cache merkle make:test-all
 ```
 
 **Cache behavior:**
@@ -268,15 +260,11 @@ Tests are cached based on input file hashes:
 
 ### Resource-Aware Parallelization
 
-```json
-{
-  "unit-tests-lib": {
-    "parallelism": {
-      "max_parallel": 4,
-      "memory_limit_mb": 512
-    }
-  }
-}
+Parallelism is controlled with the `-j` flag. Independent Makefile targets (for
+example the three unit-test suites) run concurrently:
+
+```bash
+gaffer-exec --workspace-root . run -j auto make:test-all
 ```
 
 **Auto-detection:**
@@ -294,7 +282,7 @@ Each test suite uses industry-standard frameworks:
 
 ## Performance Benchmarks
 
-Run `gaffer-exec run performance-benchmark --graph graph.json` to compare:
+Run `gaffer-exec --workspace-root . run make:performance-benchmark` to compare:
 
 | Tool | Cold Run | Warm Run | Cache Hit Rate | Retry Logic |
 |------|----------|----------|----------------|-------------|

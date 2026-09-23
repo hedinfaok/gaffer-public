@@ -51,19 +51,19 @@ run_test() {
 echo -e "\n${YELLOW}🧹 Cleaning up previous runs...${NC}"
 rm -rf data/ || true
 
-# Test 1: Validate graph.json structure
-run_test "Graph JSON validation" \
-    "python3 -c \"import json; graph=json.load(open('graph.json')); print('Valid graph.json with', len(graph['graphs']), 'graphs')\"" \
-    "Valid graph.json with [0-9]+ graphs"
+# Test 1: Validate Makefile target graph
+run_test "Makefile target validation" \
+    "python3 -c \"import re; targets=re.findall(r'^([a-zA-Z][a-zA-Z0-9_-]*):', open('Makefile').read(), re.M); print('Valid Makefile with', len(targets), 'targets')\"" \
+    "Valid Makefile with [0-9]+ targets"
 
 # Test 2: Check dependencies are installable
 run_test "Dependencies installation" \
-    "gaffer-exec --workspace-root . --graph graph.json run setup 2>&1" \
+    "gaffer-exec --workspace-root . run make:setup 2>&1" \
     "Virtual environment created and dependencies installed|Requirement already satisfied"
 
 # Test 3: Run data preparation step
 run_test "Data preparation step" \
-    "gaffer-exec --workspace-root . --graph graph.json run data-prep 2>&1" \
+    "gaffer-exec --workspace-root . run make:data-prep 2>&1" \
     "Data download completed"
 
 # Test 4: Verify datasets were created
@@ -78,7 +78,7 @@ run_test "California housing dataset validity" \
 
 # Test 6: Run feature engineering
 run_test "Feature engineering step" \
-    "gaffer-exec --workspace-root . --graph graph.json run feature-engineering 2>&1" \
+    "gaffer-exec --workspace-root . run make:feature-engineering 2>&1" \
     "Feature engineering.*completed"
 
 # Test 7: Check processed data
@@ -88,7 +88,7 @@ run_test "Processed datasets created" \
 
 # Test 8: Run model training 
 run_test "Model training step" \
-    "gaffer-exec --workspace-root . --graph graph.json run train-models 2>&1" \
+    "gaffer-exec --workspace-root . run make:train-models 2>&1" \
     "Training.*completed"
 
 # Test 9: Check models were created
@@ -103,7 +103,7 @@ run_test "Training results generated" \
 
 # Test 11: Run model evaluation
 run_test "Model evaluation step" \
-    "gaffer-exec --workspace-root . --graph graph.json run evaluate-models 2>&1" \
+    "gaffer-exec --workspace-root . run make:evaluate-models 2>&1" \
     "Evaluation.*completed"
 
 # Test 12: Check evaluation results
@@ -113,7 +113,7 @@ run_test "Evaluation results generated" \
 
 # Test 13: Run complete pipeline
 run_test "Complete pipeline execution" \
-    "gaffer-exec --workspace-root . --graph graph.json run pipeline 2>&1" \
+    "gaffer-exec --workspace-root . run make:pipeline 2>&1" \
     "Complete ML pipeline finished successfully"
 
 # Test 14: Validate pipeline output structure
@@ -153,7 +153,7 @@ print('✅ Data pipeline integrity verified')
 
 # Test 17: Test workflow commands
 run_test "Train workflow command" \
-    "gaffer-exec --workspace-root . --graph graph.json run train-only 2>&1" \
+    "gaffer-exec --workspace-root . run make:train-only 2>&1" \
     "Training pipeline completed"
 
 # Test 18: Test individual component execution

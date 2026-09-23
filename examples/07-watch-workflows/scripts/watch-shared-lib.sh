@@ -7,7 +7,7 @@ WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "👀 Watching shared-lib for changes..."
 echo "   Source: shared-lib/src/"
-echo "   Trigger: gaffer-exec run rebuild-shared-lib"
+echo "   Trigger: gaffer-exec --workspace-root . run make:rebuild-shared-lib"
 echo "   Cascades: Will also rebuild api-service and frontend"
 echo ""
 
@@ -36,10 +36,10 @@ fswatch \
     RELATIVE_FILE="${file#$WORKSPACE_ROOT/}"
     echo ""
     echo "🔄 Changed: $RELATIVE_FILE"
-    echo "   Running: gaffer-exec run rebuild-shared-lib"
+    echo "   Running: gaffer-exec --workspace-root . run make:rebuild-shared-lib"
     
     cd "$WORKSPACE_ROOT"
-    if gaffer-exec --graph graph.json run rebuild-shared-lib; then
+    if gaffer-exec --workspace-root . run make:rebuild-shared-lib; then
         echo "✅ Rebuild complete"
     else
         echo "❌ Rebuild failed"

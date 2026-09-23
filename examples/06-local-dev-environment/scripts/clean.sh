@@ -31,4 +31,4 @@ docker rm taskmanager-db 2>/dev/null || true
 
 echo "✅ Development environment cleaned"
 echo ""
-echo "💡 To start fresh, run: gaffer-exec run dev"
+echo "💡 To start fresh, run: gaffer-exec --workspace-root . run make:dev"

@@ -29,9 +29,25 @@ if [ ${#missing_tools[@]} -gt 0 ]; then
     echo "🚀 Continuing with partial test..."
 fi
 
+# Test 0: Validate the Makefile task graph
+echo "Test 0: Validating Makefile task graph..."
+if [ -f Makefile ]; then
+    echo "✅ Makefile found"
+else
+    echo "❌ Makefile missing"
+    exit 1
+fi
+
+if gaffer-exec --workspace-root . list -t makefile | grep -q "multi-language-build"; then
+    echo "✅ gaffer-exec discovered the Makefile targets"
+else
+    echo "❌ gaffer-exec could not load the Makefile targets"
+    exit 1
+fi
+
 # Test 1: Run the multi-language build
 echo "Test 1: Running multi-language-build..."
-output=$(gaffer-exec run multi-language-build --graph graph.json 2>&1)
+output=$(gaffer-exec --workspace-root . run make:multi-language-build 2>&1)
 if echo "$output" | grep -q "All components built"; then
     echo "✅ Multi-language build completed"
 else
@@ -68,7 +84,7 @@ done
 
 # Test 4: Integration test
 echo "Test 4: Running integration test..."
-integration_output=$(gaffer-exec run integration-test --graph graph.json 2>&1)
+integration_output=$(gaffer-exec --workspace-root . run make:integration-test 2>&1)
 if echo "$integration_output" | grep -q "Integration tests passed"; then
     echo "✅ Integration test passed"
 else
@@ -95,12 +111,12 @@ echo ""
 echo "🎉 Multi-language build tests completed!"
 echo ""
 echo "🚀 To run manually:"
-echo "   gaffer-exec run multi-language-build --graph graph.json"
-echo "   gaffer-exec run start-all --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:multi-language-build"
+echo "   gaffer-exec --workspace-root . run make:start-all"
 echo ""
 echo "📋 Language-specific builds:"
-echo "   gaffer-exec run rust-backend --graph graph.json"
-echo "   gaffer-exec run go-cli --graph graph.json"
-echo "   gaffer-exec run node-frontend --graph graph.json"
-echo "   gaffer-exec run python-ml --graph graph.json"
+echo "   gaffer-exec --workspace-root . run make:rust-backend"
+echo "   gaffer-exec --workspace-root . run make:go-cli"
+echo "   gaffer-exec --workspace-root . run make:node-frontend"
+echo "   gaffer-exec --workspace-root . run make:python-ml"
 echo "=== All tests passed ==="

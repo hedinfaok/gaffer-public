@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate ML Pipeline Report
-Consolidated reporting script to avoid complex shell escaping in graph.json
+Consolidated reporting script to avoid complex shell escaping in the Makefile
 """
 
 import json

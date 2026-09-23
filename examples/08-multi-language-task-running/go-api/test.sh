@@ -1,5 +1,6 @@
 #!/bin/bash
-# Traditional shell script approach - we'll replace this with graph.json
+# Traditional shell script approach - kept for reference. The root Makefile
+# exposes this as the test-go target, run by gaffer-exec.
 
 set -e
 

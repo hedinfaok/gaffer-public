@@ -7,7 +7,7 @@ WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "👀 Watching frontend for changes..."
 echo "   Source: frontend/src/"
-echo "   Trigger: gaffer-exec run rebuild-frontend"
+echo "   Trigger: gaffer-exec --workspace-root . run make:rebuild-frontend"
 echo "   Note: Changes to shared-lib will trigger this automatically"
 echo ""
 
@@ -38,10 +38,10 @@ fswatch \
     RELATIVE_FILE="${file#$WORKSPACE_ROOT/}"
     echo ""
     echo "🔄 Changed: $RELATIVE_FILE"
-    echo "   Running: gaffer-exec run rebuild-frontend"
+    echo "   Running: gaffer-exec --workspace-root . run make:rebuild-frontend"
     
     cd "$WORKSPACE_ROOT"
-    if gaffer-exec --graph graph.json run rebuild-frontend; then
+    if gaffer-exec --workspace-root . run make:rebuild-frontend; then
         echo "✅ Rebuild complete"
     else
         echo "❌ Rebuild failed"

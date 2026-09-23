@@ -52,22 +52,17 @@ fswatch \
 - Parallel execution where possible
 - Proper error propagation
 
-**Example Task Graph**:
-```json
-{
-  "rebuild-shared-lib": {
-    "command": "cd shared-lib && npm run build",
-    "deps": []
-  },
-  "rebuild-api": {
-    "command": "cd api-service && npm run build",
-    "deps": ["rebuild-shared-lib"]
-  }
-}
+**Example Task Graph** (`Makefile`):
+```make
+rebuild-shared-lib:
+	cd shared-lib && npm run build
+
+rebuild-api: rebuild-shared-lib
+	cd api-service && npm run build
 ```
 
 **Execution Flow**:
-1. User/script invokes: `gaffer-exec run rebuild-api`
+1. User/script invokes: `gaffer-exec --workspace-root . run make:rebuild-api`
 2. Gaffer checks if `rebuild-shared-lib` (dependency) needs to run
 3. Compares current state with cached state (via hashing)
 4. Runs `rebuild-shared-lib` only if changed
@@ -78,7 +73,7 @@ fswatch \
 - **Smart**: Only rebuilds what changed
 - **Fast**: Skips unnecessary work
 - **Composable**: Tasks are building blocks
-- **Declarative**: Graph in JSON, not imperative scripts
+- **Declarative**: Targets in a standard Makefile, not imperative scripts
 
 ### 3. Integration Layer (Shell Scripts)
 
@@ -87,7 +82,7 @@ fswatch \
 **Pattern**:
 ```bash
 fswatch [options] [paths] | while read -r file; do
-    gaffer-exec run [task]
+    gaffer-exec --workspace-root . run make:[task]
 done
 ```
 
@@ -111,7 +106,7 @@ fswatch \
   --include '\.ts$' \
   shared-lib/src/ | while read -r file; do
     echo "Changed: $file"
-    gaffer-exec --graph graph.json run rebuild-shared-lib
+    gaffer-exec --workspace-root . run make:rebuild-shared-lib
 done
 ```
 
@@ -134,7 +129,7 @@ done
                       ▼
 ┌─────────────────────────────────────────────────────────┐
 │ 3. watch-shared-lib.sh receives event                  │
-│    - Pipes to: gaffer-exec run rebuild-shared-lib      │
+│    - Pipes to: gaffer-exec ... make:rebuild-shared-lib │
 └─────────────────────┬───────────────────────────────────┘
                       │
                       ▼
@@ -169,7 +164,7 @@ done
                       ▼
 ┌─────────────────────────────────────────────────────────┐
 │ 3. watch-api.sh receives event                         │
-│    - Pipes to: gaffer-exec run rebuild-api             │
+│    - Pipes to: gaffer-exec ... make:rebuild-api        │
 └─────────────────────┬───────────────────────────────────┘
                       │
                       ▼
@@ -347,20 +342,16 @@ wait  # Wait for all background processes
 ### Adding a New Service
 
 1. Create the service directory
-2. Add build task to `graph.json`:
-   ```json
-   {
-     "rebuild-new-service": {
-       "command": "cd new-service && npm run build",
-       "deps": ["rebuild-shared-lib"]
-     }
-   }
+2. Add a build target to the `Makefile`:
+   ```make
+   rebuild-new-service: rebuild-shared-lib
+   	cd new-service && npm run build
    ```
 3. Create watch script:
    ```bash
    # scripts/watch-new-service.sh
    fswatch --latency 0.5 new-service/src/ | while read -r file; do
-       gaffer-exec run rebuild-new-service
+       gaffer-exec --workspace-root . run make:rebuild-new-service
    done
    ```
 4. Add to `watch-all.sh`:
@@ -374,19 +365,19 @@ wait  # Wait for all background processes
 **watchman**:
 ```bash
 watchman-make -p 'shared-lib/src/**/*.ts' \
-  --run 'gaffer-exec run rebuild-shared-lib'
+  --run 'gaffer-exec --workspace-root . run make:rebuild-shared-lib'
 ```
 
 **chokidar-cli**:
 ```bash
 chokidar 'shared-lib/src/**/*.ts' \
-  -c 'gaffer-exec run rebuild-shared-lib'
+  -c 'gaffer-exec --workspace-root . run make:rebuild-shared-lib'
 ```
 
 **inotify-tools** (Linux):
 ```bash
 inotifywait -m -r -e modify shared-lib/src/ | while read -r file; do
-    gaffer-exec run rebuild-shared-lib
+    gaffer-exec --workspace-root . run make:rebuild-shared-lib
 done
 ```
 

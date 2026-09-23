@@ -29,14 +29,14 @@ console.log();
 const gafferStart = Date.now();
 try {
     // First run - cold cache
-    execSync('gaffer-exec run clean --graph graph.json', { stdio: 'pipe' });
+    execSync('gaffer-exec --workspace-root . run make:clean', { stdio: 'pipe' });
     const coldStart = Date.now();
-    execSync('gaffer-exec run test-all --graph graph.json', { stdio: 'pipe' });
+    execSync('gaffer-exec --workspace-root . run make:test-all', { stdio: 'pipe' });
     const coldTime = Date.now() - coldStart;
     
     // Second run - warm cache (no changes)
     const warmStart = Date.now();
-    execSync('gaffer-exec run test-all --graph graph.json', { stdio: 'pipe' });
+    execSync('gaffer-exec --workspace-root . run make:test-all', { stdio: 'pipe' });
     const warmTime = Date.now() - warmStart;
     
     benchmarks.push({

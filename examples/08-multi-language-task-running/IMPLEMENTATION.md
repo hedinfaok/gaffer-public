@@ -6,7 +6,7 @@ Complete implementation of multi-language task orchestration example demonstrati
 ## Files Created: 43
 
 ### Core Configuration
-- `graph.json` - Unified task orchestration graph (35 tasks)
+- `Makefile` - Unified task orchestration graph (32 targets, read by gaffer-exec)
 - `.gitignore` - Root-level ignore rules
 
 ### Documentation
@@ -108,7 +108,7 @@ rust-cli/
 
 ## Task Graph Structure
 
-### 35 Tasks Total
+### 32 Targets Total
 
 **Installation (5 tasks):**
 - install-node, install-python, install-go, install-rust
@@ -146,15 +146,10 @@ rust-cli/
 - Unified interface regardless of language
 
 ### 2. Dependency Management
-Tasks can depend on other tasks:
-```json
-{
-  "build-node": {
-    "command": "npm run build",
-    "working_dir": "node-frontend",
-    "deps": ["install-node"]
-  }
-}
+Tasks depend on other tasks through Make prerequisites:
+```makefile
+build-node: install-node
+	@cd node-frontend && npm run build
 ```
 
 ### 3. Automatic Parallelization
@@ -164,14 +159,10 @@ Tasks without dependencies run in parallel:
 - All 4 test tasks run simultaneously
 
 ### 4. Task Composition
-Composite tasks orchestrate multiple sub-tasks:
-```json
-{
-  "build-all": {
-    "deps": ["build-node", "build-python", "build-go", "build-rust"],
-    "command": "echo '✓ All components built'"
-  }
-}
+Composite targets orchestrate multiple sub-targets:
+```makefile
+build-all: build-node build-python build-go build-rust
+	@echo '✓ All components built'
 ```
 
 ### 5. Task Dependencies
@@ -193,9 +184,10 @@ Clear dependency chains:
 - ❌ No cross-language orchestration
 
 ### After (Gaffer Approach)
-- ✅ Single graph.json configuration
-- ✅ 1 unified interface: `gaffer-exec run <task>`
+- ✅ Single top-level Makefile task graph
+- ✅ 1 unified interface: `gaffer-exec --workspace-root . run make:<task>`
 - ✅ Automatic parallelization
+- ✅ Content-based caching
 - ✅ Clear dependency management
 - ✅ Consistent workflows across all languages
 
@@ -264,9 +256,9 @@ cd examples/08-multi-language-task-running
 ./setup.sh
 
 # Common workflows
-gaffer-exec run test-all --graph graph.json
-gaffer-exec run lint-all --graph graph.json
-gaffer-exec run build-all --graph graph.json
+gaffer-exec --workspace-root . run make:test-all
+gaffer-exec --workspace-root . run make:lint-all
+gaffer-exec --workspace-root . run make:build-all
 
 # Validation
 ./test.sh        # Run test suite
@@ -277,10 +269,10 @@ gaffer-exec run build-all --graph graph.json
 
 All validation criteria met:
 
-✅ User can run: `gaffer-exec run build-all --graph graph.json`
-✅ User can run: `gaffer-exec run test-all --graph graph.json`
-✅ User can run: `gaffer-exec run dev --graph graph.json`
-✅ User can run: `gaffer-exec run lint-all --graph graph.json`
+✅ User can run: `gaffer-exec --workspace-root . run make:build-all`
+✅ User can run: `gaffer-exec --workspace-root . run make:test-all`
+✅ User can run: `gaffer-exec --workspace-root . run make:dev`
+✅ User can run: `gaffer-exec --workspace-root . run make:lint-all`
 ✅ All tests in test.sh pass
 ✅ Benchmark shows performance advantage
 ✅ No use of "polyglot" terminology
@@ -289,4 +281,4 @@ All validation criteria met:
 
 ## Summary
 
-This example demonstrates the unified power of gaffer-exec for multi-language task orchestration. It replaces fragmented tooling (npm scripts, Makefiles, shell scripts) with a single, powerful, cached, parallelized task graph that works consistently across all languages.
+This example demonstrates the unified power of gaffer-exec for multi-language task orchestration. It replaces fragmented per-language invocation with a single top-level Makefile task graph that gaffer-exec reads, caches, and parallelizes consistently across all languages.

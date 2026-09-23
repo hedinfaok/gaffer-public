@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Clean build artifacts across all platforms
+# Clean build artifacts across all platforms.
+# Invoked by the Makefile `clean` target:
+#   gaffer-exec --workspace-root . run make:clean   /   make clean
 
 set -e
 

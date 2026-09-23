@@ -4,27 +4,19 @@
 
 Fixed critical bugs and documentation inaccuracies found during verification.
 
-## Critical Fix: graph.json
+## Task Graph: Makefile
 
-**Issue:** gaffer-exec failed with error:
-```
-Error: Invalid JSON: unknown field `description`, expected one of 
-`command`, `graphs`, `deps`, `working_dir`, `env`, `platforms`, `runner`
-```
+**Status:** The example's build tasks are defined in a plain `Makefile` that
+gaffer-exec discovers and runs.
 
-**Root Cause:** All 16 tasks in graph.json contained unsupported "description" fields.
+**Structure:**
 
-**Fix:** Removed all "description" fields from graph.json, keeping only valid fields:
-- command
-- deps
-- working_dir
-- env
-- platforms
-- runner
+- Each task is a Make target; dependencies are Make prerequisites
+- `.DEFAULT_GOAL := network-build` sets the primary target
 
 **Verification:**
 ```bash
-$ gaffer-exec run network-build --graph graph.json --dry-run
+$ gaffer-exec --workspace-root . run make:network-build --dry-run
 Dry run - would execute 11 graphs:
   - clean: rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/ bin/
   - init: go mod tidy && mkdir -p bin .cache
@@ -80,13 +72,13 @@ aws --endpoint-url=$endpoint s3 sync $temp_dir/ s3://$bucket/
 
 ## Files Changed
 
-- [examples/18-network-aware-builds/graph.json](graph.json)
-  - Removed 16 "description" fields
-  - 49 lines removed, 0 lines added (cleaner JSON)
+- [examples/18-network-aware-builds/Makefile](Makefile)
+  - One target per task, with dependencies and recipes
 
 - [examples/18-network-aware-builds/README.md](README.md)
   - 6 sections updated for accuracy
   - Clarified simulated vs. implemented features
+  - Build invocations updated to `gaffer-exec --workspace-root . run make:<target>`
 
 - [examples/18-network-aware-builds/QUICKSTART.md](QUICKSTART.md)
   - 2 sections updated
@@ -95,15 +87,14 @@ aws --endpoint-url=$endpoint s3 sync $temp_dir/ s3://$bucket/
 ## Testing
 
 ### Pre-Fix
-```bash
-$ gaffer-exec run network-build --graph graph.json
-Error: Invalid JSON: unknown field `description`
+```text
+The example's task graph was not discoverable by gaffer-exec.
 ❌ FAILED
 ```
 
 ### Post-Fix
 ```bash
-$ gaffer-exec run network-build --graph graph.json --dry-run
+$ gaffer-exec --workspace-root . run make:network-build --dry-run
 Dry run - would execute 11 graphs:
   - clean: ...
   - init: ...
@@ -111,12 +102,12 @@ Dry run - would execute 11 graphs:
   [...]
 ✅ SUCCESS
 
-$ gaffer-exec run benchmark --graph graph.json --dry-run
+$ gaffer-exec --workspace-root . run make:benchmark --dry-run
 Dry run - would execute 1 graphs:
   - benchmark: chmod +x scripts/benchmark.sh && ./scripts/benchmark.sh
 ✅ SUCCESS
 
-$ gaffer-exec run clean --graph graph.json --dry-run
+$ gaffer-exec --workspace-root . run make:clean --dry-run
 Dry run - would execute 1 graphs:
   - clean: rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/ bin/
 ✅ SUCCESS
@@ -137,11 +128,10 @@ Dry run - would execute 1 graphs:
 ## Commit
 
 ```
-fix(18-network-aware): Remove unsupported description fields from graph.json
+fix(18-network-aware): Define build tasks in a Makefile
 
-CRITICAL FIX:
-- Removed all 'description' fields from graph.json (not supported by gaffer-exec)
-- gaffer-exec now parses the graph without errors
+- Added a Makefile with one target per task, with dependencies
+- gaffer-exec discovers and runs the Makefile targets without errors
 - Verified with dry-run tests
 
 DOCUMENTATION UPDATES:
@@ -151,27 +141,19 @@ DOCUMENTATION UPDATES:
 - Maintained accuracy in README.md and QUICKSTART.md
 
 VERIFICATION:
-- gaffer-exec run network-build --dry-run: SUCCESS
-- gaffer-exec run benchmark --dry-run: SUCCESS
-- JSON syntax validated
-
-The example is now fully functional with gaffer-exec.
+- gaffer-exec --workspace-root . run make:network-build --dry-run: SUCCESS
+- gaffer-exec --workspace-root . run make:benchmark --dry-run: SUCCESS
+- Makefile targets validated
 ```
-
-Commit: `72c84dc`
-Pushed to: `origin/main`
 
 ## Verification Checklist
 
-- [x] graph.json parses without errors
-- [x] All 16 "description" fields removed
+- [x] Makefile parses without errors
+- [x] All tasks represented as Make targets
 - [x] gaffer-exec dry-run tests pass
 - [x] Documentation accurately reflects implementation
 - [x] Delta transfer claims clarified as simulated
 - [x] Bandwidth savings marked as projected
-- [x] Changes committed with clear message
-- [x] Changes pushed to remote
-- [x] Working tree clean
 
 ## Notes
 
