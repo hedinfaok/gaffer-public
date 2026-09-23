@@ -1,0 +1,24 @@
+version: "3"
+
+tasks:
+  setup:
+    desc: Create the build directory and stage the source fixture
+    cmds:
+      - mkdir -p build/taskfile
+      - cp src/message.txt build/taskfile/message.txt
+
+  build:
+    desc: Build the greeting artifact from the staged fixture
+    deps:
+      - setup
+    cmds:
+      - tr '[:lower:]' '[:upper:]' < build/taskfile/message.txt > build/taskfile/greeting.txt
+      - echo "built build/taskfile/greeting.txt"
+
+  test:
+    desc: Verify the built greeting artifact
+    deps:
+      - build
+    cmds:
+      - grep -q "HELLO FROM ALTERNATE MANIFESTS" build/taskfile/greeting.txt
+      - echo "taskfile: all checks passed"
