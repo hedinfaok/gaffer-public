@@ -123,7 +123,7 @@ status, evidence command, and outcome.
 
 | ID | Title | Constraint | Category | Priority | Status |
 |----|-------|------------|----------|----------|--------|
-| C-001 | Shipped CLI only | Verification uses installed `gaffer-exec` 0.7.1; no CLI changes. | Technical | High | Open |
+| C-001 | Shipped CLI only | Verification uses the installed `gaffer-exec` 0.8.0; no CLI changes. | Technical | High | Open |
 | C-002 | No new required services | Examples must not be rewritten to require new external services. | Technical | Medium | Open |
 | C-003 | Mission branch | All work lands on `verify-examples` and merges back to it. | Process | High | Open |
 | C-004 | Fixes stay in-scope | Defects are fixed within the example that owns them; no cross-example refactors. | Process | Medium | Open |
