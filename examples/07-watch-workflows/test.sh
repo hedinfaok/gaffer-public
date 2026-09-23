@@ -17,30 +17,30 @@ TESTS_FAILED=0
 assert_success() {
     if [ $? -eq 0 ]; then
         echo "  ✅ $1"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
     else
         echo "  ❌ $1"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
 }
 
 assert_file_exists() {
     if [ -f "$1" ]; then
         echo "  ✅ File exists: $1"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
     else
         echo "  ❌ File missing: $1"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
 }
 
 assert_dir_exists() {
     if [ -d "$1" ]; then
         echo "  ✅ Directory exists: $1"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
     else
         echo "  ❌ Directory missing: $1"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
 }
 
@@ -71,18 +71,18 @@ echo "---------------------"
 for script in watch-shared-lib.sh watch-api.sh watch-frontend.sh watch-all.sh; do
     if [ -f "scripts/$script" ]; then
         echo "  ✅ Script exists: scripts/$script"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
         
         if [ -x "scripts/$script" ]; then
             echo "  ✅ Script is executable: scripts/$script"
-            ((TESTS_PASSED++))
+            TESTS_PASSED=$((TESTS_PASSED+1))
         else
             echo "  ❌ Script not executable: scripts/$script"
-            ((TESTS_FAILED++))
+            TESTS_FAILED=$((TESTS_FAILED+1))
         fi
     else
         echo "  ❌ Script missing: scripts/$script"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
 done
 echo ""
@@ -92,21 +92,21 @@ echo "Test 4: Task Graph Structure"
 echo "-----------------------------"
 if [ -f Makefile ]; then
     echo "  ✅ Makefile exists"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 
     # Check for required targets
     for task in clean build-shared-lib build-api build-frontend rebuild-shared-lib rebuild-api rebuild-frontend; do
         if grep -qE "^$task:" Makefile; then
             echo "  ✅ Target defined: $task"
-            ((TESTS_PASSED++))
+            TESTS_PASSED=$((TESTS_PASSED+1))
         else
             echo "  ❌ Target missing: $task"
-            ((TESTS_FAILED++))
+            TESTS_FAILED=$((TESTS_FAILED+1))
         fi
     done
 else
     echo "  ❌ Makefile missing"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 echo ""
 
@@ -115,28 +115,28 @@ echo "Test 5: Gaffer-exec Schema Validation"
 echo "--------------------------------------"
 if command -v gaffer-exec &> /dev/null; then
     echo "  ✅ gaffer-exec is installed"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
     
     # Test that gaffer-exec discovers the Makefile graph
     if gaffer-exec --workspace-root . list -t makefile > /dev/null 2>&1; then
         echo "  ✅ Makefile graph is valid (gaffer-exec list -t makefile)"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
     else
         echo "  ❌ Makefile graph validation failed"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
     
     # Test that clean target can be executed
     if gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1; then
         echo "  ✅ Clean target executes successfully"
-        ((TESTS_PASSED++))
+        TESTS_PASSED=$((TESTS_PASSED+1))
     else
         echo "  ❌ Clean target execution failed"
-        ((TESTS_FAILED++))
+        TESTS_FAILED=$((TESTS_FAILED+1))
     fi
 else
     echo "  ❌ gaffer-exec not installed"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 echo ""
 
@@ -145,7 +145,7 @@ echo "Test 6: Watch Mode Dependencies"
 echo "--------------------------------"
 if command -v fswatch &> /dev/null; then
     echo "  ✅ fswatch is installed"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 else
     echo "  ⚠️  fswatch not installed (required for watch mode)"
     echo "     Install with: brew install fswatch (macOS)"
@@ -171,7 +171,7 @@ if [ ! -d "shared-lib/node_modules" ]; then
     cd ..
 else
     echo "  ✅ shared-lib dependencies already installed"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 fi
 
 if [ ! -d "api-service/node_modules" ]; then
@@ -181,7 +181,7 @@ if [ ! -d "api-service/node_modules" ]; then
     cd ..
 else
     echo "  ✅ api-service dependencies already installed"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 fi
 
 if [ ! -d "frontend/node_modules" ]; then
@@ -191,7 +191,7 @@ if [ ! -d "frontend/node_modules" ]; then
     cd ..
 else
     echo "  ✅ frontend dependencies already installed"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 fi
 echo ""
 
@@ -228,34 +228,34 @@ echo "Test 10: Watch Script Patterns"
 echo "-------------------------------"
 if grep -q "fswatch" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh uses fswatch"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 else
     echo "  ❌ watch-shared-lib.sh doesn't use fswatch"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 if grep -q "gaffer-exec" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh calls gaffer-exec"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 else
     echo "  ❌ watch-shared-lib.sh doesn't call gaffer-exec"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 if grep -q -- "--latency" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh uses debouncing (--latency)"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 else
     echo "  ❌ watch-shared-lib.sh missing debouncing"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 
 if grep -q "SIGINT SIGTERM" scripts/watch-shared-lib.sh; then
     echo "  ✅ watch-shared-lib.sh handles graceful shutdown"
-    ((TESTS_PASSED++))
+    TESTS_PASSED=$((TESTS_PASSED+1))
 else
     echo "  ❌ watch-shared-lib.sh missing signal handlers"
-    ((TESTS_FAILED++))
+    TESTS_FAILED=$((TESTS_FAILED+1))
 fi
 echo ""
 

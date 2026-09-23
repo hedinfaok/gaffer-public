@@ -3,7 +3,7 @@ import {
   User,
   ApiResponse,
   formatTimestamp,
-} from '../../../shared-lib/dist/index';
+} from '../../shared-lib/dist/index';
 
 const API_BASE = 'http://localhost:4000';
 
