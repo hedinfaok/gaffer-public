@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+# Shared MinIO/S3 helpers for the remote cache hooks.
+#
+# Sourced by scripts/restore.sh and scripts/save.sh. This file is intentionally
+# not executable so gaffer-exec does not discover it as a task graph.
+#
+# Configuration (environment variables):
+#   MINIO_ENDPOINT     S3 endpoint          (default http://localhost:9000)
+#   MINIO_BUCKET       bucket name          (default gaffer-cache)
+#   MINIO_ACCESS_KEY   access key           (default minioadmin)
+#   MINIO_SECRET_KEY   secret key           (default minioadmin)
+#   MINIO_MC_IMAGE     client image used by the Docker fallback
+
+MINIO_ENDPOINT="${MINIO_ENDPOINT:-http://localhost:9000}"
+MINIO_BUCKET="${MINIO_BUCKET:-gaffer-cache}"
+MINIO_ACCESS_KEY="${MINIO_ACCESS_KEY:-minioadmin}"
+MINIO_SECRET_KEY="${MINIO_SECRET_KEY:-minioadmin}"
+MINIO_MC_IMAGE="${MINIO_MC_IMAGE:-quay.io/minio/mc:latest}"
+
+_minio_port() {
+  local port="${MINIO_ENDPOINT##*:}"
+  port="${port%%/*}"
+  case "$port" in
+    ''|*[!0-9]*) echo 9000 ;;
+    *) echo "$port" ;;
+  esac
+}
+
+# Which client is available: mc, aws, docker, or none.
+remote_client() {
+  if command -v mc >/dev/null 2>&1; then
+    echo mc
+  elif command -v aws >/dev/null 2>&1; then
+    echo aws
+  elif command -v docker >/dev/null 2>&1; then
+    echo docker
+  else
+    echo none
+  fi
+}
+
+remote_available() {
+  [ "$(remote_client)" != none ]
+}
+
+# Run the MinIO client in a container against the host MinIO. Optional first
+# argument is a host directory to mount at /cache.
+_mc_docker() {
+  local mount=""
+  if [ "$1" = "--mount" ]; then
+    mount="$2"
+    shift 2
+  fi
+  if [ -n "$mount" ]; then
+    docker run --rm \
+      --add-host=host.docker.internal:host-gateway \
+      -v "$mount:/cache" \
+      -e "MC_HOST_local=http://${MINIO_ACCESS_KEY}:${MINIO_SECRET_KEY}@host.docker.internal:$(_minio_port)" \
+      "$MINIO_MC_IMAGE" "$@"
+  else
+    docker run --rm \
+      --add-host=host.docker.internal:host-gateway \
+      -e "MC_HOST_local=http://${MINIO_ACCESS_KEY}:${MINIO_SECRET_KEY}@host.docker.internal:$(_minio_port)" \
+      "$MINIO_MC_IMAGE" "$@"
+  fi
+}
+
+# remote_exists <object-key>
+remote_exists() {
+  local object="$1"
+  case "$(remote_client)" in
+    mc)
+      mc alias set gaffer "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" >/dev/null 2>&1 &&
+        mc stat "gaffer/$object" >/dev/null 2>&1
+      ;;
+    aws)
+      AWS_ACCESS_KEY_ID="$MINIO_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$MINIO_SECRET_KEY" \
+        aws --endpoint-url "$MINIO_ENDPOINT" s3 ls "s3://$object" >/dev/null 2>&1
+      ;;
+    docker)
+      _mc_docker stat "local/$object" >/dev/null 2>&1
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+}
+
+# remote_get <object-key> <destination-path>
+remote_get() {
+  local object="$1" dest="$2" dest_dir dest_name
+  case "$(remote_client)" in
+    mc)
+      mc alias set gaffer "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" >/dev/null 2>&1 &&
+        mc cp "gaffer/$object" "$dest" >/dev/null 2>&1
+      ;;
+    aws)
+      AWS_ACCESS_KEY_ID="$MINIO_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$MINIO_SECRET_KEY" \
+        aws --endpoint-url "$MINIO_ENDPOINT" s3 cp "s3://$object" "$dest" >/dev/null 2>&1
+      ;;
+    docker)
+      dest_dir="$(cd "$(dirname "$dest")" && pwd)"
+      dest_name="$(basename "$dest")"
+      _mc_docker --mount "$dest_dir" cp "local/$object" "/cache/$dest_name" >/dev/null 2>&1
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+}
+
+# remote_rm_recursive - remove every object in the cache bucket.
+remote_rm_recursive() {
+  case "$(remote_client)" in
+    mc)
+      mc alias set gaffer "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" >/dev/null 2>&1 &&
+        mc rm --recursive --force "gaffer/$MINIO_BUCKET/" >/dev/null 2>&1
+      ;;
+    aws)
+      AWS_ACCESS_KEY_ID="$MINIO_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$MINIO_SECRET_KEY" \
+        aws --endpoint-url "$MINIO_ENDPOINT" s3 rm "s3://$MINIO_BUCKET" --recursive >/dev/null 2>&1
+      ;;
+    docker)
+      _mc_docker rm --recursive --force "local/$MINIO_BUCKET/" >/dev/null 2>&1
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+}
+
+# remote_put <source-path> <object-key>
+remote_put() {
+  local src="$1" object="$2" src_dir src_name
+  case "$(remote_client)" in
+    mc)
+      mc alias set gaffer "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" >/dev/null 2>&1 &&
+        mc cp "$src" "gaffer/$object" >/dev/null 2>&1
+      ;;
+    aws)
+      AWS_ACCESS_KEY_ID="$MINIO_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$MINIO_SECRET_KEY" \
+        aws --endpoint-url "$MINIO_ENDPOINT" s3 cp "$src" "s3://$object" >/dev/null 2>&1
+      ;;
+    docker)
+      src_dir="$(cd "$(dirname "$src")" && pwd)"
+      src_name="$(basename "$src")"
+      _mc_docker --mount "$src_dir" cp "/cache/$src_name" "local/$object" >/dev/null 2>&1
+      ;;
+    *)
+      return 2
+      ;;
+  esac
+}
