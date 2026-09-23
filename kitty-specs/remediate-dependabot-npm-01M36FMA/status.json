@@ -1,16 +1,16 @@
 {
-  "event_count": 14,
-  "last_event_id": "01M36G7TSEEQ3HKTDPEGZ4E8MJ",
-  "materialized_at": "2026-09-23T06:46:21.230485+00:00",
+  "event_count": 15,
+  "last_event_id": "01M36G7WHEHNVN1ZCR5WPQ9S08",
+  "materialized_at": "2026-09-23T06:46:23.022814+00:00",
   "mission_number": "",
   "mission_slug": "remediate-dependabot-npm-01M36FMA",
   "mission_type": "software-dev",
   "summary": {
-    "approved": 1,
+    "approved": 0,
     "blocked": 0,
     "canceled": 0,
     "claimed": 0,
-    "done": 1,
+    "done": 2,
     "for_review": 0,
     "in_progress": 0,
     "in_review": 0,
@@ -56,10 +56,13 @@
       "agent_profile_version": "__resolved_profile_version_absent__",
       "assignee": "opencode",
       "force_count": 0,
-      "lane": "approved",
-      "last_event_id": "01M36G7TSEEQ3HKTDPEGZ4E8MJ",
-      "last_transition_at": "2026-09-23T06:46:21.230485+00:00",
+      "lane": "done",
+      "last_event_id": "01M36G7WHEHNVN1ZCR5WPQ9S08",
+      "last_transition_at": "2026-09-23T06:46:23.022814+00:00",
       "model": "__resolved_model_absent__",
+      "notes": [
+        "Reviewed: 08 26->4, 04 11->1; builds/tests verified; residuals documented."
+      ],
       "provider": "__resolved_provider_absent__",
       "review_result": {
         "reference": "review-cycle://remediate-dependabot-npm-01M36FMA/WP02-remediate-08-04/review-cycle-1.md",
