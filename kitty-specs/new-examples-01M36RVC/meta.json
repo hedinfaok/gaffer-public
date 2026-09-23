@@ -10,5 +10,7 @@
   "purpose_tldr": "Build six new examples covering onboarding, incremental CI, GitHub Actions caching, real remote cache, alternate manifests, and Docker build graphs.",
   "slug": "new-examples-01M36RVC",
   "target_branch": "new-examples",
-  "topology": "single_branch"
+  "topology": "single_branch",
+  "vcs": "git",
+  "vcs_locked_at": "2026-09-23T09:18:43.523328+00:00"
 }
