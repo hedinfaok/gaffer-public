@@ -1,0 +1,16 @@
+# just recipes for the same source fixture.
+
+setup:
+    mkdir -p build/just
+    cp src/message.txt build/just/message.txt
+
+build: setup
+    tr '[:lower:]' '[:upper:]' < build/just/message.txt > build/just/greeting.txt
+    echo "built build/just/greeting.txt"
+
+test: build
+    grep -q "HELLO FROM ALTERNATE MANIFESTS" build/just/greeting.txt
+    echo "just: all checks passed"
+
+clean:
+    rm -rf build
