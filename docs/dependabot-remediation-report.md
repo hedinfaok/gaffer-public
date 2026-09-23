@@ -21,8 +21,21 @@ itself deprecated and pins the affected build tooling.
 | **Total** | **112** | **36** | **235** | |
 
 `npm audit` counts unique advisories; Dependabot counts advisories per package
-path, so the totals differ. GitHub rescans Dependabot on push, so the alert
-count should drop accordingly.
+path, so the totals differ.
+
+**Measured Dependabot outcome after the rescan (post-merge):**
+
+| | Before | After |
+|---|---:|---:|
+| Open alerts | 235 | **38** |
+| Critical | 4 | **0** |
+| High | 121 | 7 |
+| Moderate | 97 | 30 |
+| Low | 13 | 1 |
+
+Per manifest (after): `06/frontend` 24, `08/node-frontend` 8, `06/api` 3,
+`04` 3, `06` root 0. The remaining alerts are cases that only clear via a
+breaking `react-scripts`/CRA change.
 
 ## Commands used
 
