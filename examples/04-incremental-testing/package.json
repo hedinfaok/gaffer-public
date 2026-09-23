@@ -30,5 +30,8 @@
     "jest",
     "incremental",
     "gaffer-exec"
-  ]
+  ],
+  "overrides": {
+    "qs": "6.16.0"
+  }
 }

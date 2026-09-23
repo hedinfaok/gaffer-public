@@ -16,7 +16,7 @@ fi
 
 # Start frontend server in background
 cd frontend
-BROWSER=none PORT=${FRONTEND_PORT} npm start > ../logs/frontend.log 2>&1 &
+PORT=${FRONTEND_PORT} npm start > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..
 

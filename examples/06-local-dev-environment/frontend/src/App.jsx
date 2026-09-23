@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 // Get API URL from environment or use default
-const API_URL = process.env.REACT_APP_API_URL || `http://localhost:${process.env.REACT_APP_API_PORT || 3001}`;
+const API_URL = import.meta.env.VITE_API_URL || `http://localhost:${import.meta.env.VITE_API_PORT || 3001}`;
 
 function App() {
   const [tasks, setTasks] = useState([]);
