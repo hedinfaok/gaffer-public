@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "mission_slug": "improve-examples-01M36QTK",
+  "mission_id": "01M36QTKJ20BC4PV3E8SMWBC5G",
+  "mission_branch": "kitty/mission-improve-examples-01M36QTK",
+  "target_branch": "improve-examples",
+  "lanes": [
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP01"
+      ],
+      "write_scope": [
+        "README.md",
+        "docs/example-index.md"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "examples/01-monorepo-build/README.md",
+        "examples/02-distributed-build/README.md",
+        "examples/04-incremental-testing/README.md",
+        "examples/05-ml-workflows/README.md",
+        "examples/06-local-dev-environment/README.md",
+        "examples/07-watch-workflows/README.md",
+        "examples/18-network-aware-builds/README.md",
+        "examples/19-cross-platform-builds/README.md"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "legacy-cleanup",
+        "workspace"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-c",
+      "wp_ids": [
+        "WP03"
+      ],
+      "write_scope": [
+        "examples/03-multi-language-build/**",
+        "examples/08-multi-language-task-running/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "tests"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    }
+  ],
+  "computed_at": "2026-09-23T09:00:31.943970+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": [],
+  "planning_commit_sha": "4c644fca835b6a7d07979c18fd42b73d5fc34f3c"
+}

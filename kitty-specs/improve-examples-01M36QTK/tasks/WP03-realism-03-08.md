@@ -6,6 +6,9 @@ requirement_refs:
 - FR-005
 - FR-006
 - FR-007
+planning_base_branch: improve-examples
+merge_target_branch: improve-examples
+branch_strategy: Planning artifacts for this mission were generated on improve-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into improve-examples unless the human explicitly redirects the landing branch.
 subtasks:
 - T010
 - T011
