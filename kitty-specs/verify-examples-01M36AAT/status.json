@@ -88,7 +88,8 @@
       "last_transition_at": "2026-09-23T06:22:14.027903+00:00",
       "model": "__resolved_model_absent__",
       "notes": [
-        "Reviewed: 06 pass, 18 pass after two real fixes (LocalStack config + curl readiness); 02 blocked on missing az/gsutil with LocalStack defect fixed."
+        "Reviewed: 06 pass, 18 pass after two real fixes (LocalStack config + curl readiness); 02 blocked on missing az/gsutil with LocalStack defect fixed.",
+        "Done override: Lane merge deferred to the mission-level spec-kitty merge step"
       ],
       "provider": "__resolved_provider_absent__",
       "review_result": {
@@ -118,7 +119,14 @@
       "last_transition_at": "2026-09-23T05:28:05.096309+00:00",
       "model": "__resolved_model_absent__",
       "provider": "__resolved_provider_absent__",
-      "role": "implementer"
+      "role": "implementer",
+      "subtasks": {
+        "T017": "done",
+        "T018": "done",
+        "T019": "done",
+        "T020": "done",
+        "T021": "done"
+      }
     },
     "WP05": {
       "actor": "finalize-tasks",
