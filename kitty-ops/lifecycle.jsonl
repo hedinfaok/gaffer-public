@@ -1,0 +1,13 @@
+{"agent": "opencode", "at": "2026-09-23T05:12:01.648954+00:00", "canonical_action_id": "discovery::research", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:12:57.358664+00:00", "canonical_action_id": "discovery::research", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:12:57.522760+00:00", "canonical_action_id": "specify::specify", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:10.441669+00:00", "canonical_action_id": "specify::specify", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:12.995231+00:00", "canonical_action_id": "plan::plan", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:18.836208+00:00", "canonical_action_id": "plan::plan", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:21.430213+00:00", "canonical_action_id": "tasks::tasks", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:26.813161+00:00", "canonical_action_id": "tasks::tasks", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T05:13:34.038838+00:00", "canonical_action_id": "implement::implement", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": "WP01"}
+{"agent": "opencode", "at": "2026-09-23T05:14:15.758012+00:00", "canonical_action_id": "implement::implement", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": "WP01"}
+{"agent": "opencode", "at": "2026-09-23T05:14:16.943375+00:00", "canonical_action_id": "implement::implement", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": "WP01"}
+{"agent": "opencode", "at": "2026-09-23T05:15:28.990094+00:00", "canonical_action_id": "implement::implement", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "completed", "reason": null, "wp_id": "WP01"}
+{"agent": "opencode", "at": "2026-09-23T05:15:30.118825+00:00", "canonical_action_id": "implement::implement", "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0", "phase": "started", "reason": null, "wp_id": "WP02"}
