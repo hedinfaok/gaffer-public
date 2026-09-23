@@ -3,7 +3,7 @@
   "flattened": false,
   "friendly_name": "Verify all gaffer-exec examples",
   "mission_id": "01M36AATBE3DWNNK0FMXCC2MR0",
-  "mission_number": null,
+  "mission_number": 1,
   "mission_slug": "verify-examples-01M36AAT",
   "mission_type": "software-dev",
   "purpose_context": "This mission advances Verify all gaffer-exec examples on verify-examples so stakeholders can track the work from mission creation onward.",
