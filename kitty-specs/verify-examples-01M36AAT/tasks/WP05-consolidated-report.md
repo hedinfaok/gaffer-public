@@ -11,6 +11,9 @@ requirement_refs:
 planning_base_branch: verify-examples
 merge_target_branch: verify-examples
 branch_strategy: Planning artifacts for this mission were generated on verify-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into verify-examples unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-verify-examples-01M36AAT
+base_commit: a9dc23c88fee30944196b9a563c688eb9e647506
+created_at: '2026-09-23T06:27:17.462635+00:00'
 subtasks:
 - T022
 - T023
@@ -94,3 +97,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T05:05:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:27:47Z – opencode – Authored docs/verify-examples-report.md: 10/10 static pass; 9 executed pass, 02 blocked(environment: az/gsutil); 10 defects fixed (D1-D10); 04 flake quarantined; SC-001..005 all met.
