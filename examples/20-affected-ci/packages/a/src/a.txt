@@ -1,0 +1,2 @@
+library a (v1)
+shared value: 42
