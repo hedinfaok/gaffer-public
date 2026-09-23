@@ -1,0 +1,17 @@
+project:
+  uuid: 47401e12-055b-4f96-9ded-70e18a5f84b5
+  slug: gaffer-public
+  node_id: ec98d1be4725
+  build_id: dc1a66a6-fa1a-5e71-860b-3ff082b517fe
+mission_type_activations:
+- software-dev
+- documentation
+- research
+- plan
+vcs:
+  type: git
+agents:
+  available:
+  - opencode
+  auto_commit: true
+  lint_on_edit: false
