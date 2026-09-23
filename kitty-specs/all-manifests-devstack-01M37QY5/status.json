@@ -62,7 +62,8 @@
       "last_transition_at": "2026-09-23T18:31:08.807430+00:00",
       "model": "__resolved_model_absent__",
       "notes": [
-        "Reviewed."
+        "Reviewed.",
+        "Done override: Lane merge deferred"
       ],
       "provider": "__resolved_provider_absent__",
       "review_result": {
