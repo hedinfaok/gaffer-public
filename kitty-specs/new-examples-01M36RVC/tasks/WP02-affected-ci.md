@@ -4,6 +4,9 @@ title: 20-affected-ci example
 dependencies: []
 requirement_refs:
 - FR-002
+planning_base_branch: new-examples
+merge_target_branch: new-examples
+branch_strategy: Planning artifacts for this mission were generated on new-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into new-examples unless the human explicitly redirects the landing branch.
 subtasks:
 - T004
 - T005
