@@ -40,3 +40,4 @@
 {"agent": "opencode", "at": "2026-09-23T08:54:52.207689+00:00", "canonical_action_id": "output::output", "mission_id": "01M36QA057NQ3H3BPGZ39T61V2", "phase": "completed", "reason": null, "wp_id": null}
 {"agent": "opencode", "at": "2026-09-23T08:55:34.804835+00:00", "canonical_action_id": "accept::accept", "mission_id": "01M36QA057NQ3H3BPGZ39T61V2", "phase": "started", "reason": null, "wp_id": null}
 {"agent": "opencode", "at": "2026-09-23T08:55:41.001073+00:00", "canonical_action_id": "accept::accept", "mission_id": "01M36QA057NQ3H3BPGZ39T61V2", "phase": "completed", "reason": null, "wp_id": null}
+{"agent": "opencode", "at": "2026-09-23T09:00:47.743157+00:00", "canonical_action_id": "discovery::research", "mission_id": "01M36QTKJ20BC4PV3E8SMWBC5G", "phase": "started", "reason": null, "wp_id": null}
