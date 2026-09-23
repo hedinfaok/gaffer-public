@@ -1,293 +1,118 @@
-# Example 07: Watch Mode Workflows
+# Watch Mode Workflows
 
-This example demonstrates **intelligent watch mode workflows** using `fswatch` and `gaffer-exec`. It shows how to build a dependency-aware file watching system that triggers cascading rebuilds across multiple services.
+What this shows: a dependency-aware file watcher that rebuilds a TypeScript shared library and cascades the rebuild to every dependent service.
 
-## The Problem
+## What you'll learn
 
-Modern development workflows often involve multiple services with dependencies:
-- Changes to a shared library should rebuild all dependent services
-- Each service needs its own file watcher
-- Rebuilds should be intelligent (only rebuild what changed)
-- Watch mode should handle graceful shutdown
+- Combining `fswatch` with gaffer-exec: the watcher detects changes, gaffer-exec plans the rebuild.
+- Dependency cascade: editing the shared library rebuilds the API and frontend too; editing one service rebuilds only that service.
+- Debouncing with `fswatch --latency` so rapid saves trigger one rebuild.
+- Path filtering to ignore `node_modules` and build output.
+- Graceful shutdown of every watcher with `SIGINT`/`SIGTERM` traps.
 
-Traditional solutions like `nodemon`, `tsc --watch`, or `webpack-dev-server` are service-specific and don't understand cross-service dependencies.
+## Prerequisites
 
-## The Solution
+- Node.js 18 or later
+- npm
+- `fswatch` (macOS: `brew install fswatch`; Debian/Ubuntu: `apt-get install fswatch`; Fedora/RHEL: `dnf install fswatch`)
+- gaffer-exec on your PATH
 
-This example combines:
-- **`fswatch`**: Fast, cross-platform file system monitoring
-- **`gaffer-exec`**: Dependency-aware task orchestration
-- **Shell wrapper scripts**: Glue `fswatch` events to `gaffer-exec` commands
+## Quick start
 
-The key insight: **gaffer-exec doesn't watch files** — it orchestrates rebuilds when `fswatch` detects changes.
+```bash
+# Install dependencies and build all services
+gaffer-exec --workspace-root . run make:build-all
 
-## Architecture
-
-```
-┌──────────────┐
-│ shared-lib   │  TypeScript library with utilities
-│ (TypeScript) │  Used by both api-service and frontend
-└──────┬───────┘
-       │
-       ├─────────────┐
-       │             │
-       ▼             ▼
-┌──────────┐   ┌──────────┐
-│   api    │   │ frontend │
-│ (Node.js)│   │ (React)  │
-└──────────┘   └──────────┘
+# Start all three watchers
+./scripts/watch-all.sh
 ```
 
-**Dependency cascade:**
-- Change `shared-lib/src/index.ts` → Rebuild shared-lib → Rebuild api + frontend
-- Change `api-service/src/server.ts` → Rebuild api only
-- Change `frontend/src/App.tsx` → Rebuild frontend only
+## Task graph
 
-## How It Works
+| Target | Depends on | What it does |
+|--------|------------|--------------|
+| `clean` | - | Removes all build artifacts |
+| `install-deps` | - | Installs dependencies for all three services |
+| `build-shared-lib` | `install-deps` | Builds the shared TypeScript library |
+| `build-api` | `build-shared-lib` | Builds the API service |
+| `build-frontend` | `build-shared-lib` | Builds the frontend (parallel with the API) |
+| `build-all` | `build-api`, `build-frontend` | Builds everything (default goal) |
+| `rebuild-shared-lib` | - | Rebuilds the library without reinstalling dependencies |
+| `rebuild-api` | `rebuild-shared-lib` | Rebuilds the API (used by watch mode) |
+| `rebuild-frontend` | `rebuild-shared-lib` | Rebuilds the frontend (used by watch mode) |
+| `start-api` | `build-api` | Runs the API server |
+| `start-frontend` | `build-frontend` | Serves the frontend build on port 3000 |
+| `dev` | `start-api`, `start-frontend` | Starts both services |
+| `test` | - | Runs the validation suite |
 
-### 1. File Watching (`fswatch`)
+## How it works
 
-Each service has a watch script (`scripts/watch-*.sh`) that:
+```
+shared-lib (TypeScript)
+    ├── api-service (Node.js)
+    └── frontend (React)
+
+change shared-lib/src/index.ts -> rebuild shared-lib -> rebuild api + frontend
+change api-service/src/server.ts -> rebuild api only
+change frontend/src/App.tsx -> rebuild frontend only
+```
+
+Pattern: file watchers stay dumb and gaffer-exec stays the single source of dependency truth. Each `scripts/watch-*.sh` pipes `fswatch` events into one `gaffer-exec run make:rebuild-*` call:
+
 ```bash
 fswatch \
-  --latency 0.5 \           # Debounce: wait 500ms after last change
-  --exclude '.*' \          # Exclude hidden files
-  --include '\.ts$' \       # Include .ts files
-  --exclude 'node_modules' \ # Exclude dependencies
+  --latency 0.5 \
+  --exclude '.*' \
+  --include '\.ts$' \
+  --exclude 'node_modules' \
   shared-lib/src/ | while read -r file; do
     gaffer-exec --workspace-root . run make:rebuild-shared-lib
 done
 ```
 
-### 2. Task Orchestration (`gaffer-exec`)
+When a rebuild target runs, gaffer-exec rebuilds `shared-lib` first if it changed, then the dependent service, and skips work that is already up to date. `watch-all.sh` starts the three watchers together and traps `SIGINT`/`SIGTERM` to clean them up on exit.
 
-The `Makefile` defines rebuild targets with dependencies:
-```make
-rebuild-shared-lib:
-	cd shared-lib && npm run build
+`fswatch` is one option; the same pattern works with `watchman`, `inotifywait`, or `chokidar-cli`, as long as the watcher ends up calling `gaffer-exec`.
 
-rebuild-api: rebuild-shared-lib
-	cd api-service && npm run build
+## Expected output
 
-rebuild-frontend: rebuild-shared-lib
-	cd frontend && npm run build
+Initial build:
+
+```text
+✓ All services built
 ```
 
-When `rebuild-api` is triggered:
-1. `gaffer-exec` checks if `shared-lib` changed (via hashing/timestamps)
-2. If yes, rebuilds `shared-lib` first
-3. Then rebuilds `api-service`
-4. Skips unnecessary work if `shared-lib` is up-to-date
+Watch mode after editing `shared-lib/src/index.ts`:
 
-### 3. Graceful Shutdown
-
-Watch scripts handle `SIGINT`/`SIGTERM`:
-```bash
-trap 'echo "Stopping watch..."; exit 0' SIGINT SIGTERM
+```text
+[watch] shared-lib/src/index.ts changed
+[watch] running make:rebuild-shared-lib
+Rebuilding shared-lib...
+Rebuilding api-service...
+Rebuilding frontend...
 ```
-
-The `watch-all.sh` script manages multiple watchers and cleans up on exit.
-
-## Usage
-
-### Initial Setup
-
-Install dependencies and build all services:
-```bash
-gaffer-exec --workspace-root . run make:build-all
-```
-
-### Development Workflow
-
-**Option 1: Run all watchers**
-```bash
-./scripts/watch-all.sh
-```
-
-This starts three parallel watchers:
-- `watch-shared-lib.sh` → Watches TypeScript files in `shared-lib/src/`
-- `watch-api.sh` → Watches TypeScript files in `api-service/src/`
-- `watch-frontend.sh` → Watches React files in `frontend/src/`
-
-**Option 2: Run individual watchers**
-```bash
-# In terminal 1
-./scripts/watch-shared-lib.sh
-
-# In terminal 2
-./scripts/watch-api.sh
-
-# In terminal 3
-./scripts/watch-frontend.sh
-```
-
-**Start the services** (in separate terminals):
-```bash
-# Terminal 1: Start API
-cd api-service && node dist/server.js
-
-# Terminal 2: Start frontend
-cd frontend && npx serve -s build -p 3000
-```
-
-Or use gaffer to start them:
-```bash
-gaffer-exec --workspace-root . run make:start-api &
-gaffer-exec --workspace-root . run make:start-frontend &
-```
-
-### Making Changes
-
-**Edit shared-lib:**
-```bash
-# Edit shared-lib/src/index.ts
-# → Rebuilds shared-lib
-# → Rebuilds api-service (depends on shared-lib)
-# → Rebuilds frontend (depends on shared-lib)
-```
-
-**Edit api-service:**
-```bash
-# Edit api-service/src/server.ts
-# → Rebuilds api-service only
-```
-
-**Edit frontend:**
-```bash
-# Edit frontend/src/App.tsx
-# → Rebuilds frontend only
-```
-
-## Performance Comparison
-
-### Traditional Approach
-```bash
-# Terminal 1
-cd shared-lib && tsc --watch
-
-# Terminal 2
-cd api-service && nodemon
-
-# Terminal 3
-cd frontend && webpack-dev-server
-```
-
-**Problems:**
-- No dependency awareness (api doesn't rebuild when shared-lib changes)
-- Must manually restart dependent services
-- Wasteful (rebuilds everything, even if nothing changed)
-
-### This Approach (fswatch + gaffer-exec)
-```bash
-./scripts/watch-all.sh
-```
-
-**Benefits:**
-- ✓ Dependency-aware cascading rebuilds
-- ✓ Incremental builds (only rebuild what changed)
-- ✓ Single command to watch all services
-- ✓ Graceful shutdown of all watchers
-- ✓ Debouncing via `--latency` flag
-- ✓ Works with any build tool (TypeScript, Webpack, Babel, etc.)
-
-## Key Features
-
-### 1. Debouncing
-The `--latency 0.5` flag tells `fswatch` to wait 500ms after the last file change before triggering. This prevents:
-- Multiple rebuilds for rapid successive saves
-- Rebuilds triggered by intermediate IDE autosaves
-
-### 2. Smart Filtering
-Each watcher excludes irrelevant files:
-```bash
---exclude 'node_modules'  # Don't watch dependencies
---exclude 'dist'          # Don't watch build outputs
---include '\.ts$'         # Only watch TypeScript files
-```
-
-### 3. Dependency Cascade
-Thanks to `Makefile` target dependencies:
-- Changing `shared-lib` automatically rebuilds dependents
-- Changing a service only rebuilds that service
-- No manual intervention required
-
-### 4. Cross-Platform
-- `fswatch` works on macOS, Linux, and Windows (via WSL)
-- `gaffer-exec` is platform-agnostic
-- Scripts use portable shell syntax
-
-## Prerequisites
-
-Install `fswatch`:
-
-**macOS:**
-```bash
-brew install fswatch
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-apt-get install fswatch
-```
-
-**Linux (Fedora/RHEL):**
-```bash
-dnf install fswatch
-```
-
-## Alternatives to fswatch
-
-This pattern works with other file watchers:
-
-**watchman (Facebook):**
-```bash
-watchman-make -p 'shared-lib/src/**/*.ts' -t rebuild-shared-lib
-```
-
-**inotify-tools (Linux only):**
-```bash
-inotifywait -m -r shared-lib/src/ | while read -r file; do
-    gaffer-exec --workspace-root . run make:rebuild-shared-lib
-done
-```
-
-**chokidar-cli (Node.js):**
-```bash
-chokidar 'shared-lib/src/**/*.ts' -c 'gaffer-exec --workspace-root . run make:rebuild-shared-lib'
-```
-
-The pattern is the same: file watcher → filter events → trigger `gaffer-exec`.
 
 ## Testing
 
-Run the validation script:
 ```bash
 ./test.sh
 ```
 
-This verifies:
-- All services build successfully
-- Watch scripts are properly structured
-- Dependencies are correctly wired
+The suite verifies that all services build, that the watch scripts are structured correctly, and that dependencies are wired. `./demo.sh` shows the cascade end to end. You can also run individual watchers in separate terminals:
 
-## Cleanup
-
-Remove build artifacts:
 ```bash
-gaffer-exec --workspace-root . run make:clean
+./scripts/watch-shared-lib.sh
+./scripts/watch-api.sh
+./scripts/watch-frontend.sh
 ```
 
-## Learn More
+## Troubleshooting
 
-- **`fswatch` documentation**: http://emcrisostomo.github.io/fswatch/
-- **Example 04**: Incremental Testing (similar watch patterns)
-- **Example 06**: Local Dev Environment (orchestrating multiple services)
+- **`fswatch: command not found`**: install it with the command for your platform listed above.
+- **Rebuild loops**: confirm `--exclude 'node_modules'` and `--exclude 'dist'` are present so build output does not retrigger the watcher.
+- **Repeated rebuilds while typing**: raise `--latency` (for example `--latency 1.0`) to debounce longer.
+- **Services do not start**: build first with `gaffer-exec --workspace-root . run make:build-all`, then use `make:start-api` and `make:start-frontend`.
 
-## Summary
+## Next example
 
-This example shows how to build intelligent watch mode workflows by combining:
-1. **`fswatch`** for fast file system monitoring
-2. **`gaffer-exec`** for dependency-aware task orchestration
-3. **Shell scripts** to connect the two
-
-The result: a development workflow that's faster, smarter, and easier to manage than traditional per-service watchers.
+[19-cross-platform-builds](../19-cross-platform-builds/README.md) shows how to keep a single build graph working across Linux, macOS, and Windows.

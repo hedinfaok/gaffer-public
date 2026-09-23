@@ -1,56 +1,69 @@
 # gaffer-exec Examples
 
-This repository contains usage examples for **gaffer-exec**, a build orchestration tool.
+This repository is a set of worked examples for **gaffer-exec**, a build
+orchestration tool. Each example is a small, runnable project that shows one
+capability in a realistic setting. They are written for developers evaluating
+gaffer-exec or looking for patterns to adapt in their own repositories.
 
-## About These Examples
+If you are new here, start with [01-monorepo-build](examples/01-monorepo-build/)
+and work outward. The [example index](docs/example-index.md) maps every feature
+to the examples that demonstrate it.
 
-These examples were generated using Large Language Model (LLM) assistance as part of exploring automated software development workflows.
+## What these examples show
 
-**About gaffer-exec:**
-- gaffer-exec is a real build orchestration tool (private source)
-- Official releases are attested by GitHub and available in this public repository
-- The tool itself is production-quality software, not LLM-generated
-- Only the usage examples in this repository were created with LLM assistance
+- Parallel, dependency-aware scheduling of build and test targets.
+- Content-based caching that skips work when inputs have not changed.
+- Incremental and affected-only runs, including per-tier test orchestration.
+- Multi-language builds and tasks coordinated from one manifest.
+- Remote, multi-region, watch, and cross-platform build workflows.
 
-**What this means for the examples:**
-- Code patterns and structures follow common open-source conventions but were synthesized rather than manually written
-- Examples demonstrate gaffer-exec capabilities but may contain implementation gaps or simulated features
-- While designed to be functional, some components use mock services or simplified logic for demonstration purposes
-- Documentation may describe ideal behavior that isn't fully implemented in all cases
+## Feature to example
 
-**Limitations to be aware of:**
-- LLMs can produce code that compiles but may have subtle logic errors
-- Performance claims and benchmarks may be based on projections rather than actual measurements
-- Edge cases and error handling may be incomplete
-- Integration with real-world systems may require additional validation and testing
+| Feature | Examples |
+|---------|----------|
+| Parallel scheduling | [01](examples/01-monorepo-build/), [03](examples/03-multi-language-build/), [04](examples/04-incremental-testing/), [05](examples/05-ml-workflows/), [06](examples/06-local-dev-environment/), [08](examples/08-multi-language-task-running/) |
+| Content-based caching | [01](examples/01-monorepo-build/), [02](examples/02-distributed-build/), [04](examples/04-incremental-testing/), [08](examples/08-multi-language-task-running/) |
+| Incremental / affected-only | [01](examples/01-monorepo-build/), [04](examples/04-incremental-testing/), [05](examples/05-ml-workflows/), [07](examples/07-watch-workflows/) |
+| Watch mode | [07](examples/07-watch-workflows/) |
+| Remote / multi-region cache | [02](examples/02-distributed-build/), [18](examples/18-network-aware-builds/) |
+| Cross-platform builds | [19](examples/19-cross-platform-builds/) |
+| Multi-language orchestration | [03](examples/03-multi-language-build/), [08](examples/08-multi-language-task-running/) |
+| Alternate manifests (Makefile, npm, Cargo) | [01](examples/01-monorepo-build/), [08](examples/08-multi-language-task-running/) |
 
-**Use responsibly:**
-- Treat these as starting points and learning resources, not production-ready code
-- Test thoroughly before adapting for your own use
-- Verify claims against your specific requirements
-- Check for security implications in your environment
+For per-example descriptions and longer notes, see
+[docs/example-index.md](docs/example-index.md).
 
-This project embraces transparency about AI-generated content and encourages critical evaluation of these examples.
+## Getting started
 
-## Available Examples
+1. Install gaffer-exec 0.8.0. See the [gaffer-exec repository](https://github.com/hedinfaok/gaffer)
+   for installation instructions.
+2. Clone this repository and enter the example you want to run:
+   ```bash
+   git clone https://github.com/hedinfaok/gaffer-public.git
+   cd gaffer-public/examples/01-monorepo-build
+   ```
+3. Follow that example's `README.md` for prerequisites, commands, and expected
+   output. Most examples build and run with:
+   ```bash
+   gaffer-exec --workspace-root . run make:<target>
+   ```
 
-- [01-monorepo-build](examples/01-monorepo-build/) - Monorepo build orchestration
-- [02-distributed-build](examples/02-distributed-build/) - Distributed caching with cloud storage
-- [03-multi-language-build](examples/03-multi-language-build/) - Multi-language project builds
-- [04-incremental-testing](examples/04-incremental-testing/) - Incremental test execution
-- [05-ml-workflows](examples/05-ml-workflows/) - Machine learning pipeline workflows
-- [06-local-dev-environment](examples/06-local-dev-environment/) - Local development environment setup
-- [07-watch-workflows](examples/07-watch-workflows/) - File watching and auto-rebuild
-- [08-multi-language-task-running](examples/08-multi-language-task-running/) - Cross-language task orchestration
-- [18-network-aware-builds](examples/18-network-aware-builds/) - Network-aware build optimization
-- [19-cross-platform-builds](examples/19-cross-platform-builds/) - Cross-platform build support
+Each example documents its own prerequisites and verification steps. The
+[example index](docs/example-index.md) is the fastest way to find the example
+that matches what you want to do.
 
-## Getting Started
+## Provenance and limitations
 
-Each example includes its own README with:
-- Prerequisites and setup instructions
-- Usage examples and commands
-- Architecture explanations
-- Testing and verification steps
+These examples were generated with Large Language Model (LLM) assistance as part
+of exploring automated software development workflows. This disclosure applies
+only to the examples, not to the tool.
 
-Browse the [examples](examples/) directory to explore different use cases.
+- gaffer-exec itself is real, production-quality software (private source).
+  Official releases are attested by GitHub and available in this repository.
+- The examples are synthesized starting points, not production-ready code.
+  They may contain implementation gaps, and some components use mock services or
+  simplified logic for demonstration.
+- Performance figures are illustrative, not measured benchmarks, unless an
+  example explicitly says otherwise.
+- Test thoroughly and verify claims against your environment before adapting
+  any example for real use.
