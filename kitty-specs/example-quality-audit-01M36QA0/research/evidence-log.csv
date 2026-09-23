@@ -1,0 +1,11 @@
+id,finding,evidence,confidence
+E1,08 build/test largely simulated,examples/08-multi-language-task-running/Makefile:41,high
+E2,08 test-node prints canned PASS,examples/08-multi-language-task-running/Makefile:57,high
+E3,03 integration-test is fake,examples/03-multi-language-build/Makefile:41,high
+E4,05 uses real sklearn datasets,examples/05-ml-workflows/src/data_prep.py:11,high
+E5,01 README ~488 lines with duplicated tail,examples/01-monorepo-build/README.md,high
+E6,Root README leads with LLM disclaimer,README.md,high
+E7,No CI/affected/remote-cache example,repo grep for --affected/--since/export,high
+E8,Docs openings inconsistent across examples,examples/*/README.md headings,high
+E9,02 vs 18 overlap on remote cache,examples/02-* and 18-*,medium
+E10,03 vs 08 overlap on multi-language,examples/03-* and 08-*,medium
