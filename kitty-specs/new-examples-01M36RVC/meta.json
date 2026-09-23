@@ -3,7 +3,7 @@
   "flattened": false,
   "friendly_name": "Add new gaffer-exec examples",
   "mission_id": "01M36RVCZW83AKDXTGKB2BEME9",
-  "mission_number": null,
+  "mission_number": 2,
   "mission_slug": "new-examples-01M36RVC",
   "mission_type": "software-dev",
   "purpose_context": "This mission advances Add new gaffer-exec examples on new-examples so stakeholders can track the work from mission creation onward.",
