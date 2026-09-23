@@ -77,9 +77,9 @@ while [ $elapsed -lt $timeout ]; do
     
     if [ "$running" -ge 6 ]; then
         # Additional check for LocalStack health
-        us_east_healthy=$(curl -sf http://localhost:4566/_localstack/health 2>/dev/null && echo "ok" || echo "fail")
-        us_west_healthy=$(curl -sf http://localhost:4567/_localstack/health 2>/dev/null && echo "ok" || echo "fail")
-        eu_central_healthy=$(curl -sf http://localhost:4568/_localstack/health 2>/dev/null && echo "ok" || echo "fail")
+        us_east_healthy=$(curl -sf http://localhost:4566/_localstack/health >/dev/null 2>&1 && echo "ok" || echo "fail")
+        us_west_healthy=$(curl -sf http://localhost:4567/_localstack/health >/dev/null 2>&1 && echo "ok" || echo "fail")
+        eu_central_healthy=$(curl -sf http://localhost:4568/_localstack/health >/dev/null 2>&1 && echo "ok" || echo "fail")
         
         if [ "$us_east_healthy" = "ok" ] && [ "$us_west_healthy" = "ok" ] && [ "$eu_central_healthy" = "ok" ]; then
             echo ""

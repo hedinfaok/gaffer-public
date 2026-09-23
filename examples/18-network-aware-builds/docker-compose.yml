@@ -8,10 +8,10 @@ services:
     environment:
       - SERVICES=s3
       - DEBUG=0
-      - DATA_DIR=/tmp/localstack/data
+      - DATA_DIR=/var/lib/localstack/data
       - EDGE_PORT=4566
     volumes:
-      - "./tmp/us-east:/tmp/localstack"
+      - "./tmp/us-east:/var/lib/localstack"
     networks:
       gaffer-network:
         aliases:
@@ -46,10 +46,10 @@ services:
     environment:
       - SERVICES=s3
       - DEBUG=0
-      - DATA_DIR=/tmp/localstack/data
+      - DATA_DIR=/var/lib/localstack/data
       - EDGE_PORT=4566
     volumes:
-      - "./tmp/us-west:/tmp/localstack"
+      - "./tmp/us-west:/var/lib/localstack"
     networks:
       gaffer-network:
         aliases:
@@ -84,10 +84,10 @@ services:
     environment:
       - SERVICES=s3
       - DEBUG=0
-      - DATA_DIR=/tmp/localstack/data
+      - DATA_DIR=/var/lib/localstack/data
       - EDGE_PORT=4566
     volumes:
-      - "./tmp/eu-central:/tmp/localstack"
+      - "./tmp/eu-central:/var/lib/localstack"
     networks:
       gaffer-network:
         aliases:
