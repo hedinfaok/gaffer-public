@@ -1,0 +1,15 @@
+{
+  "name": "all-manifests-devstack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-dev web stack where every gaffer-exec manifest type participates",
+  "workspaces": [
+    "web",
+    "./*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "start": "node web/serve.js"
+  }
+}

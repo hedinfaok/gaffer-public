@@ -1,0 +1,14 @@
+# just recipes for the all-manifests dev stack.
+
+build:
+    mkdir -p build/just
+    echo "just build artifact" > build/just/out.txt
+
+test: build
+    grep -q "just build artifact" build/just/out.txt
+    echo "just: test passed"
+
+migrate:
+    mkdir -p build/just
+    echo "just migrate applied" > build/just/migrate.txt
+    echo "just: migrate applied"
