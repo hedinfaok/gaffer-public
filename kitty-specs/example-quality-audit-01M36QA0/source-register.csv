@@ -1,0 +1,7 @@
+id,source,type,url,relevance,status
+S1,examples/*/README.md,repo,local,Per-example documentation,reviewed
+S2,examples/*/Makefile,repo,local,Task graphs and recipes,reviewed
+S3,examples/*/test.sh,repo,local,Verification suites,reviewed
+S4,docs/verify-examples-report.md,repo,local,Prior end-to-end runnability,reviewed
+S5,README.md,repo,local,Root documentation,reviewed
+S6,gaffer-exec --help,cli,local,CLI feature surface (0.8.0),reviewed
