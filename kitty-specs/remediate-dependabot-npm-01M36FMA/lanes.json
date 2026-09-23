@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "mission_slug": "remediate-dependabot-npm-01M36FMA",
+  "mission_id": "01M36FMA8SB5W2WH9MKCVAFTW3",
+  "mission_branch": "kitty/mission-remediate-dependabot-npm-01M36FMA",
+  "target_branch": "remediate-dependabot-npm",
+  "lanes": [
+    {
+      "lane_id": "lane-a",
+      "wp_ids": [
+        "WP01"
+      ],
+      "write_scope": [
+        "examples/06-local-dev-environment/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "workspace"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-b",
+      "wp_ids": [
+        "WP02"
+      ],
+      "write_scope": [
+        "examples/04-incremental-testing/**",
+        "examples/08-multi-language-task-running/node-frontend/**"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering",
+        "workspace"
+      ],
+      "depends_on_lanes": [],
+      "parallel_group": 0
+    },
+    {
+      "lane_id": "lane-c",
+      "wp_ids": [
+        "WP03"
+      ],
+      "write_scope": [
+        "docs/dependabot-remediation-report.md"
+      ],
+      "predicted_surfaces": [
+        "api",
+        "artifact-rendering"
+      ],
+      "depends_on_lanes": [
+        "lane-a",
+        "lane-b"
+      ],
+      "parallel_group": 1
+    }
+  ],
+  "computed_at": "2026-09-23T06:37:26.022502+00:00",
+  "computed_from": "dependency_graph+ownership",
+  "planning_artifact_wps": [],
+  "planning_commit_sha": "b4073e0448753ad8f3ac1cbeefadd3ca0975fb4f"
+}

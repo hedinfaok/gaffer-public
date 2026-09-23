@@ -1,10 +1,15 @@
 ---
 work_package_id: WP03
 title: Remediation report + alert-reduction summary
-dependencies: []
+dependencies:
+- WP01
+- WP02
 requirement_refs:
 - FR-006
 - FR-007
+planning_base_branch: remediate-dependabot-npm
+merge_target_branch: remediate-dependabot-npm
+branch_strategy: Planning artifacts for this mission were generated on remediate-dependabot-npm. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into remediate-dependabot-npm unless the human explicitly redirects the landing branch.
 subtasks:
 - T011
 - T012
