@@ -11,6 +11,9 @@ requirement_refs:
 planning_base_branch: all-manifests-devstack
 merge_target_branch: all-manifests-devstack
 branch_strategy: Planning artifacts for this mission were generated on all-manifests-devstack. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into all-manifests-devstack unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-all-manifests-devstack-01M37QY5
+base_commit: 2e569c7194cd0b8e94d68b83ec52b83669acdf0a
+created_at: '2026-09-23T18:21:27.161763+00:00'
 subtasks:
 - T001
 - T002

@@ -10,5 +10,7 @@
   "purpose_tldr": "A local dev web stack where every gaffer-exec manifest type participates, with Procfile processes and auto-assigned ports.",
   "slug": "all-manifests-devstack-01M37QY5",
   "target_branch": "all-manifests-devstack",
-  "topology": "single_branch"
+  "topology": "single_branch",
+  "vcs": "git",
+  "vcs_locked_at": "2026-09-23T18:21:26.957170+00:00"
 }
