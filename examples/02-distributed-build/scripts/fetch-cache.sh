@@ -8,7 +8,7 @@ BUCKET_NAME="gaffer-build-cache"
 
 mkdir -p $CACHE_DIR
 
-echo "🔍 Checking remote cache for artifacts (backend: $STORAGE_BACKEND)..."
+echo "Checking remote cache for artifacts (backend: $STORAGE_BACKEND)..."
 
 # Storage backend configuration
 AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL:-http://localhost:4566}"
@@ -115,14 +115,14 @@ for artifact in "${artifacts[@]}"; do
             fi
             ;;
         *)
-            echo "❌ Unknown storage backend: $STORAGE_BACKEND"
+            echo "✗ Unknown storage backend: $STORAGE_BACKEND"
             exit 1
             ;;
     esac
 done
 
 echo ""
-echo "📊 Cache Summary: $found/$total artifacts found"
+echo "Cache Summary: $found/$total artifacts found"
 
 # Calculate cache hit percentage
 if [ $total -gt 0 ]; then
@@ -131,12 +131,12 @@ else
     hit_rate=0
 fi
 
-echo "🎯 Cache hit rate: $hit_rate%"
+echo "Cache hit rate: $hit_rate%"
 
 if [ $hit_rate -gt 60 ]; then
-    echo "🚀 Excellent cache performance!"
+    echo "Excellent cache performance!"
 elif [ $hit_rate -gt 30 ]; then
-    echo "⚡ Good cache performance"
+    echo "↯ Good cache performance"
 else
-    echo "🔥 Cache warming needed"
+    echo "Cache warming needed"
 fi

@@ -67,6 +67,6 @@ process.on('unhandledRejection', (reason, promise) => {
 process.env.NODE_ENV = 'test';
 process.env.PORT = '0'; // Use random available port for testing
 
-console.log('🧪 Test environment initialized');
-console.log(`🔧 Node environment: ${process.env.NODE_ENV}`);
-console.log(`⚙️  Jest version: ${require('jest/package.json').version}`);
+console.log('Test environment initialized');
+console.log(`Node environment: ${process.env.NODE_ENV}`);
+console.log(`⚙  Jest version: ${require('jest/package.json').version}`);

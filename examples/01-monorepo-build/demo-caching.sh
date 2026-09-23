@@ -9,12 +9,12 @@ echo "════════════════════════�
 echo ""
 
 # Clean everything
-echo "🧹 Cleaning all build artifacts..."
+echo "Cleaning all build artifacts..."
 rm -rf packages/*/dist
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📦 FIRST BUILD (cold cache - nothing cached)"
+echo "FIRST BUILD (cold cache - nothing cached)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Building all packages from scratch..."
@@ -26,12 +26,12 @@ FIRST_END=$(date +%s%3N)
 FIRST_TOTAL=$((FIRST_END - FIRST_START))
 
 echo ""
-echo "  📊 First build time: ${FIRST_TOTAL}ms"
-echo "  💾 All outputs cached"
+echo "  First build time: ${FIRST_TOTAL}ms"
+echo "  All outputs cached"
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "⚡ SECOND BUILD (hot cache - everything cached)"
+echo "↯ SECOND BUILD (hot cache - everything cached)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Running same build again (no source changes)..."
@@ -43,13 +43,13 @@ SECOND_END=$(date +%s%3N)
 SECOND_TOTAL=$((SECOND_END - SECOND_START))
 
 echo ""
-echo "  📊 Cached build time: ${SECOND_TOTAL}ms"
-echo "  💾 All tasks skipped (cache hit)"
+echo "  Cached build time: ${SECOND_TOTAL}ms"
+echo "  All tasks skipped (cache hit)"
 echo ""
 
 # Clean dist folders but keep gaffer cache
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🧪 THIRD BUILD (outputs deleted, cache intact)"
+echo "THIRD BUILD (outputs deleted, cache intact)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Deleting dist/ folders but keeping gaffer cache..."
@@ -65,13 +65,13 @@ THIRD_END=$(date +%s%3N)
 THIRD_TOTAL=$((THIRD_END - THIRD_START))
 
 echo ""
-echo "  📊 Restore from cache: ${THIRD_TOTAL}ms"
-echo "  💾 Outputs restored from cache"
+echo "  Restore from cache: ${THIRD_TOTAL}ms"
+echo "  Outputs restored from cache"
 echo ""
 
 # Results
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📈 RESULTS"
+echo "RESULTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "  1. First build (cold):      ${FIRST_TOTAL}ms"
@@ -81,7 +81,7 @@ echo ""
 
 if [ $SECOND_TOTAL -gt 0 ]; then
     SPEEDUP=$(awk "BEGIN {printf \"%.2f\", $FIRST_TOTAL / $SECOND_TOTAL}")
-    echo "  ⚡ Cache speedup: ${SPEEDUP}x faster"
+    echo "  ↯ Cache speedup: ${SPEEDUP}x faster"
 fi
 
 echo ""

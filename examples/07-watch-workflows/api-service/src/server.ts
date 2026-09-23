@@ -71,7 +71,7 @@ app.post('/api/users', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 API service running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`👥 Users endpoint: http://localhost:${PORT}/api/users`);
+  console.log(`API service running on http://localhost:${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Users endpoint: http://localhost:${PORT}/api/users`);
 });

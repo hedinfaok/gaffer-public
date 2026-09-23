@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Setting up local development environment..."
+echo "Setting up local development environment..."
 
 # Create necessary directories
 mkdir -p db/data
@@ -10,23 +10,23 @@ mkdir -p .temp
 
 # Check for required tools
 if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is required. Please install Node.js 18+"
+    echo "✗ Node.js is required. Please install Node.js 18+"
     exit 1
 fi
 
 if ! command -v npm &> /dev/null; then
-    echo "❌ npm is required. Please install npm"
+    echo "✗ npm is required. Please install npm"
     exit 1
 fi
 
 # Check for Docker (for PostgreSQL)
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is required for PostgreSQL. Please install Docker"
+    echo "✗ Docker is required for PostgreSQL. Please install Docker"
     exit 1
 fi
 
 # Find available ports using a simpler approach
-echo "🔍 Finding available ports..."
+echo "Finding available ports..."
 
 # Function to find available port
 find_available_port() {
@@ -51,10 +51,10 @@ DATABASE_URL=postgresql://devuser:devpass@localhost:${DB_PORT}/taskmanager
 API_URL=http://localhost:${API_PORT}
 EOF
 
-echo "✅ Environment configured:"
+echo "✓ Environment configured:"
 echo "   Database: localhost:${DB_PORT}"
 echo "   API: localhost:${API_PORT}"  
 echo "   Frontend: localhost:${FRONTEND_PORT}"
 
 touch setup.complete
-echo "✅ Setup complete!"
+echo "✓ Setup complete!"

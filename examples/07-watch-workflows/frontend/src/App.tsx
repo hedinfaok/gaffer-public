@@ -37,7 +37,7 @@ const App: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>👥 User Management</h1>
+      <h1>User Management</h1>
       <p style={{ color: '#666' }}>
         Frontend built with React, using shared-lib utilities
       </p>
@@ -61,10 +61,10 @@ const App: React.FC = () => {
             >
               <h3 style={{ margin: '0 0 10px 0' }}>{user.name}</h3>
               <p style={{ margin: '5px 0', color: '#666' }}>
-                📧 {user.email}
+                {user.email}
               </p>
               <p style={{ margin: '5px 0', color: '#999', fontSize: '0.9em' }}>
-                🕐 Created: {formatTimestamp(new Date(user.createdAt).getTime())}
+                Created: {formatTimestamp(new Date(user.createdAt).getTime())}
               </p>
             </div>
           ))}
@@ -83,7 +83,7 @@ const App: React.FC = () => {
           cursor: 'pointer',
         }}
       >
-        🔄 Refresh
+        Refresh
       </button>
     </div>
   );

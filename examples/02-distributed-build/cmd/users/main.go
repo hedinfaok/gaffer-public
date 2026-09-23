@@ -30,7 +30,7 @@ func main() {
 	r.HandleFunc("/", infoHandler).Methods("GET")
 
 	port := getEnv("PORT", "8082")
-	fmt.Printf("👥 Users service starting on port %s\n", port)
+	fmt.Printf("Users service starting on port %s\n", port)
 	
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

@@ -3,7 +3,7 @@ set -e
 
 source .env
 
-echo "🚀 Starting API server..."
+echo "Starting API server..."
 
 # Ensure logs directory exists
 mkdir -p ../logs
@@ -29,13 +29,13 @@ attempt=1
 
 while [ $attempt -le $max_attempts ]; do
   if curl -s http://localhost:${API_PORT}/health > /dev/null 2>&1; then
-    echo "✅ API is ready!"
+    echo "✓ API is ready!"
     break
   fi
   
   if [ $attempt -eq $max_attempts ]; then
-    echo "❌ API failed to start after $max_attempts attempts"
-    echo "📋 API logs:"
+    echo "✗ API failed to start after $max_attempts attempts"
+    echo "API logs:"
     tail -20 logs/api.log
     exit 1
   fi
@@ -46,4 +46,4 @@ while [ $attempt -le $max_attempts ]; do
 done
 
 touch api.ready
-echo "✅ API started on port ${API_PORT}"
+echo "✓ API started on port ${API_PORT}"

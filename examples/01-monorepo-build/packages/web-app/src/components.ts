@@ -33,7 +33,7 @@ export class Navigation {
   }
 
   render(): void {
-    console.log('\n📍 Navigation:');
+    console.log('\nNavigation:');
     this.routes.forEach((route, index) => {
       console.log(`   ${index + 1}. ${route}`);
     });
@@ -50,7 +50,7 @@ export class Dashboard {
   }
 
   render(): void {
-    console.log('📊 Dashboard');
+    console.log('Dashboard');
     console.log('─'.repeat(56));
     console.log('This application demonstrates:');
     console.log('  ✓ TypeScript compilation across multiple packages');
@@ -74,7 +74,7 @@ export class Footer {
   render(): void {
     console.log('');
     console.log('─'.repeat(56));
-    console.log(`Version: ${this.version} | Built with ❤️  using gaffer-exec`);
+    console.log(`Version: ${this.version} | Built with ♥  using gaffer-exec`);
     console.log('─'.repeat(56));
     this.logger.info('Footer component rendered');
   }

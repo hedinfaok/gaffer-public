@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📊 Build Statistics"
+echo "Build Statistics"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -18,7 +18,7 @@ if [ -f .cache/cache-hits.log ]; then
     
     if [ $total -gt 0 ]; then
         hit_rate=$(echo "scale=1; $hits * 100 / $total" | bc)
-        echo "🎯 Cache Performance:"
+        echo "Cache Performance:"
         echo "   Hits:     $hits"
         echo "   Misses:   $misses"
         echo "   Hit Rate: ${hit_rate}%"
@@ -29,7 +29,7 @@ echo ""
 
 # Show build artifacts
 if [ -d bin ]; then
-    echo "📦 Build Artifacts:"
+    echo "Build Artifacts:"
     total_size=0
     for file in bin/*; do
         if [ -f "$file" ]; then
@@ -50,7 +50,7 @@ echo ""
 # Show region info
 if [ -f .cache/region-config.sh ]; then
 source .cache/region-config.sh
-    echo "🌍 Network Configuration:"
+    echo "Network Configuration:"
     echo "   Primary Cache:   $PRIMARY_CACHE"
     echo "   Fallback 1:      $FALLBACK_CACHE_1"
     echo "   Fallback 2:      $FALLBACK_CACHE_2"

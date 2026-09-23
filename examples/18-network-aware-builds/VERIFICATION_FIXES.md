@@ -21,7 +21,7 @@ Dry run - would execute 11 graphs:
   - clean: rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/ bin/
   - init: go mod tidy && mkdir -p bin .cache
   ...
-  ✅ SUCCESS - No errors
+  ✓ SUCCESS - No errors
 ```
 
 ## Documentation Fixes
@@ -89,7 +89,7 @@ aws --endpoint-url=$endpoint s3 sync $temp_dir/ s3://$bucket/
 ### Pre-Fix
 ```text
 The example's task graph was not discoverable by gaffer-exec.
-❌ FAILED
+✗ FAILED
 ```
 
 ### Post-Fix
@@ -100,17 +100,17 @@ Dry run - would execute 11 graphs:
   - init: ...
   - detect-network: ...
   [...]
-✅ SUCCESS
+✓ SUCCESS
 
 $ gaffer-exec --workspace-root . run make:benchmark --dry-run
 Dry run - would execute 1 graphs:
   - benchmark: chmod +x scripts/benchmark.sh && ./scripts/benchmark.sh
-✅ SUCCESS
+✓ SUCCESS
 
 $ gaffer-exec --workspace-root . run make:clean --dry-run
 Dry run - would execute 1 graphs:
   - clean: rm -rf cmd/*/main cmd/*/*.exe pkg/*/*.a .cache/ bin/
-✅ SUCCESS
+✓ SUCCESS
 ```
 
 ## Impact

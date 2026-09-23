@@ -38,17 +38,17 @@ class FeatureEngineer:
         if not os.path.exists(raw_path):
             raise FileNotFoundError(f"Raw data not found: {raw_path}")
         
-        logger.info(f"📂 Loading raw data: {raw_path}")
+        logger.info(f"Loading raw data: {raw_path}")
         df = pd.read_csv(raw_path)
         
-        logger.info(f"📊 Raw data shape: {df.shape}")
-        logger.info(f"📋 Columns: {list(df.columns)}")
+        logger.info(f"Raw data shape: {df.shape}")
+        logger.info(f"Columns: {list(df.columns)}")
         
         return df
     
     def analyze_data(self, df):
         """Analyze data characteristics for feature engineering decisions."""
-        logger.info("🔍 Analyzing data characteristics...")
+        logger.info("Analyzing data characteristics...")
         
         analysis = {
             'shape': df.shape,
@@ -63,24 +63,24 @@ class FeatureEngineer:
         if analysis['numeric_columns']:
             analysis['numeric_summary'] = df[analysis['numeric_columns']].describe().to_dict()
         
-        logger.info(f"🔢 Numeric columns: {len(analysis['numeric_columns'])}")
-        logger.info(f"🏷️ Categorical columns: {len(analysis['categorical_columns'])}")
-        logger.info(f"❓ Missing values: {sum(analysis['missing_values'].values())}")
+        logger.info(f"Numeric columns: {len(analysis['numeric_columns'])}")
+        logger.info(f"Categorical columns: {len(analysis['categorical_columns'])}")
+        logger.info(f"? Missing values: {sum(analysis['missing_values'].values())}")
         
         return analysis
     
     def handle_missing_values(self, df, strategy='mean'):
         """Handle missing values in the dataset."""
-        logger.info(f"🔧 Handling missing values with strategy: {strategy}")
+        logger.info(f"Handling missing values with strategy: {strategy}")
         
         missing_counts = df.isnull().sum()
         columns_with_missing = missing_counts[missing_counts > 0].index.tolist()
         
         if not columns_with_missing:
-            logger.info("✅ No missing values found")
+            logger.info("✓ No missing values found")
             return df
         
-        logger.info(f"🔧 Columns with missing values: {columns_with_missing}")
+        logger.info(f"Columns with missing values: {columns_with_missing}")
         
         df_imputed = df.copy()
         
@@ -98,7 +98,7 @@ class FeatureEngineer:
             df_imputed[categorical_missing] = imputer.fit_transform(df_imputed[categorical_missing])
             self.transformers['categorical_imputer'] = imputer
         
-        logger.info(f"✅ Missing values handled for {len(columns_with_missing)} columns")
+        logger.info(f"✓ Missing values handled for {len(columns_with_missing)} columns")
         return df_imputed
     
     def encode_categorical_features(self, df):
@@ -106,10 +106,10 @@ class FeatureEngineer:
         categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
         
         if not categorical_cols:
-            logger.info("✅ No categorical features to encode")
+            logger.info("✓ No categorical features to encode")
             return df
         
-        logger.info(f"🔤 Encoding categorical features: {categorical_cols}")
+        logger.info(f"Encoding categorical features: {categorical_cols}")
         
         df_encoded = df.copy()
         
@@ -121,7 +121,7 @@ class FeatureEngineer:
                 le = LabelEncoder()
                 df_encoded[col] = le.fit_transform(df_encoded[col])
                 self.transformers[f'{col}_label_encoder'] = le
-                logger.info(f"🏷️ Binary encoded: {col} ({unique_values} values)")
+                logger.info(f"Binary encoded: {col} ({unique_values} values)")
                 
             elif unique_values <= 10:
                 # One-hot encoding for low cardinality
@@ -136,20 +136,20 @@ class FeatureEngineer:
                 # Remove original column
                 df_encoded = df_encoded.drop(columns=[col])
                 self.transformers[f'{col}_onehot_encoder'] = encoder
-                logger.info(f"🎯 One-hot encoded: {col} ({unique_values} values → {len(feature_names)} features)")
+                logger.info(f"One-hot encoded: {col} ({unique_values} values → {len(feature_names)} features)")
                 
             else:
                 # Label encoding for high cardinality
                 le = LabelEncoder()
                 df_encoded[col] = le.fit_transform(df_encoded[col])
                 self.transformers[f'{col}_label_encoder'] = le
-                logger.info(f"🔢 Label encoded: {col} ({unique_values} values)")
+                logger.info(f"Label encoded: {col} ({unique_values} values)")
         
         return df_encoded
     
     def engineer_features(self, df, dataset_name):
         """Create new features based on domain knowledge."""
-        logger.info(f"⚙️ Engineering features for {dataset_name}...")
+        logger.info(f"⚙ Engineering features for {dataset_name}...")
         
         df_engineered = df.copy()
         
@@ -158,11 +158,11 @@ class FeatureEngineer:
             # California housing specific features
             if all(col in df.columns for col in ['AveRooms', 'AveBedrms']):
                 df_engineered['RoomsToBedrooms'] = df_engineered['AveRooms'] / (df_engineered['AveBedrms'] + 1e-8)
-                logger.info("🏠 Created RoomsToBedrooms ratio feature")
+                logger.info("Created RoomsToBedrooms ratio feature")
             
             if all(col in df.columns for col in ['Population', 'AveOccup']):
                 df_engineered['PopulationDensity'] = df_engineered['Population'] / (df_engineered['AveOccup'] + 1e-8)
-                logger.info("👥 Created PopulationDensity feature")
+                logger.info("Created PopulationDensity feature")
                 
             if all(col in df.columns for col in ['Latitude', 'Longitude']):
                 # Distance from center of California (approximate)
@@ -171,7 +171,7 @@ class FeatureEngineer:
                     (df_engineered['Latitude'] - center_lat)**2 + 
                     (df_engineered['Longitude'] - center_lon)**2
                 )
-                logger.info("🗺️ Created DistanceFromCenter feature")
+                logger.info("Created DistanceFromCenter feature")
         
         elif dataset_name in ['iris', 'wine']:
             # For classification datasets, create interaction features
@@ -202,7 +202,7 @@ class FeatureEngineer:
                         df_engineered[f'interaction_{clean_name}'] = interaction_features[:, i]
                     
                     self.transformers['polynomial_features'] = poly
-                    logger.info(f"🔗 Created {len(interaction_names)} interaction features")
+                    logger.info(f"Created {len(interaction_names)} interaction features")
         
         # General feature engineering
         numeric_cols = df_engineered.select_dtypes(include=[np.number]).columns.tolist()
@@ -211,9 +211,9 @@ class FeatureEngineer:
             df_engineered['feature_sum'] = df_engineered[numeric_cols].sum(axis=1)
             df_engineered['feature_mean'] = df_engineered[numeric_cols].mean(axis=1)
             df_engineered['feature_std'] = df_engineered[numeric_cols].std(axis=1)
-            logger.info("📊 Created aggregate statistical features")
+            logger.info("Created aggregate statistical features")
         
-        logger.info(f"✅ Feature engineering completed: {df_engineered.shape[1]} features")
+        logger.info(f"✓ Feature engineering completed: {df_engineered.shape[1]} features")
         return df_engineered
     
     def scale_features(self, df, method='standard'):
@@ -227,10 +227,10 @@ class FeatureEngineer:
                 numeric_cols.remove(target)
         
         if not numeric_cols:
-            logger.info("✅ No numeric features to scale")
+            logger.info("✓ No numeric features to scale")
             return df
         
-        logger.info(f"📏 Scaling features using {method} scaling...")
+        logger.info(f"Scaling features using {method} scaling...")
         
         df_scaled = df.copy()
         
@@ -241,13 +241,13 @@ class FeatureEngineer:
         elif method == 'robust':
             scaler = RobustScaler()
         else:
-            logger.warning(f"⚠️ Unknown scaling method: {method}, using standard")
+            logger.warning(f"⚠ Unknown scaling method: {method}, using standard")
             scaler = StandardScaler()
         
         df_scaled[numeric_cols] = scaler.fit_transform(df_scaled[numeric_cols])
         self.transformers[f'{method}_scaler'] = scaler
         
-        logger.info(f"✅ Scaled {len(numeric_cols)} numeric features")
+        logger.info(f"✓ Scaled {len(numeric_cols)} numeric features")
         return df_scaled
     
     def select_features(self, df, target_column=None, k=10):
@@ -261,10 +261,10 @@ class FeatureEngineer:
                     break
             
             if target_column is None:
-                logger.info("⚠️ No target column found, skipping feature selection")
+                logger.info("⚠ No target column found, skipping feature selection")
                 return df
         
-        logger.info(f"🎯 Selecting top {k} features using target: {target_column}")
+        logger.info(f"Selecting top {k} features using target: {target_column}")
         
         X = df.drop(columns=[target_column])
         y = df[target_column]
@@ -277,7 +277,7 @@ class FeatureEngineer:
             score_func = f_regression
             problem_type = 'regression'
         
-        logger.info(f"📊 Problem type: {problem_type}")
+        logger.info(f"Problem type: {problem_type}")
         
         # Select features
         k = min(k, X.shape[1])  # Can't select more features than available
@@ -292,12 +292,12 @@ class FeatureEngineer:
         df_selected = pd.DataFrame(X_selected, columns=selected_features, index=df.index)
         df_selected[target_column] = y
         
-        logger.info(f"✅ Selected {len(selected_features)} features: {selected_features}")
+        logger.info(f"✓ Selected {len(selected_features)} features: {selected_features}")
         return df_selected
     
     def save_processed_data(self, df, dataset_name):
         """Save processed data and feature information."""
-        logger.info(f"💾 Saving processed data for {dataset_name}...")
+        logger.info(f"Saving processed data for {dataset_name}...")
         
         # Save processed data
         processed_dir = 'data/processed'
@@ -322,15 +322,15 @@ class FeatureEngineer:
         with open(metadata_path, 'w') as f:
             json.dump(metadata, f, indent=2, default=str)
         
-        logger.info(f"✅ Processed data saved: {processed_path}")
-        logger.info(f"📋 Metadata saved: {metadata_path}")
-        logger.info(f"📊 Shape: {metadata['original_shape']} → {metadata['processed_shape']}")
+        logger.info(f"✓ Processed data saved: {processed_path}")
+        logger.info(f"Metadata saved: {metadata_path}")
+        logger.info(f"Shape: {metadata['original_shape']} → {metadata['processed_shape']}")
         
         return processed_path, metadata_path
 
 def process_dataset(dataset_name):
     """Process a specific dataset through the feature engineering pipeline."""
-    logger.info(f"🎯 Processing {dataset_name} dataset...")
+    logger.info(f"Processing {dataset_name} dataset...")
     
     engineer = FeatureEngineer()
     
@@ -343,7 +343,7 @@ def process_dataset(dataset_name):
         analysis = engineer.analyze_data(df)
         
         # Feature engineering pipeline
-        logger.info("\n🔧 Starting feature engineering pipeline...")
+        logger.info("\nStarting feature engineering pipeline...")
         
         # 1. Handle missing values
         df = engineer.handle_missing_values(df)
@@ -364,16 +364,16 @@ def process_dataset(dataset_name):
         # Save processed data
         engineer.save_processed_data(df, dataset_name)
         
-        logger.info(f"✅ Feature engineering completed for {dataset_name}")
+        logger.info(f"✓ Feature engineering completed for {dataset_name}")
         return True
         
     except Exception as e:
-        logger.error(f"❌ Feature engineering failed for {dataset_name}: {e}")
+        logger.error(f"✗ Feature engineering failed for {dataset_name}: {e}")
         return False
 
 def main():
     """Main feature engineering pipeline."""
-    logger.info("🚀 Starting ML feature engineering pipeline...")
+    logger.info("Starting ML feature engineering pipeline...")
     
     # Available datasets
     datasets = ['california_housing', 'iris', 'wine']
@@ -388,14 +388,14 @@ def main():
         if process_dataset(dataset):
             successful_processing += 1
     
-    logger.info(f"\n🎉 Feature engineering pipeline completed!")
-    logger.info(f"📊 Successfully processed {successful_processing}/{len(datasets)} datasets")
-    logger.info("🔧 Built with: gaffer-exec ML workflow orchestration")
+    logger.info(f"\nFeature engineering pipeline completed!")
+    logger.info(f"Successfully processed {successful_processing}/{len(datasets)} datasets")
+    logger.info("Built with: gaffer-exec ML workflow orchestration")
     
     if successful_processing > 0:
         return 0
     else:
-        logger.error("❌ No datasets were successfully processed")
+        logger.error("✗ No datasets were successfully processed")
         return 1
 
 if __name__ == "__main__":

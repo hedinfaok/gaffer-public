@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 
 profile=${1:-default}
 
-echo "🌐 Network Simulation Tool"
+echo "Network Simulation Tool"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -18,7 +18,7 @@ esac
 
 case $profile in
     satellite)
-        echo "📡 Profile: Satellite Connection"
+        echo "Profile: Satellite Connection"
         echo "   Latency: 600ms"
         echo "   Bandwidth: 5 Mbps"
         echo "   Packet Loss: 2%"
@@ -33,7 +33,7 @@ case $profile in
         ;;
         
     mobile)
-        echo "📱 Profile: Mobile/4G Connection"
+        echo "Profile: Mobile/4G Connection"
         echo "   Latency: 100-200ms (variable)"
         echo "   Bandwidth: 10-20 Mbps (variable)"
         echo "   Packet Loss: 0.5%"
@@ -45,7 +45,7 @@ case $profile in
         ;;
         
     datacenter)
-        echo "🏢 Profile: Data Center Connection"
+        echo "Profile: Data Center Connection"
         echo "   Latency: 1-5ms"
         echo "   Bandwidth: 1000 Mbps"
         echo "   Packet Loss: 0%"
@@ -57,7 +57,7 @@ case $profile in
         ;;
         
     --reset)
-        echo "🔄 Resetting to default network conditions"
+        echo "Resetting to default network conditions"
         echo ""
         echo "Network simulation reset to defaults:"
         echo "   US-East:      50ms latency, 100 Mbps"
@@ -66,7 +66,7 @@ case $profile in
         ;;
         
     *)
-        echo "📊 Default Network Conditions (Current)"
+        echo "Default Network Conditions (Current)"
         echo ""
         echo "Region Profiles:"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -94,7 +94,7 @@ case $profile in
 esac
 
 echo ""
-echo "💡 Note: Network simulation is currently illustrative."
+echo "Note: Network simulation is currently illustrative."
 echo "   In production environments, use 'tc' (traffic control) or"
 echo "   Docker network plugins for actual traffic shaping."
 echo ""

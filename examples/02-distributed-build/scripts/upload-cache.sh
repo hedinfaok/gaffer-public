@@ -6,7 +6,7 @@ CACHE_DIR=".cache"
 STORAGE_BACKEND="${STORAGE_BACKEND:-s3}"  # s3, azure, or gcs
 BUCKET_NAME="gaffer-build-cache"
 
-echo "⬆️  Uploading new artifacts to remote cache (backend: $STORAGE_BACKEND)..."
+echo "↑  Uploading new artifacts to remote cache (backend: $STORAGE_BACKEND)..."
 
 # Storage backend configuration
 AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL:-http://localhost:4566}"
@@ -102,7 +102,7 @@ for file in $new_binaries; do
                 fi
                 ;;
             *)
-                echo "❌ Unknown storage backend: $STORAGE_BACKEND"
+                echo "✗ Unknown storage backend: $STORAGE_BACKEND"
                 exit 1
                 ;;
         esac
@@ -110,26 +110,26 @@ for file in $new_binaries; do
 done
 
 echo ""
-echo "📤 Upload Summary: $uploaded artifacts uploaded, $failed failed"
+echo "Upload Summary: $uploaded artifacts uploaded, $failed failed"
 
 # Display cache stats
 size=$(du -sh $CACHE_DIR 2>/dev/null | cut -f1 || echo "0B")
-echo "💾 Local cache size: $size"
+echo "Local cache size: $size"
 
 case $STORAGE_BACKEND in
     s3)
-        echo "🌐 Remote cache: s3://$BUCKET_NAME/ (endpoint: $AWS_ENDPOINT_URL)"
+        echo "Remote cache: s3://$BUCKET_NAME/ (endpoint: $AWS_ENDPOINT_URL)"
         ;;
     azure)
-        echo "🌐 Remote cache: Azure Blob Storage container: $BUCKET_NAME"
+        echo "Remote cache: Azure Blob Storage container: $BUCKET_NAME"
         ;;
     gcs)
-        echo "🌐 Remote cache: gs://$BUCKET_NAME/ (endpoint: $GCS_ENDPOINT)"
+        echo "Remote cache: gs://$BUCKET_NAME/ (endpoint: $GCS_ENDPOINT)"
         ;;
 esac
 
 if [ $uploaded -gt 0 ]; then
-    echo "🎉 Cache updated successfully!"
+    echo "Cache updated successfully!"
 else
-    echo "ℹ️  No new artifacts to upload"
+    echo "ℹ  No new artifacts to upload"
 fi

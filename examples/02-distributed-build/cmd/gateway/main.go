@@ -28,8 +28,8 @@ func main() {
 	r.HandleFunc("/", infoHandler).Methods("GET")
 
 	port := getEnv("PORT", "8080")
-	fmt.Printf("🚪 Gateway service starting on port %s\n", port)
-	fmt.Printf("🔗 Proxying:\n")
+	fmt.Printf("Gateway service starting on port %s\n", port)
+	fmt.Printf("Proxying:\n")
 	fmt.Printf("   - /api/auth/* -> auth-service:8081\n")
 	fmt.Printf("   - /api/users/* -> users-service:8082\n")
 	

@@ -16,11 +16,11 @@ const pool = new Pool({
 // Test database connection
 pool.connect()
   .then(client => {
-    console.log('✅ Connected to PostgreSQL database');
+    console.log('✓ Connected to PostgreSQL database');
     client.release();
   })
   .catch(err => {
-    console.error('❌ Database connection error:', err);
+    console.error('✗ Database connection error:', err);
     process.exit(1);
   });
 
@@ -205,21 +205,21 @@ app.use((err, req, res, next) => {
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received, shutting down gracefully');
+  console.log('SIGTERM received, shutting down gracefully');
   pool.end(() => {
     process.exit(0);
   });
 });
 
 process.on('SIGINT', () => {
-  console.log('🛑 SIGINT received, shutting down gracefully');
+  console.log('SIGINT received, shutting down gracefully');
   pool.end(() => {
     process.exit(0);
   });
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Task Manager API running on port ${port}`);
-  console.log(`📊 Health check: http://localhost:${port}/health`);
-  console.log(`📖 API docs: http://localhost:${port}/api`);
+  console.log(`Task Manager API running on port ${port}`);
+  console.log(`Health check: http://localhost:${port}/health`);
+  console.log(`API docs: http://localhost:${port}/api`);
 });

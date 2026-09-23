@@ -7,7 +7,7 @@ set -e
 
 cd "$(dirname "$0")"
 
-echo "🧪 Testing Local Development Environment Example"
+echo "Testing Local Development Environment Example"
 echo "=================================================="
 echo ""
 
@@ -35,19 +35,19 @@ run_test() {
 }
 
 pass_test() {
-    echo -e "${GREEN}✅ PASS${NC}"
+    echo -e "${GREEN}✓ PASS${NC}"
     TESTS_PASSED=$((TESTS_PASSED + 1))
 }
 
 fail_test() {
     local reason="$1"
-    echo -e "${RED}❌ FAIL${NC}"
+    echo -e "${RED}✗ FAIL${NC}"
     echo "Reason: $reason"
     exit 1
 }
 
 # Cleanup from any previous runs
-echo -e "${YELLOW}🧹 Cleaning up from previous runs...${NC}"
+echo -e "${YELLOW}Cleaning up from previous runs...${NC}"
 gaffer-exec --workspace-root . run make:clean > /dev/null 2>&1 || true
 echo ""
 
@@ -388,7 +388,7 @@ pass_test
 # Summary
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${GREEN}🎉 TEST SUMMARY${NC}"
+echo -e "${GREEN}TEST SUMMARY${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo -e "Tests Run:    ${TESTS_RUN}"
@@ -397,7 +397,7 @@ echo -e "Tests Failed: ${RED}$((TESTS_RUN - TESTS_PASSED))${NC}"
 echo ""
 
 if [ $TESTS_PASSED -eq $TESTS_RUN ]; then
-    echo -e "${GREEN}✅ All tests passed!${NC}"
+    echo -e "${GREEN}✓ All tests passed!${NC}"
     echo ""
     echo "The Local Development Environment example is working correctly:"
     echo "  ✓ Auto port assignment"
@@ -413,6 +413,6 @@ if [ $TESTS_PASSED -eq $TESTS_RUN ]; then
     echo "  3. Stop: gaffer-exec --workspace-root . run make:stop"
     exit 0
 else
-    echo -e "${RED}❌ Some tests failed!${NC}"
+    echo -e "${RED}✗ Some tests failed!${NC}"
     exit 1
 fi

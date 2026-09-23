@@ -19,14 +19,14 @@ describe('E2E User Management Workflow', () => {
         server = app.app;
         
         // Simulate starting the server for e2e testing
-        console.log('🧪 Starting E2E test environment...');
+        console.log('Starting E2E test environment...');
     });
 
     afterAll(async () => {
         if (app.server) {
             await app.stop();
         }
-        console.log('🧪 E2E test environment cleaned up');
+        console.log('E2E test environment cleaned up');
     });
 
     describe('Complete User Journey', () => {
@@ -57,7 +57,7 @@ describe('E2E User Management Workflow', () => {
             createdUserId = response.body.user.id;
             expect(response.body.user).toMatchObject(userInput);
 
-            console.log(`✅ E2E: User created with ID ${createdUserId}`);
+            console.log(`✓ E2E: User created with ID ${createdUserId}`);
         });
 
         test('E2E: User Profile Display', async () => {
@@ -78,7 +78,7 @@ describe('E2E User Management Workflow', () => {
             expect(cardHtml).toContain('+1555123456');
             expect(cardHtml).toContain(`user-${createdUserId}`);
 
-            console.log('✅ E2E: User profile rendered successfully');
+            console.log('✓ E2E: User profile rendered successfully');
         });
 
         test('E2E: User List Management', async () => {
@@ -105,7 +105,7 @@ describe('E2E User Management Workflow', () => {
             expect(listHtml).toContain('Users (1)');
             expect(listHtml).toContain('E2E Test User');
 
-            console.log('✅ E2E: User list filtering works');
+            console.log('✓ E2E: User list filtering works');
         });
 
         test('E2E: User Profile Update', async () => {
@@ -135,7 +135,7 @@ describe('E2E User Management Workflow', () => {
 
             expect(fetchResponse.body.user.phone).toBe('+1555987654');
 
-            console.log('✅ E2E: User update completed');
+            console.log('✓ E2E: User update completed');
         });
 
         test('E2E: Calculator Integration', async () => {
@@ -153,7 +153,7 @@ describe('E2E User Management Workflow', () => {
             // This could be stored or used in user profile
             expect(userScore).toBeGreaterThan(0);
 
-            console.log(`✅ E2E: Calculator integration (result: ${userScore})`);
+            console.log(`✓ E2E: Calculator integration (result: ${userScore})`);
         });
 
         test('E2E: Error Handling', async () => {
@@ -174,7 +174,7 @@ describe('E2E User Management Workflow', () => {
 
             expect(apiError.body.error).toBe('User not found');
 
-            console.log('✅ E2E: Error handling works correctly');
+            console.log('✓ E2E: Error handling works correctly');
         });
 
         test('E2E: User Deletion (Cleanup)', async () => {
@@ -190,7 +190,7 @@ describe('E2E User Management Workflow', () => {
                 .get(`/api/users/${createdUserId}`)
                 .expect(404);
 
-            console.log(`✅ E2E: User ${createdUserId} cleaned up`);
+            console.log(`✓ E2E: User ${createdUserId} cleaned up`);
         });
     });
 
@@ -212,7 +212,7 @@ describe('E2E User Management Workflow', () => {
                 .expect(200);
             expect(calculation.body.result).toBe(42);
 
-            console.log('✅ E2E: Full application smoke test passed');
+            console.log('✓ E2E: Full application smoke test passed');
         });
 
         test('E2E: Performance and Load Simulation', async () => {
@@ -234,7 +234,7 @@ describe('E2E User Management Workflow', () => {
                 expect(response.body.result).toBe(index + (index * 2)); // i + i*2
             });
 
-            console.log('✅ E2E: Concurrent request handling works');
+            console.log('✓ E2E: Concurrent request handling works');
         });
 
         test('E2E: Data Flow Integration', async () => {
@@ -275,7 +275,7 @@ describe('E2E User Management Workflow', () => {
             // Clean up
             await request(server).delete(`/api/users/${userId}`);
 
-            console.log('✅ E2E: Complete data flow integration verified');
+            console.log('✓ E2E: Complete data flow integration verified');
         });
     });
 });

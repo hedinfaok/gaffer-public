@@ -41,7 +41,7 @@ tracker_refs: []
 
 # Work Package Prompt: WP02 – Remediate example 08 node-frontend + example 04
 
-## ⚡ Do This First: Load Agent Profile
+## ↯ Do This First: Load Agent Profile
 
 Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the frontmatter, and behave according to its guidance before parsing the rest of this prompt.
 

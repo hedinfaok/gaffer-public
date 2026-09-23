@@ -4,7 +4,7 @@
 
 cd "$(dirname "$0")/.."
 
-echo "📊 Network Performance Monitor"
+echo "Network Performance Monitor"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -32,7 +32,7 @@ for i in "${!region_names[@]}"; do
     
     # Check health
     if curl -sf "$endpoint/_localstack/health" >/dev/null 2>&1; then
-        status="✅"
+        status="✓"
         
         # Get cache object count
         cache_count=$(aws --endpoint-url=$endpoint s3 ls s3://$bucket/ 2>/dev/null | wc -l | tr -d ' ')
@@ -46,7 +46,7 @@ for i in "${!region_names[@]}"; do
             hit_rate=0
         fi
     else
-        status="❌"
+        status="✗"
         cache_count=0
         hit_rate=0
     fi
@@ -64,7 +64,7 @@ echo ""
 
 # Show cache hit statistics
 if [ -f .cache/cache-hits.log ]; then
-    echo "📈 Overall Cache Statistics:"
+    echo "Overall Cache Statistics:"
     total_ops=$(wc -l < .cache/cache-hits.log | tr -d ' ')
     total_hits=$(grep -c "Cache hit" .cache/cache-hits.log 2>/dev/null || echo 0)
     total_misses=$(grep -c "Cache miss" .cache/cache-hits.log 2>/dev/null || echo 0)
@@ -81,7 +81,7 @@ fi
 
 # Show bandwidth savings
 if [ -d bin ] && [ -d .cache/artifacts ]; then
-    echo "💾 Bandwidth Savings:"
+    echo "Bandwidth Savings:"
     
     # Calculate total artifact size
     if [ "$(uname)" = "Darwin" ]; then
@@ -104,12 +104,12 @@ fi
 
 # Show recent activity
 if [ -f .cache/cache-operations.log ]; then
-    echo "📝 Recent Operations:"
+    echo "Recent Operations:"
     tail -5 .cache/cache-operations.log | while read line; do
         echo "   $line"
     done
     echo ""
 fi
 
-echo "🔄 Auto-refresh: Press Ctrl+C to stop, or run 'watch -n 2 ./scripts/monitor-network.sh'"
+echo "Auto-refresh: Press Ctrl+C to stop, or run 'watch -n 2 ./scripts/monitor-network.sh'"
 echo ""

@@ -27,9 +27,9 @@ func main() {
 	port := getEnv("PORT", "8082")
 	region := getEnv("BUILD_REGION", "us-east-1")
 	
-	fmt.Printf("🌐 Frontend service starting on port %s\n", port)
-	fmt.Printf("🌍 Region: %s\n", region)
-	fmt.Printf("📊 Dashboard: http://localhost:%s/dashboard\n", port)
+	fmt.Printf("Frontend service starting on port %s\n", port)
+	fmt.Printf("Region: %s\n", region)
+	fmt.Printf("Dashboard: http://localhost:%s/dashboard\n", port)
 	
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }
@@ -73,7 +73,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 </head>
 <body>
     <div class="container">
-        <h1>🌐 Network-Aware Builds</h1>
+        <h1>Network-Aware Builds</h1>
         <p>Frontend Service - Region: <span class="region">%s</span></p>
         <p>This demonstrates intelligent network-aware build orchestration with multi-region caching.</p>
         
@@ -129,26 +129,26 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 </head>
 <body>
     <div class="header">
-        <h1>📊 Network-Aware Build Dashboard</h1>
+        <h1>Network-Aware Build Dashboard</h1>
         <p>Real-time monitoring of multi-region build infrastructure</p>
     </div>
     <div class="container">
         <div class="metrics">
             <div class="metric-card">
-                <div class="metric-title">🌍 US-East Region</div>
-                <div class="metric-value status-good">✅ Healthy</div>
+                <div class="metric-title">US-East Region</div>
+                <div class="metric-value status-good">✓ Healthy</div>
                 <div>Latency: 50ms | Bandwidth: 100 Mbps</div>
                 <div>Cache Hits: 850 | Availability: 99.9%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">🌍 US-West Region</div>
-                <div class="metric-value status-good">✅ Healthy</div>
+                <div class="metric-title">US-West Region</div>
+                <div class="metric-value status-good">✓ Healthy</div>
                 <div>Latency: 100ms | Bandwidth: 50 Mbps</div>
                 <div>Cache Hits: 600 | Availability: 99.5%</div>
             </div>
             <div class="metric-card">
-                <div class="metric-title">🌍 EU-Central Region</div>
-                <div class="metric-value status-warning">⚠️ Degraded</div>
+                <div class="metric-title">EU-Central Region</div>
+                <div class="metric-value status-warning">⚠ Degraded</div>
                 <div>Latency: 150ms | Bandwidth: 25 Mbps</div>
                 <div>Cache Hits: 400 | Availability: 98.8%</div>
             </div>
@@ -167,21 +167,21 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
                 <td>api</td>
                 <td>us-east</td>
                 <td>8s</td>
-                <td>✅ Yes</td>
+                <td>✓ Yes</td>
                 <td class="status-good">Success</td>
             </tr>
             <tr>
                 <td>worker</td>
                 <td>us-east</td>
                 <td>7s</td>
-                <td>✅ Yes</td>
+                <td>✓ Yes</td>
                 <td class="status-good">Success</td>
             </tr>
             <tr>
                 <td>frontend</td>
                 <td>us-west</td>
                 <td>12s</td>
-                <td>❌ No</td>
+                <td>✗ No</td>
                 <td class="status-good">Success</td>
             </tr>
         </table>

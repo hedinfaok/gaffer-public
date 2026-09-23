@@ -34,7 +34,7 @@ if (fs.existsSync(resultsFile)) {
 // Configure flakiness - test succeeds on attempt 3 or later
 const successThreshold = 3;
 
-console.log(`\n🎲 Flaky Test Suite - Attempt ${attemptNumber + 1}/${maxAttempts}`);
+console.log(`\nFlaky Test Suite - Attempt ${attemptNumber + 1}/${maxAttempts}`);
 console.log('━'.repeat(60));
 
 // Simulate various flaky test scenarios
@@ -75,7 +75,7 @@ tests.forEach(test => {
     const passed = attemptNumber >= test.flakyUntilAttempt;
     
     if (passed) {
-        console.log(`✅ ${test.name}`);
+        console.log(`✓ ${test.name}`);
         console.log(`   ${test.description}`);
         passedTests++;
         testResults.push({
@@ -84,7 +84,7 @@ tests.forEach(test => {
             attemptSucceeded: attemptNumber + 1
         });
     } else {
-        console.log(`❌ ${test.name}`);
+        console.log(`✗ ${test.name}`);
         console.log(`   ${test.description}`);
         console.log(`   Error: ${test.errorMessage}`);
         failedTests++;
@@ -121,7 +121,7 @@ fs.writeFileSync(resultsFile, JSON.stringify(results, null, 2));
 
 // Print summary
 console.log('━'.repeat(60));
-console.log(`📊 Test Results (Attempt ${attemptNumber + 1})`);
+console.log(`Test Results (Attempt ${attemptNumber + 1})`);
 console.log(`   Passed: ${passedTests}/${tests.length}`);
 console.log(`   Failed: ${failedTests}/${tests.length}`);
 console.log(`   Execution Time: ${executionTime}ms`);
@@ -130,26 +130,26 @@ console.log();
 // Exponential backoff demonstration
 if (failedTests > 0) {
     const nextDelay = Math.min(1000 * Math.pow(2, attemptNumber), 10000);
-    console.log(`⏱️  Exponential Backoff Configuration:`);
+    console.log(`⏱  Exponential Backoff Configuration:`);
     console.log(`   Initial delay: 1000ms`);
     console.log(`   Current delay: ${nextDelay}ms`);
     console.log(`   Backoff multiplier: 2.0x`);
     console.log(`   Max delay: 10000ms`);
     console.log();
-    console.log(`♻️  gaffer-exec will retry with ${nextDelay}ms delay...`);
+    console.log(`↻  gaffer-exec will retry with ${nextDelay}ms delay...`);
     console.log(`   Expected to succeed on attempt ${successThreshold + 1}`);
 }
 
 // Exit with appropriate code
 if (failedTests > 0 && attemptNumber < successThreshold) {
-    console.log(`\n⚠️  Tests failed but will pass on retry (designed behavior)\n`);
+    console.log(`\n⚠  Tests failed but will pass on retry (designed behavior)\n`);
     process.exit(1);
 } else {
-    console.log(`\n✅ Flaky tests passed after ${attemptNumber + 1} attempt(s)!\n`);
+    console.log(`\n✓ Flaky tests passed after ${attemptNumber + 1} attempt(s)!\n`);
     
     // Display retry statistics
     if (attemptNumber > 0) {
-        console.log(`📈 Retry Statistics:`);
+        console.log(`Retry Statistics:`);
         console.log(`   Total attempts: ${attemptNumber + 1}`);
         console.log(`   First attempt: Failed`);
         console.log(`   Final attempt: Passed`);

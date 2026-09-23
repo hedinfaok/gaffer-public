@@ -2,16 +2,16 @@
 
 This example demonstrates **gaffer-exec's advanced test orchestration capabilities** that go beyond traditional test runners like Jest, Cypress, and Playwright.
 
-## 🎯 Key Differentiators vs Alternatives
+## Key Differentiators vs Alternatives
 
 ### gaffer-exec Advantages:
-✅ **Advanced Retry Logic** - `--retry N` flag for intelligent retry handling
-✅ **Merkle Tree Caching** - `--cache merkle` to skip unchanged test suites across runs
-✅ **Auto-Detect Parallelization** - `-j auto` for optimal resource utilization
-✅ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing in the Makefile task graph
-✅ **Task Orchestration** - Coordinate multiple test tiers in a single Makefile task graph
-✅ **Graceful Signal Handling** - `--signal-mode graceful` for proper cleanup
-✅ **Test Result Aggregation** - Comprehensive metrics across all test tiers
+✓ **Advanced Retry Logic** - `--retry N` flag for intelligent retry handling
+✓ **Merkle Tree Caching** - `--cache merkle` to skip unchanged test suites across runs
+✓ **Auto-Detect Parallelization** - `-j auto` for optimal resource utilization
+✓ **Dependency-Aware Test Ordering** - Unit → Integration → E2E sequencing in the Makefile task graph
+✓ **Task Orchestration** - Coordinate multiple test tiers in a single Makefile task graph
+✓ **Graceful Signal Handling** - `--signal-mode graceful` for proper cleanup
+✓ **Test Result Aggregation** - Comprehensive metrics across all test tiers
 
 ### Vs Alternatives:
 - **Jest**: Basic retry, no cross-run caching, limited parallelism control
@@ -77,13 +77,13 @@ This follows incremental testing patterns used by:
 ```
 
 **Advanced Features (via CLI flags):**
-- ✅ **Dependency ordering** defined in the Makefile ensures correct sequence
-- ✅ **Parallel execution** with `-j auto` or `-j 4` for concurrent independent tests
-- ✅ **Retry logic** with `--retry 3` for handling flaky tests
-- ✅ **Merkle tree caching** with `--cache merkle` skips unchanged test suites
-- ✅ **Graceful shutdown** with `--signal-mode graceful` ensures proper cleanup
-- ✅ Flaky test demonstration scripts
-- ✅ Performance benchmarking vs Jest/Cypress/Playwright
+- ✓ **Dependency ordering** defined in the Makefile ensures correct sequence
+- ✓ **Parallel execution** with `-j auto` or `-j 4` for concurrent independent tests
+- ✓ **Retry logic** with `--retry 3` for handling flaky tests
+- ✓ **Merkle tree caching** with `--cache merkle` skips unchanged test suites
+- ✓ **Graceful shutdown** with `--signal-mode graceful` ensures proper cleanup
+- ✓ Flaky test demonstration scripts
+- ✓ Performance benchmarking vs Jest/Cypress/Playwright
 
 ## How to Run
 
@@ -172,31 +172,31 @@ See `gaffer-exec --help` for complete list.
 
 **First run (cold cache):**
 ```
-🧪 Running library unit tests...
-🧪 Running API unit tests...
-🧪 Running UI unit tests...
-⏱️  Total time: 5000ms
+Running library unit tests...
+Running API unit tests...
+Running UI unit tests...
+⏱  Total time: 5000ms
 ```
 
 **Second run (warm cache - no changes):**
 ```
-✅ unit-tests-lib (cached, skipped)
-✅ unit-tests-api (cached, skipped)
-✅ unit-tests-ui (cached, skipped)
-⚡ Total time: 100ms
-⚡ Cache speedup: Results vary based on cache effectiveness
+✓ unit-tests-lib (cached, skipped)
+✓ unit-tests-api (cached, skipped)
+✓ unit-tests-ui (cached, skipped)
+↯ Total time: 100ms
+↯ Cache speedup: Results vary based on cache effectiveness
 ```
 
 ### Retry Logic with Exponential Backoff
 
 **Flaky test execution:**
 ```
-Attempt 1: ❌ Failed (retrying in 1000ms...)
-Attempt 2: ❌ Failed (retrying in 2000ms...)
-Attempt 3: ❌ Failed (retrying in 4000ms...)
-Attempt 4: ✅ Passed
+Attempt 1: ✗ Failed (retrying in 1000ms...)
+Attempt 2: ✗ Failed (retrying in 2000ms...)
+Attempt 3: ✗ Failed (retrying in 4000ms...)
+Attempt 4: ✓ Passed
 
-📊 Retry Statistics:
+Retry Statistics:
   Total attempts: 4
   Backoff strategy: Exponential (2.0x multiplier)
   Total delay: 7000ms
@@ -205,23 +205,23 @@ Attempt 4: ✅ Passed
 ### Performance Metrics
 
 ```
-📊 TEST EXECUTION SUMMARY
+TEST EXECUTION SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Total Tests: 45
 Passed: 45 (100%)
 Failed: 0
 Total Execution Time: 3245ms
 
-🔄 CACHE PERFORMANCE:
+CACHE PERFORMANCE:
 Cache Hit Rate: 70.0%
 Cache Hits: 7
 Cache Misses: 3
 
-♻️  RETRY STATISTICS:
+↻  RETRY STATISTICS:
 Total Retry Attempts: 3
 Retry Strategy: Exponential backoff with 2.0x multiplier
 
-📊 CODE COVERAGE:
+CODE COVERAGE:
 Lines: 85.2%
 Statements: 84.8%
 Functions: 90.1%
@@ -255,8 +255,8 @@ gaffer-exec --workspace-root . run --cache merkle make:test-all
 ```
 
 **Cache behavior:**
-- ✅ If inputs unchanged → skip execution, use cached outputs
-- ❌ If inputs changed → re-run tests, update cache
+- ✓ If inputs unchanged → skip execution, use cached outputs
+- ✗ If inputs changed → re-run tests, update cache
 
 ### Resource-Aware Parallelization
 
@@ -286,10 +286,10 @@ Run `gaffer-exec --workspace-root . run make:performance-benchmark` to compare:
 
 | Tool | Cold Run | Warm Run | Cache Hit Rate | Retry Logic |
 |------|----------|----------|----------------|-------------|
-| **gaffer-exec** | ~5000ms | Varies* | Up to 70% | ✅ Exponential backoff |
-| Jest | ~4500ms | ~4500ms | 0% | ⚠️ Basic (immediate retry) |
-| Cypress | ~8000ms | ~8000ms | 0% | ⚠️ Manual configuration |
-| Playwright | ~6000ms | ~6000ms | 0% | ⚠️ Manual configuration |
+| **gaffer-exec** | ~5000ms | Varies* | Up to 70% | ✓ Exponential backoff |
+| Jest | ~4500ms | ~4500ms | 0% | ⚠ Basic (immediate retry) |
+| Cypress | ~8000ms | ~8000ms | 0% | ⚠ Manual configuration |
+| Playwright | ~6000ms | ~6000ms | 0% | ⚠ Manual configuration |
 
 **Speedup: Cache effectiveness depends on actual file changes and test suite composition**
 *Warm run performance varies from similar to cold run (minimal cache benefit) to significantly faster when many tests are cached.

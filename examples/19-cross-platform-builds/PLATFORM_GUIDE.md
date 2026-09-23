@@ -177,13 +177,13 @@ Each platform-specific target will check internally and either execute or skip g
 
 For complex commands, extract to scripts and keep the conditional simple:
 
-**❌ Hard to read:**
+**✗ Hard to read:**
 ```make
 build-linux:
 	@if [ "$$(uname)" = "Linux" ]; then if [ -d build ]; then rm -rf build; fi && mkdir build && gcc ...; else echo '⊘ Skipping'; fi
 ```
 
-**✅ Better:**
+**✓ Better:**
 ```make
 build-linux:
 	@if [ "$$(uname)" = "Linux" ]; then bash scripts/build-linux.sh; else echo '⊘ Skipping on '$$(uname); fi

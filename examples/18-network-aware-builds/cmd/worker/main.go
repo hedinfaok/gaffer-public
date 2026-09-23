@@ -32,8 +32,8 @@ func main() {
 	port := getEnv("PORT", "8081")
 	region := getEnv("BUILD_REGION", "us-east-1")
 	
-	fmt.Printf("🔧 Worker service starting on port %s\n", port)
-	fmt.Printf("🌍 Region: %s\n", region)
+	fmt.Printf("Worker service starting on port %s\n", port)
+	fmt.Printf("Region: %s\n", region)
 	
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

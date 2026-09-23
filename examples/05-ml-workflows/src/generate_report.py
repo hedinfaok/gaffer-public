@@ -12,7 +12,7 @@ from pathlib import Path
 
 def main():
     """Generate a comprehensive ML pipeline report."""
-    print('\n🎉 ML Pipeline Completed Successfully!\n')
+    print('\nML Pipeline Completed Successfully!\n')
     
     # Check if directories exist
     models_dir = Path('data/models')
@@ -20,7 +20,7 @@ def main():
     plots_dir = Path('data/plots')
     
     # Report generated models
-    print('📊 Generated Models:')
+    print('Generated Models:')
     if models_dir.exists():
         model_files = [f for f in os.listdir(models_dir) if f.endswith('.joblib')]
         if model_files:
@@ -32,7 +32,7 @@ def main():
         print('   - Models directory not found')
     
     # Report results
-    print('\n📈 Results:')
+    print('\nResults:')
     if results_dir.exists():
         result_files = [f for f in os.listdir(results_dir) if f.endswith('.json')]
         if result_files:
@@ -44,7 +44,7 @@ def main():
         print('   - Results directory not found')
     
     # Report summary from evaluation results
-    print('\n📋 Summary:')
+    print('\nSummary:')
     if results_dir.exists():
         eval_files = [f for f in os.listdir(results_dir) 
                      if f.startswith('evaluation_') and f.endswith('.json')]
@@ -73,7 +73,7 @@ def main():
         print('   - Results directory not found')
     
     # Report plots
-    print('\n📊 Generated Plots:')
+    print('\nGenerated Plots:')
     if plots_dir.exists():
         plot_files = []
         for root, dirs, files in os.walk(plots_dir):
@@ -90,7 +90,7 @@ def main():
     else:
         print('   - Plots directory not found')
     
-    print('\n🔧 Built with: gaffer-exec ML workflow orchestration\n')
+    print('\nBuilt with: gaffer-exec ML workflow orchestration\n')
 
 
 if __name__ == '__main__':

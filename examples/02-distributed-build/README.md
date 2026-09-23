@@ -12,12 +12,12 @@ This follows the same distributed caching patterns used by:
 
 ## Features
 
-✨ **Real Cloud Storage Backends:**
+✦ **Real Cloud Storage Backends:**
 - AWS S3 (LocalStack)
 - Azure Blob Storage (Azurite)
 - Google Cloud Storage (fake-gcs-server)
 
-🐳 **Docker-based Mock Services:**
+**Docker-based Mock Services:**
 - No real cloud credentials needed
 - Local development friendly
 - Production-like behavior
@@ -158,39 +158,39 @@ curl http://localhost:4443/storage/v1/b/gaffer-build-cache/o
 
 **First run (cold cache):**
 ```
-🔍 Checking remote cache for artifacts (backend: s3)...
+Checking remote cache for artifacts (backend: s3)...
 ✗ Cache miss (S3): cmd/gateway/main
 ✗ Cache miss (S3): cmd/auth/main
 ✗ Cache miss (S3): cmd/users/main
-📊 Cache Summary: 0/3 artifacts found
-🎯 Cache hit rate: 0%
-🔥 Cache warming needed
+Cache Summary: 0/3 artifacts found
+Cache hit rate: 0%
+Cache warming needed
 
-🔨 Building gateway service...
-🔨 Building auth service...
-🔨 Building users service...
+Building gateway service...
+Building auth service...
+Building users service...
 
-⬆️  Uploading new artifacts to remote cache (backend: s3)...
+↑  Uploading new artifacts to remote cache (backend: s3)...
 ✓ Uploaded to S3: cmd/gateway/main
 ✓ Uploaded to S3: cmd/auth/main
 ✓ Uploaded to S3: cmd/users/main
-📤 Upload Summary: 3 artifacts uploaded, 0 failed
-🎉 Cache updated successfully!
+Upload Summary: 3 artifacts uploaded, 0 failed
+Cache updated successfully!
 ```
 
 **Second run (warm cache):**
 ```
-🔍 Checking remote cache for artifacts (backend: s3)...
+Checking remote cache for artifacts (backend: s3)...
 ✓ Cache hit (S3): cmd/gateway/main
 ✓ Cache hit (S3): cmd/auth/main
 ✓ Cache hit (S3): cmd/users/main
-📊 Cache Summary: 3/3 artifacts found
-🎯 Cache hit rate: 100%
-🚀 Excellent cache performance!
+Cache Summary: 3/3 artifacts found
+Cache hit rate: 100%
+Excellent cache performance!
 
-⬆️  Uploading new artifacts to remote cache (backend: s3)...
-📤 Upload Summary: 0 artifacts uploaded, 0 failed
-ℹ️  No new artifacts to upload
+↑  Uploading new artifacts to remote cache (backend: s3)...
+Upload Summary: 0 artifacts uploaded, 0 failed
+ℹ  No new artifacts to upload
 ```
 
 ## Service Endpoints

@@ -66,9 +66,9 @@ breaking-only.
 
 | Example | Check | Result |
 |---------|-------|--------|
-| 06-local-dev-environment | `bash test.sh` (DB→API→frontend, integration, shutdown) | ✅ 10/10 |
-| 04-incremental-testing | `bash test.sh` | ✅ exit 0 |
-| 08-multi-language-task-running | `gaffer-exec --workspace-root . run make:build-node` (the example's build path) | ✅ `dist/bundle.js` produced |
+| 06-local-dev-environment | `bash test.sh` (DB→API→frontend, integration, shutdown) | ✓ 10/10 |
+| 04-incremental-testing | `bash test.sh` | ✓ exit 0 |
+| 08-multi-language-task-running | `gaffer-exec --workspace-root . run make:build-node` (the example's build path) | ✓ `dist/bundle.js` produced |
 
 Note: example 08's *unused* real `npm run build` (webpack) has a pre-existing
 entry/config issue (`src/index.wasm`) unrelated to this remediation; the example's
@@ -85,7 +85,7 @@ Makefile uses a simulated webpack build, which works.
 
 | ID | Criterion | Result |
 |----|-----------|--------|
-| SC-001 | Non-breaking `npm audit fix` applied to all five manifests | ✅ |
-| SC-002 | All non-breaking-fixable advisories resolved | ✅ (112 → 36; second pass no-op) |
-| SC-003 | No regression in remediated examples | ✅ (06, 04, 08 verified) |
-| SC-004 | Before/after report + residuals | ✅ (this file) |
+| SC-001 | Non-breaking `npm audit fix` applied to all five manifests | ✓ |
+| SC-002 | All non-breaking-fixable advisories resolved | ✓ (112 → 36; second pass no-op) |
+| SC-003 | No regression in remediated examples | ✓ (06, 04, 08 verified) |
+| SC-004 | Before/after report + residuals | ✓ (this file) |

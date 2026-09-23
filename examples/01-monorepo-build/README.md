@@ -6,12 +6,12 @@ This example demonstrates building a **real TypeScript monorepo** with multiple 
 
 Unlike traditional monorepo tools (npm workspaces, Lerna, Rush), gaffer-exec provides:
 
-- ⚡ **Automatic parallelization** - Builds independent packages simultaneously
-- 💾 **Smart caching** - Skip rebuilds when inputs haven't changed
-- 🎯 **Incremental builds** - Only rebuild affected packages
-- 📊 **Build impact visualization** - See what changed and why
-- 🔍 **Output tracking** - Cache and restore build artifacts
-- 🚀 **Speed** - 2-3x faster than sequential builds (scales with project size)
+- ↯ **Automatic parallelization** - Builds independent packages simultaneously
+- **Smart caching** - Skip rebuilds when inputs haven't changed
+- **Incremental builds** - Only rebuild affected packages
+- **Build impact visualization** - See what changed and why
+- **Output tracking** - Cache and restore build artifacts
+- **Speed** - 2-3x faster than sequential builds (scales with project size)
 
 ## Real Open Source Project Pattern
 
@@ -109,16 +109,16 @@ gaffer-exec --workspace-root . run make:build-all
 
 **Example Output:**
 ```
-🧹 Cleaned all build artifacts
-📦 Building shared-lib...
+Cleaned all build artifacts
+Building shared-lib...
 ✓ shared-lib complete
-🔐 Building auth-service...
-👤 Building user-service...
+Building auth-service...
+Building user-service...
 ✓ auth-service complete
 ✓ user-service complete
-🌐 Building api-gateway...
+Building api-gateway...
 ✓ api-gateway complete
-🚀 Building web-app...
+Building web-app...
 ✓ web-app complete
 
 ════════════════════════════════════════
@@ -138,7 +138,7 @@ gaffer-exec --workspace-root . run make:start
 
 ## Interactive Demos
 
-### 🚀 Demo 1: Parallel vs Sequential Builds
+### Demo 1: Parallel vs Sequential Builds
 
 See the speed difference between parallel and sequential builds:
 
@@ -147,21 +147,21 @@ See the speed difference between parallel and sequential builds:
 ```
 
 This demo:
-- ✅ Runs sequential build (like npm workspaces)
-- ✅ Runs parallel build (gaffer-exec)
-- ✅ Shows timing for each package
-- ✅ Calculates speedup percentage
+- ✓ Runs sequential build (like npm workspaces)
+- ✓ Runs parallel build (gaffer-exec)
+- ✓ Shows timing for each package
+- ✓ Calculates speedup percentage
 
 **Expected Results:**
 ```
 Sequential (npm):  ~250-400ms (5 packages one-by-one)
 Parallel (gaffer): ~150-250ms (2 packages in parallel)
 
-⚡ Speedup: 1.4-2.0x faster
-💰 Time saved: 30-50%
+↯ Speedup: 1.4-2.0x faster
+Time saved: 30-50%
 ```
 
-### 📦 Demo 2: Incremental Builds
+### Demo 2: Incremental Builds
 
 See how gaffer-exec only rebuilds what changed:
 
@@ -170,10 +170,10 @@ See how gaffer-exec only rebuilds what changed:
 ```
 
 This demo:
-- ✅ Does initial full build
-- ✅ Modifies one file in auth-service
-- ✅ Shows which packages need rebuild
-- ✅ Demonstrates smart dependency tracking
+- ✓ Does initial full build
+- ✓ Modifies one file in auth-service
+- ✓ Shows which packages need rebuild
+- ✓ Demonstrates smart dependency tracking
 
 **Impact Analysis Example:**
 ```
@@ -182,18 +182,18 @@ Modified: packages/auth-service/src/handlers.ts
 Impact Analysis:
   ✓ shared-lib:   no rebuild needed (unchanged)
   ✓ user-service: no rebuild needed (unchanged)
-  ⚡ auth-service: REBUILD REQUIRED (source changed)
-  ⚡ api-gateway:  REBUILD REQUIRED (depends on auth-service)
-  ⚡ web-app:      REBUILD REQUIRED (depends on api-gateway)
+  ↯ auth-service: REBUILD REQUIRED (source changed)
+  ↯ api-gateway:  REBUILD REQUIRED (depends on auth-service)
+  ↯ web-app:      REBUILD REQUIRED (depends on api-gateway)
 
 Full build:        ~250ms (5 packages)
 Incremental build: ~150ms (3 packages)
 
-⚡ Speedup: 1.67x faster
-📦 Packages skipped: 2 out of 5 (40%)
+↯ Speedup: 1.67x faster
+Packages skipped: 2 out of 5 (40%)
 ```
 
-### 💾 Demo 3: Build Caching
+### Demo 3: Build Caching
 
 See how caching eliminates redundant work:
 
@@ -202,10 +202,10 @@ See how caching eliminates redundant work:
 ```
 
 This demo:
-- ✅ First build (cold cache)
-- ✅ Second build (hot cache - instant!)
-- ✅ Restore after deleting outputs
-- ✅ Shows cache effectiveness
+- ✓ First build (cold cache)
+- ✓ Second build (hot cache - instant!)
+- ✓ Restore after deleting outputs
+- ✓ Shows cache effectiveness
 
 **Expected Results:**
 ```
@@ -213,10 +213,10 @@ This demo:
 2. Second build (hot):      <50ms   (cache hit!)
 3. Restore from cache:      <100ms
 
-⚡ Cache speedup: 5-10x faster
+↯ Cache speedup: 5-10x faster
 ```
 
-### ⚡ Demo 4: Benchmark vs npm workspaces
+### ↯ Demo 4: Benchmark vs npm workspaces
 
 Compare performance vs traditional tools:
 
@@ -305,7 +305,7 @@ This scales dramatically:
 
 ## What This Example Demonstrates
 
-### ✅ Core Features
+### ✓ Core Features
 
 1. **Parallel Execution**
    - Builds independent packages simultaneously
@@ -328,7 +328,7 @@ This scales dramatically:
    - Can restore outputs even if deleted
    - Useful for CI/CD and branch switching
 
-### ✅ Real-World Patterns
+### ✓ Real-World Patterns
 
 1. **Monorepo Structure**
    - npm workspaces for dependency management
@@ -363,43 +363,43 @@ Based on running all demos on a modern development machine:
 ## Comparison to Other Tools
 
 ### vs. npm workspaces
-- ❌ npm: Sequential builds only
-- ✅ gaffer-exec: Automatic parallelization
-- ❌ npm: No build caching
-- ✅ gaffer-exec: Intelligent caching
-- ❌ npm: Rebuilds everything every time
-- ✅ gaffer-exec: Incremental rebuilds
+- ✗ npm: Sequential builds only
+- ✓ gaffer-exec: Automatic parallelization
+- ✗ npm: No build caching
+- ✓ gaffer-exec: Intelligent caching
+- ✗ npm: Rebuilds everything every time
+- ✓ gaffer-exec: Incremental rebuilds
 
 ### vs. Lerna
-- ⚠️ Lerna: Can run parallel but requires manual configuration
-- ✅ gaffer-exec: Automatic parallel scheduling
-- ⚠️ Lerna: No built-in caching (needs Nx)
-- ✅ gaffer-exec: Built-in output caching
+- ⚠ Lerna: Can run parallel but requires manual configuration
+- ✓ gaffer-exec: Automatic parallel scheduling
+- ⚠ Lerna: No built-in caching (needs Nx)
+- ✓ gaffer-exec: Built-in output caching
 
 ### vs. Turborepo / Nx
-- ✅ Similar: Both have caching and parallelization
-- ✅ gaffer-exec: More flexible task definitions
-- ✅ gaffer-exec: Language-agnostic (not just JS/TS)
-- ✅ gaffer-exec: No framework lock-in
+- ✓ Similar: Both have caching and parallelization
+- ✓ gaffer-exec: More flexible task definitions
+- ✓ gaffer-exec: Language-agnostic (not just JS/TS)
+- ✓ gaffer-exec: No framework lock-in
 
 ### vs. Rush
-- ✅ Similar: Both handle large monorepos well
-- ✅ gaffer-exec: Simpler configuration (Makefile)
-- ✅ gaffer-exec: Better for mixed-language projects
+- ✓ Similar: Both handle large monorepos well
+- ✓ gaffer-exec: Simpler configuration (Makefile)
+- ✓ gaffer-exec: Better for mixed-language projects
 
 ## When to Use gaffer-exec
 
 **Perfect For:**
-- ✅ TypeScript/JavaScript monorepos
-- ✅ Mixed-language projects (TS + Go + Python + Rust)
-- ✅ CI/CD pipelines (caching saves build time)
-- ✅ Large codebases with many packages
-- ✅ Teams wanting fast iteration times
+- ✓ TypeScript/JavaScript monorepos
+- ✓ Mixed-language projects (TS + Go + Python + Rust)
+- ✓ CI/CD pipelines (caching saves build time)
+- ✓ Large codebases with many packages
+- ✓ Teams wanting fast iteration times
 
 **Maybe Not Needed For:**
-- ❌ Single-package projects
-- ❌ Very small monorepos (<5 packages)
-- ❌ Projects with no dependencies between packages
+- ✗ Single-package projects
+- ✗ Very small monorepos (<5 packages)
+- ✗ Projects with no dependencies between packages
 
 ## Next Steps
 
@@ -450,7 +450,7 @@ This is substantial enough to demonstrate real build time and meaningful paralle
 
 ---
 
-**Built with ❤️ to demonstrate the power of gaffer-exec**
+**Built with ♥ to demonstrate the power of gaffer-exec**
 - **Dependency awareness**: Only rebuilds what changed
 - **Visualization**: See the entire build graph
 

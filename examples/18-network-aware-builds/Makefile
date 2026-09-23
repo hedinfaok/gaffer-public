@@ -39,15 +39,15 @@ fetch-cache-eu: detect-network
 
 # Build the API service
 build-api: fetch-cache-us-east
-	@echo '🔨 Building API service...' && go build -o bin/api ./cmd/api
+	@echo 'Building API service...' && go build -o bin/api ./cmd/api
 
 # Build the worker service
 build-worker: fetch-cache-us-east
-	@echo '🔨 Building worker service...' && go build -o bin/worker ./cmd/worker
+	@echo 'Building worker service...' && go build -o bin/worker ./cmd/worker
 
 # Build the frontend service
 build-frontend: fetch-cache-us-east
-	@echo '🔨 Building frontend service...' && go build -o bin/frontend ./cmd/frontend
+	@echo 'Building frontend service...' && go build -o bin/frontend ./cmd/frontend
 
 # Verify all service binaries
 verify-builds: build-api build-worker build-frontend
@@ -63,7 +63,7 @@ sync-regions: upload-cache
 
 # Full network-aware build
 network-build: sync-regions
-	@echo '✅ Network-aware build complete!' && echo '📊 Build statistics:' && ./scripts/show-stats.sh
+	@echo '✓ Network-aware build complete!' && echo 'Build statistics:' && ./scripts/show-stats.sh
 
 # Run performance benchmarks
 benchmark:

@@ -28,7 +28,7 @@ app.get('/health', (req, res) => {
 app.get('/api/backend/:endpoint', async (req, res) => {
     try {
         const endpoint = req.params.endpoint;
-        console.log(`⚛️  Node.js proxying to Rust backend: /${endpoint}`);
+        console.log(`⚛  Node.js proxying to Rust backend: /${endpoint}`);
         
         const response = await axios.get(`${BACKEND_URL}/${endpoint}`);
         
@@ -53,7 +53,7 @@ app.get('/api/backend/:endpoint', async (req, res) => {
 // Dashboard data aggregation
 app.get('/dashboard', async (req, res) => {
     try {
-        console.log('⚛️  Node.js aggregating dashboard data...');
+        console.log('⚛  Node.js aggregating dashboard data...');
         
         // Fetch from multiple sources
         const [healthResp, metricsResp] = await Promise.all([
@@ -115,21 +115,21 @@ app.get('/', (req, res) => {
     </head>
     <body>
         <div class="container">
-            <h1 class="header">🚀 Multi-Language Application</h1>
+            <h1 class="header">Multi-Language Application</h1>
             <p>This application demonstrates <strong>gaffer-exec</strong> orchestrating builds across multiple languages.</p>
             
             <div class="component">
-                <h3>🧩 Components</h3>
+                <h3>Components</h3>
                 <ul>
-                    <li><strong>⚛️ Node.js Frontend</strong> - This web interface (Express.js)</li>
-                    <li><strong>🦀 Rust Backend</strong> - API server on port 8080</li>
-                    <li><strong>🐹 Go CLI</strong> - Command-line interface</li>
-                    <li><strong>🐍 Python ML</strong> - Data analysis tools</li>
+                    <li><strong>⚛ Node.js Frontend</strong> - This web interface (Express.js)</li>
+                    <li><strong>Rust Backend</strong> - API server on port 8080</li>
+                    <li><strong>Go CLI</strong> - Command-line interface</li>
+                    <li><strong>Python ML</strong> - Data analysis tools</li>
                 </ul>
             </div>
 
             <div class="component">
-                <h3>📊 Live Data</h3>
+                <h3>Live Data</h3>
                 <button onclick="loadHealth()">Check Backend Health</button>
                 <button onclick="loadMetrics()">Load Metrics</button>
                 <button onclick="loadDashboard()">Full Dashboard</button>
@@ -137,7 +137,7 @@ app.get('/', (req, res) => {
             </div>
 
             <div class="component">
-                <h3>🔧 Build Information</h3>
+                <h3>Build Information</h3>
                 <p><strong>Orchestrator:</strong> gaffer-exec</p>
                 <p><strong>Build Pattern:</strong> Multi-language parallel builds</p>
                 <p><strong>Languages:</strong> Rust, Go, JavaScript/Node.js, Python</p>
@@ -150,11 +150,11 @@ app.get('/', (req, res) => {
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('output').innerHTML = 
-                            '<h4>🔍 Backend Health</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            '<h4>Backend Health</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
                     })
                     .catch(error => {
                         document.getElementById('output').innerHTML = 
-                            '<h4 class="error">❌ Error</h4><pre>' + error.message + '</pre>';
+                            '<h4 class="error">✗ Error</h4><pre>' + error.message + '</pre>';
                     });
             }
 
@@ -163,11 +163,11 @@ app.get('/', (req, res) => {
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('output').innerHTML = 
-                            '<h4>📊 System Metrics</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            '<h4>System Metrics</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
                     })
                     .catch(error => {
                         document.getElementById('output').innerHTML = 
-                            '<h4 class="error">❌ Error</h4><pre>' + error.message + '</pre>';
+                            '<h4 class="error">✗ Error</h4><pre>' + error.message + '</pre>';
                     });
             }
 
@@ -176,11 +176,11 @@ app.get('/', (req, res) => {
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('output').innerHTML = 
-                            '<h4>🎛️ Full Dashboard</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                            '<h4>Full Dashboard</h4><pre>' + JSON.stringify(data, null, 2) + '</pre>';
                     })
                     .catch(error => {
                         document.getElementById('output').innerHTML = 
-                            '<h4 class="error">❌ Error</h4><pre>' + error.message + '</pre>';
+                            '<h4 class="error">✗ Error</h4><pre>' + error.message + '</pre>';
                     });
             }
         </script>
@@ -193,9 +193,9 @@ app.get('/', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`⚛️  Node.js frontend server running on port ${PORT}`);
-    console.log(`🔗 Frontend: http://localhost:${PORT}`);
-    console.log(`🔗 Backend proxy: http://localhost:${PORT}/api/backend/health`);
-    console.log(`🎛️  Dashboard: http://localhost:${PORT}/dashboard`);
-    console.log(`🦀 Rust backend: ${BACKEND_URL}`);
+    console.log(`⚛  Node.js frontend server running on port ${PORT}`);
+    console.log(`Frontend: http://localhost:${PORT}`);
+    console.log(`Backend proxy: http://localhost:${PORT}/api/backend/health`);
+    console.log(` Dashboard: http://localhost:${PORT}/dashboard`);
+    console.log(`Rust backend: ${BACKEND_URL}`);
 });

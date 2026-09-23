@@ -12,8 +12,8 @@ try:
     import numpy as np
     import pandas as pd
 except ImportError as e:
-    print(f"❌ Missing dependency: {e}")
-    print("💡 Run: pip install -r requirements.txt")
+    print(f"✗ Missing dependency: {e}")
+    print("Run: pip install -r requirements.txt")
     raise
 
 BACKEND_URL = "http://localhost:8080"
@@ -22,7 +22,7 @@ BACKEND_URL = "http://localhost:8080"
 def analyze_api_response(data: Dict[str, Any]) -> Dict[str, Any]:
     """Analyze API response data using ML-style processing."""
     
-    print("🐍 Python ML - Analyzing API response...")
+    print("Python ML - Analyzing API response...")
     
     # Extract metrics
     api_data = data.get('data', {})
@@ -45,13 +45,13 @@ def analyze_api_response(data: Dict[str, Any]) -> Dict[str, Any]:
     
     # Add recommendations based on analysis
     if analysis['response_analysis']['data_quality_score'] > 0.9:
-        analysis['recommendations'].append("✅ High data quality - system performing well")
+        analysis['recommendations'].append("✓ High data quality - system performing well")
     
     if analysis['response_analysis']['freshness_score'] > 0.8:
-        analysis['recommendations'].append("⚡ Data is fresh - real-time processing possible")
+        analysis['recommendations'].append("↯ Data is fresh - real-time processing possible")
         
     if analysis['predictions']['health_confidence'] > 0.95:
-        analysis['recommendations'].append("🎯 System health excellent - scale up recommended")
+        analysis['recommendations'].append("System health excellent - scale up recommended")
         
     return analysis
 
@@ -60,12 +60,12 @@ def fetch_and_analyze_metrics() -> Dict[str, Any]:
     """Fetch metrics from Rust backend and perform analysis."""
     
     try:
-        print(f"🔗 Connecting to Rust backend at {BACKEND_URL}...")
+        print(f"Connecting to Rust backend at {BACKEND_URL}...")
         response = requests.get(f"{BACKEND_URL}/metrics", timeout=5)
         response.raise_for_status()
         
         api_data = response.json()
-        print("✅ Successfully fetched metrics from Rust backend")
+        print("✓ Successfully fetched metrics from Rust backend")
         
         # Perform ML analysis
         analysis = analyze_api_response(api_data)
@@ -97,7 +97,7 @@ def fetch_and_analyze_metrics() -> Dict[str, Any]:
 def analyze_build_metrics() -> Dict[str, Any]:
     """Analyze multi-language build performance."""
     
-    print("🐍 Python ML - Analyzing build performance...")
+    print("Python ML - Analyzing build performance...")
     
     # Simulate build metrics analysis
     languages = ['Rust', 'Go', 'Node.js', 'Python']
@@ -125,9 +125,9 @@ def analyze_build_metrics() -> Dict[str, Any]:
         },
         'language_rankings': df.sort_values('build_time_seconds').to_dict('records'),
         'recommendations': [
-            f"🚀 Parallel execution saves {round(total_time - parallel_time, 1)} seconds",
-            f"⚡ Best performer: {df.loc[df['build_time_seconds'].idxmin(), 'language']}",
-            f"🎯 gaffer-exec efficiency: {round(efficiency * 100, 1)}%",
+            f"Parallel execution saves {round(total_time - parallel_time, 1)} seconds",
+            f"↯ Best performer: {df.loc[df['build_time_seconds'].idxmin(), 'language']}",
+            f"gaffer-exec efficiency: {round(efficiency * 100, 1)}%",
         ]
     }
     
@@ -138,39 +138,39 @@ def display_results(results: Dict[str, Any]) -> None:
     """Pretty print analysis results."""
     
     print("\n" + "="*60)
-    print("🐍 PYTHON ML ANALYSIS RESULTS")
+    print("PYTHON ML ANALYSIS RESULTS")
     print("="*60)
     
     if not results.get('success', True):
-        print(f"❌ Error: {results.get('error', 'Unknown error')}")
+        print(f"✗ Error: {results.get('error', 'Unknown error')}")
         if 'suggestion' in results:
-            print(f"💡 Suggestion: {results['suggestion']}")
+            print(f"Suggestion: {results['suggestion']}")
         return
     
     # API Analysis
     if 'ml_analysis' in results:
         ml = results['ml_analysis']
-        print(f"\n🔍 API Response Analysis:")
+        print(f"\nAPI Response Analysis:")
         print(f"   Data Quality Score: {ml['response_analysis']['data_quality_score']:.3f}")
         print(f"   Freshness Score: {ml['response_analysis']['freshness_score']:.3f}")
         print(f"   Health Confidence: {ml['predictions']['health_confidence']:.3f}")
         
-        print(f"\n💡 Recommendations:")
+        print(f"\nRecommendations:")
         for rec in ml['recommendations']:
             print(f"   {rec}")
     
     # Build Analysis
     if 'build_performance' in results:
         bp = results['build_performance']
-        print(f"\n🏗️  Build Performance Analysis:")
+        print(f"\n Build Performance Analysis:")
         print(f"   Sequential Time: {bp['total_sequential_time']}s")
         print(f"   Parallel Time: {bp['parallel_execution_time']}s")
         print(f"   Time Saved: {bp['time_saved_seconds']}s")
         print(f"   Efficiency: {bp['parallel_efficiency']*100:.1f}%")
         
-        print(f"\n🎯 Build Recommendations:")
+        print(f"\nBuild Recommendations:")
         for rec in results['recommendations']:
             print(f"   {rec}")
     
-    print(f"\n✅ Analysis completed at {datetime.now().strftime('%H:%M:%S')}")
-    print(f"🔧 Built with: gaffer-exec multi-language orchestration")
+    print(f"\n✓ Analysis completed at {datetime.now().strftime('%H:%M:%S')}")
+    print(f"Built with: gaffer-exec multi-language orchestration")

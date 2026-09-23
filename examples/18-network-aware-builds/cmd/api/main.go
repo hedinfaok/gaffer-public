@@ -60,9 +60,9 @@ func main() {
 	port := getEnv("PORT", "8080")
 	region := getEnv("BUILD_REGION", "us-east-1")
 	
-	fmt.Printf("🚀 API service starting on port %s\n", port)
-	fmt.Printf("🌍 Region: %s\n", region)
-	fmt.Printf("📊 Metrics: http://localhost:%s/metrics\n", port)
+	fmt.Printf("API service starting on port %s\n", port)
+	fmt.Printf("Region: %s\n", region)
+	fmt.Printf("Metrics: http://localhost:%s/metrics\n", port)
 	
 	log.Fatal(http.ListenAndServe(":"+port, r))
 }

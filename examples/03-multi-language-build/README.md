@@ -96,10 +96,10 @@ pip3 --version
 
 Each component is fully functional:
 
-- **🦀 Rust Backend**: HTTP API server (warp) with JSON API endpoints
-- **🐹 Go CLI**: Command-line tool (cobra) that calls the Rust API
-- **⚛️ Node Frontend**: Express web server with API proxy and dashboard
-- **🐍 Python ML**: Data analysis with numpy, pandas, scikit-learn
+- **Rust Backend**: HTTP API server (warp) with JSON API endpoints
+- **Go CLI**: Command-line tool (cobra) that calls the Rust API
+- **⚛ Node Frontend**: Express web server with API proxy and dashboard
+- **Python ML**: Data analysis with numpy, pandas, scikit-learn
 
 ## Build Performance
 

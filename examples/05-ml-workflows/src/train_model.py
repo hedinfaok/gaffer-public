@@ -23,7 +23,7 @@ try:
     import xgboost as xgb
     XGBOOST_AVAILABLE = True
 except ImportError:
-    logger.warning("⚠️ XGBoost not available - skipping XGBoost models")
+    logger.warning("⚠ XGBoost not available - skipping XGBoost models")
     XGBOOST_AVAILABLE = False
 
 # Setup logging
@@ -44,21 +44,21 @@ class MLModelTrainer:
         processed_path = f'data/processed/{dataset_name}_processed.csv'
         
         if not os.path.exists(processed_path):
-            logger.warning(f"⚠️ Processed data not found: {processed_path}")
+            logger.warning(f"⚠ Processed data not found: {processed_path}")
             # Try loading raw data instead
             raw_path = f'data/raw/{dataset_name}.csv'
             if os.path.exists(raw_path):
-                logger.info(f"📂 Loading raw data: {raw_path}")
+                logger.info(f"Loading raw data: {raw_path}")
                 return pd.read_csv(raw_path)
             else:
                 raise FileNotFoundError(f"Neither processed nor raw data found for {dataset_name}")
         
-        logger.info(f"📂 Loading processed data: {processed_path}")
+        logger.info(f"Loading processed data: {processed_path}")
         return pd.read_csv(processed_path)
     
     def prepare_data(self, df, target_column=None, problem_type='auto'):
         """Prepare data for training."""
-        logger.info(f"🔧 Preparing data for training...")
+        logger.info(f"Preparing data for training...")
         
         # Auto-detect target column if not specified
         if target_column is None:
@@ -72,9 +72,9 @@ class MLModelTrainer:
             if target_column is None:
                 # Use last column as target
                 target_column = df.columns[-1]
-                logger.info(f"🎯 Using last column as target: {target_column}")
+                logger.info(f"Using last column as target: {target_column}")
         
-        logger.info(f"🎯 Target column: {target_column}")
+        logger.info(f"Target column: {target_column}")
         
         # Separate features and target
         X = df.drop(columns=[target_column])
@@ -87,8 +87,8 @@ class MLModelTrainer:
             else:
                 problem_type = 'regression'
         
-        logger.info(f"📊 Problem type: {problem_type}")
-        logger.info(f"📏 Features: {X.shape[1]}, Samples: {X.shape[0]}")
+        logger.info(f"Problem type: {problem_type}")
+        logger.info(f"Features: {X.shape[1]}, Samples: {X.shape[0]}")
         
         return X, y, problem_type
     
@@ -133,19 +133,19 @@ class MLModelTrainer:
                     n_jobs=-1
                 )
         
-        logger.info(f"🤖 Created {len(models)} models: {list(models.keys())}")
+        logger.info(f"Created {len(models)} models: {list(models.keys())}")
         return models
     
     def train_models(self, X, y, problem_type, dataset_name):
         """Train all models and evaluate performance."""
-        logger.info("🚀 Starting model training...")
+        logger.info("Starting model training...")
         
         # Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=self.random_state
         )
         
-        logger.info(f"📊 Training set: {X_train.shape}, Test set: {X_test.shape}")
+        logger.info(f"Training set: {X_train.shape}, Test set: {X_test.shape}")
         
         # Scale features for models that need it
         scaler = StandardScaler()
@@ -159,7 +159,7 @@ class MLModelTrainer:
         results = {}
         
         for model_name, model in models.items():
-            logger.info(f"🔄 Training {model_name}...")
+            logger.info(f"Training {model_name}...")
             
             try:
                 # Use scaled features for SVM and logistic regression
@@ -175,11 +175,11 @@ class MLModelTrainer:
                     mse = mean_squared_error(y_test, y_pred)
                     score = np.sqrt(mse)  # RMSE
                     metric_name = 'RMSE'
-                    logger.info(f"✅ {model_name} - {metric_name}: {score:.4f}")
+                    logger.info(f"✓ {model_name} - {metric_name}: {score:.4f}")
                 else:
                     score = accuracy_score(y_test, y_pred)
                     metric_name = 'Accuracy'
-                    logger.info(f"✅ {model_name} - {metric_name}: {score:.4f}")
+                    logger.info(f"✓ {model_name} - {metric_name}: {score:.4f}")
                 
                 results[model_name] = {
                     'model': model,
@@ -195,17 +195,17 @@ class MLModelTrainer:
                 # Save individual model with dataset-specific naming
                 model_path = f'data/models/{model_name}_{dataset_name}_model.joblib'
                 joblib.dump(model, model_path)
-                logger.info(f"💾 Saved model: {model_path}")
+                logger.info(f"Saved model: {model_path}")
                 
             except Exception as e:
-                logger.error(f"❌ Failed to train {model_name}: {e}")
+                logger.error(f"✗ Failed to train {model_name}: {e}")
                 continue
         
         return results, X_test, y_test
     
     def save_training_results(self, results, dataset_name, problem_type):
         """Save training results and model comparison."""
-        logger.info("💾 Saving training results...")
+        logger.info("Saving training results...")
         
         # Prepare results for JSON serialization
         json_results = {}
@@ -234,14 +234,14 @@ class MLModelTrainer:
         with open(results_path, 'w') as f:
             json.dump(training_summary, f, indent=2)
         
-        logger.info(f"✅ Training results saved: {results_path}")
-        logger.info(f"🏆 Best model: {training_summary['best_model']} ({training_summary['problem_type']})")
+        logger.info(f"✓ Training results saved: {results_path}")
+        logger.info(f"Best model: {training_summary['best_model']} ({training_summary['problem_type']})")
         
         return results_path
 
 def train_dataset(dataset_name):
     """Train models on a specific dataset."""
-    logger.info(f"🎯 Training models on {dataset_name} dataset...")
+    logger.info(f"Training models on {dataset_name} dataset...")
     
     trainer = MLModelTrainer()
     
@@ -258,16 +258,16 @@ def train_dataset(dataset_name):
         # Save results
         trainer.save_training_results(results, dataset_name, problem_type)
         
-        logger.info(f"✅ Training completed for {dataset_name}")
+        logger.info(f"✓ Training completed for {dataset_name}")
         return True
         
     except Exception as e:
-        logger.error(f"❌ Training failed for {dataset_name}: {e}")
+        logger.error(f"✗ Training failed for {dataset_name}: {e}")
         return False
 
 def main():
     """Main training pipeline."""
-    logger.info("🚀 Starting ML model training pipeline...")
+    logger.info("Starting ML model training pipeline...")
     
     # Available datasets
     datasets = ['california_housing', 'iris', 'wine']
@@ -282,14 +282,14 @@ def main():
         if train_dataset(dataset):
             successful_trainings += 1
     
-    logger.info(f"\n🎉 Training pipeline completed!")
-    logger.info(f"📊 Successfully trained models on {successful_trainings}/{len(datasets)} datasets")
-    logger.info("🔧 Built with: gaffer-exec ML workflow orchestration")
+    logger.info(f"\nTraining pipeline completed!")
+    logger.info(f"Successfully trained models on {successful_trainings}/{len(datasets)} datasets")
+    logger.info("Built with: gaffer-exec ML workflow orchestration")
     
     if successful_trainings > 0:
         return 0
     else:
-        logger.error("❌ No models were successfully trained")
+        logger.error("✗ No models were successfully trained")
         return 1
 
 if __name__ == "__main__":

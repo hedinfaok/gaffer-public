@@ -37,10 +37,10 @@ This will:
 
 Expected output:
 ```
-🧪 Testing Example 07: Watch Mode Workflows
+Testing Example 07: Watch Mode Workflows
 ===========================================
 ...
-🎉 All tests passed!
+All tests passed!
 ```
 
 ## Step 2: Start Watch Mode
@@ -52,11 +52,11 @@ In one terminal:
 
 You should see:
 ```
-🚀 Starting watch mode for all services...
-👀 Watching shared-lib for changes...
-👀 Watching api-service for changes...
-👀 Watching frontend for changes...
-✅ All watchers started
+Starting watch mode for all services...
+Watching shared-lib for changes...
+Watching api-service for changes...
+Watching frontend for changes...
+✓ All watchers started
 ```
 
 ## Step 3: Make Changes
@@ -71,15 +71,15 @@ echo "// Test change" >> shared-lib/src/index.ts
 
 Watch the first terminal — you'll see:
 ```
-🔄 Changed: shared-lib/src/index.ts
+Changed: shared-lib/src/index.ts
    Running: gaffer-exec --workspace-root . run make:rebuild-shared-lib
-✅ Rebuild complete
+✓ Rebuild complete
 
-🔄 Running: gaffer-exec --workspace-root . run make:rebuild-api
-✅ Rebuild complete
+Running: gaffer-exec --workspace-root . run make:rebuild-api
+✓ Rebuild complete
 
-🔄 Running: gaffer-exec --workspace-root . run make:rebuild-frontend
-✅ Rebuild complete
+Running: gaffer-exec --workspace-root . run make:rebuild-frontend
+✓ Rebuild complete
 ```
 
 **Notice**: All three rebuild because they depend on shared-lib!
@@ -93,9 +93,9 @@ echo "// Test change" >> api-service/src/server.ts
 
 You'll see:
 ```
-🔄 Changed: api-service/src/server.ts
+Changed: api-service/src/server.ts
    Running: gaffer-exec --workspace-root . run make:rebuild-api
-✅ Rebuild complete
+✓ Rebuild complete
 ```
 
 **Notice**: Only API rebuilds (no dependency cascade needed)
@@ -112,9 +112,9 @@ node dist/server.js
 
 Output:
 ```
-🚀 API service running on http://localhost:4000
-📊 Health check: http://localhost:4000/health
-👥 Users endpoint: http://localhost:4000/api/users
+API service running on http://localhost:4000
+Health check: http://localhost:4000/health
+Users endpoint: http://localhost:4000/api/users
 ```
 
 **Terminal 3 - Start Frontend:**
@@ -138,9 +138,9 @@ curl http://localhost:4000/api/users | jq
 ## Step 5: Live Development
 
 Now you have:
-- ✅ Three watchers monitoring your code
-- ✅ API running on port 4000
-- ✅ Frontend running on port 3000
+- ✓ Three watchers monitoring your code
+- ✓ API running on port 4000
+- ✓ Frontend running on port 3000
 
 **Try it:**
 1. Edit `shared-lib/src/index.ts` → Watch cascade rebuild
@@ -181,14 +181,14 @@ Press `Ctrl+C` in the terminal running watch mode.
 ### Watch Events
 
 ```
-🔄 Changed: shared-lib/src/index.ts
+Changed: shared-lib/src/index.ts
    Running: gaffer-exec --workspace-root . run make:rebuild-shared-lib
-✅ Rebuild complete
+✓ Rebuild complete
 ```
 
-- `🔄` = File changed
-- `✅` = Rebuild successful
-- `❌` = Rebuild failed (check error output)
+- `` = File changed
+- `✓` = Rebuild successful
+- `✗` = Rebuild failed (check error output)
 
 ### Dependency Cascade
 
@@ -242,4 +242,4 @@ You now have a powerful development workflow:
 | **Debouncing** | Built-in (--latency 0.5) |
 | **Multi-service** | Three parallel watchers |
 
-Enjoy fast, intelligent rebuilds! 🚀
+Enjoy fast, intelligent rebuilds!

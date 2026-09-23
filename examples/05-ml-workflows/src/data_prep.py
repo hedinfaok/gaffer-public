@@ -20,11 +20,11 @@ def create_directories():
     directories = ['data/raw', 'data/processed', 'data/models', 'data/results']
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
-        logger.info(f"📁 Created directory: {directory}")
+        logger.info(f"Created directory: {directory}")
 
 def download_california_housing():
     """Download California housing dataset."""
-    logger.info("🏠 Downloading California housing dataset...")
+    logger.info("Downloading California housing dataset...")
     
     # Use scikit-learn's built-in dataset
     housing = fetch_california_housing(as_frame=True)
@@ -34,14 +34,14 @@ def download_california_housing():
     output_path = 'data/raw/california_housing.csv'
     df.to_csv(output_path, index=False)
     
-    logger.info(f"✅ California housing dataset saved: {output_path}")
-    logger.info(f"📊 Shape: {df.shape}, Features: {list(housing.feature_names)}")
+    logger.info(f"✓ California housing dataset saved: {output_path}")
+    logger.info(f"Shape: {df.shape}, Features: {list(housing.feature_names)}")
     
     return output_path
 
 def download_iris_dataset():
     """Download Iris classification dataset."""
-    logger.info("🌸 Downloading Iris dataset...")
+    logger.info("Downloading Iris dataset...")
     
     iris = load_iris(as_frame=True)
     df = iris.frame
@@ -49,14 +49,14 @@ def download_iris_dataset():
     output_path = 'data/raw/iris.csv'
     df.to_csv(output_path, index=False)
     
-    logger.info(f"✅ Iris dataset saved: {output_path}")
-    logger.info(f"📊 Shape: {df.shape}, Classes: {iris.target_names}")
+    logger.info(f"✓ Iris dataset saved: {output_path}")
+    logger.info(f"Shape: {df.shape}, Classes: {iris.target_names}")
     
     return output_path
 
 def download_wine_dataset():
     """Download Wine quality dataset."""
-    logger.info("🍷 Downloading Wine dataset...")
+    logger.info("Downloading Wine dataset...")
     
     wine = load_wine(as_frame=True)
     df = wine.frame
@@ -64,22 +64,22 @@ def download_wine_dataset():
     output_path = 'data/raw/wine.csv'
     df.to_csv(output_path, index=False)
     
-    logger.info(f"✅ Wine dataset saved: {output_path}")
-    logger.info(f"📊 Shape: {df.shape}, Classes: {wine.target_names}")
+    logger.info(f"✓ Wine dataset saved: {output_path}")
+    logger.info(f"Shape: {df.shape}, Classes: {wine.target_names}")
     
     return output_path
 
 def download_external_dataset():
     """Download an external dataset from the web."""
-    logger.info("🌐 External dataset download disabled for this demo...")
-    logger.info("📝 Skipping external dataset to maintain consistency with pipeline")
-    logger.info("📊 Using only scikit-learn built-in datasets: california_housing, iris, wine")
+    logger.info("External dataset download disabled for this demo...")
+    logger.info("Skipping external dataset to maintain consistency with pipeline")
+    logger.info("Using only scikit-learn built-in datasets: california_housing, iris, wine")
     
     return None  # No external dataset
 
 def generate_dataset_metadata():
     """Generate metadata about downloaded datasets."""
-    logger.info("📋 Generating dataset metadata...")
+    logger.info("Generating dataset metadata...")
     
     metadata = {
         'datasets': [],
@@ -110,7 +110,7 @@ def generate_dataset_metadata():
                     metadata['total_features'] += df.shape[1]
                     
                 except Exception as e:
-                    logger.warning(f"⚠️ Could not process {filename}: {e}")
+                    logger.warning(f"⚠ Could not process {filename}: {e}")
     
     metadata['total_datasets'] = len(metadata['datasets'])
     
@@ -135,14 +135,14 @@ def generate_dataset_metadata():
         
         json.dump(convert_numpy_types(metadata), f, indent=2, default=str)
     
-    logger.info(f"✅ Metadata saved: {metadata_path}")
-    logger.info(f"📊 Summary: {metadata['total_datasets']} datasets, {metadata['total_samples']:,} total samples")
+    logger.info(f"✓ Metadata saved: {metadata_path}")
+    logger.info(f"Summary: {metadata['total_datasets']} datasets, {metadata['total_samples']:,} total samples")
     
     return metadata_path
 
 def main():
     """Main data download pipeline."""
-    logger.info("🚀 Starting ML data download pipeline...")
+    logger.info("Starting ML data download pipeline...")
     
     # Create directories
     create_directories()
@@ -153,31 +153,31 @@ def main():
     try:
         datasets.append(download_california_housing())
     except Exception as e:
-        logger.error(f"❌ Failed to download California housing: {e}")
+        logger.error(f"✗ Failed to download California housing: {e}")
     
     try:
         datasets.append(download_iris_dataset())
     except Exception as e:
-        logger.error(f"❌ Failed to download Iris: {e}")
+        logger.error(f"✗ Failed to download Iris: {e}")
     
     try:
         datasets.append(download_wine_dataset())
     except Exception as e:
-        logger.error(f"❌ Failed to download Wine: {e}")
+        logger.error(f"✗ Failed to download Wine: {e}")
     
     try:
         datasets.append(download_external_dataset())
     except Exception as e:
-        logger.error(f"❌ Failed to download external dataset: {e}")
+        logger.error(f"✗ Failed to download external dataset: {e}")
     
     # Generate metadata
     try:
         generate_dataset_metadata()
     except Exception as e:
-        logger.error(f"❌ Failed to generate metadata: {e}")
+        logger.error(f"✗ Failed to generate metadata: {e}")
     
-    logger.info(f"✅ Data download completed! {len(datasets)} datasets ready for ML pipeline.")
-    logger.info("🔧 Built with: gaffer-exec ML workflow orchestration")
+    logger.info(f"✓ Data download completed! {len(datasets)} datasets ready for ML pipeline.")
+    logger.info("Built with: gaffer-exec ML workflow orchestration")
     
     return 0
 

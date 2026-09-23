@@ -13,7 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('\n📊 Aggregating Test Metrics...');
+console.log('\nAggregating Test Metrics...');
 console.log('━'.repeat(70));
 
 const metricsData = {
@@ -48,9 +48,9 @@ if (fs.existsSync(flakyResultsPath)) {
         metricsData.overall.totalTests += flakyResults.totalTests;
         metricsData.overall.passedTests += flakyResults.passedTests;
         
-        console.log(`✅ Flaky test metrics loaded: ${flakyResults.attemptNumber + 1} attempts`);
+        console.log(`✓ Flaky test metrics loaded: ${flakyResults.attemptNumber + 1} attempts`);
     } catch (e) {
-        console.log('⚠️  Could not parse flaky test results');
+        console.log('⚠  Could not parse flaky test results');
     }
 }
 
@@ -66,9 +66,9 @@ if (fs.existsSync(coveragePath)) {
             branches: coverage.total?.branches?.pct || 0
         };
         
-        console.log(`✅ Coverage metrics loaded`);
+        console.log(`✓ Coverage metrics loaded`);
     } catch (e) {
-        console.log('⚠️  Could not parse coverage data');
+        console.log('⚠  Could not parse coverage data');
     }
 }
 
@@ -79,9 +79,9 @@ if (fs.existsSync(perfMetricsPath)) {
         const perfMetrics = JSON.parse(fs.readFileSync(perfMetricsPath, 'utf8'));
         metricsData.performanceBenchmarks = perfMetrics;
         
-        console.log(`✅ Performance benchmark metrics loaded`);
+        console.log(`✓ Performance benchmark metrics loaded`);
     } catch (e) {
-        console.log('⚠️  Could not parse performance metrics');
+        console.log('⚠  Could not parse performance metrics');
     }
 }
 
@@ -126,7 +126,7 @@ fs.writeFileSync(outputPath, JSON.stringify(metricsData, null, 2));
 // Print summary
 console.log();
 console.log('━'.repeat(70));
-console.log('📈 TEST EXECUTION SUMMARY');
+console.log('TEST EXECUTION SUMMARY');
 console.log('━'.repeat(70));
 console.log();
 console.log(`Total Tests: ${metricsData.overall.totalTests}`);
@@ -134,21 +134,21 @@ console.log(`Passed: ${metricsData.overall.passedTests} (${metricsData.overall.p
 console.log(`Failed: ${metricsData.overall.failedTests}`);
 console.log(`Total Execution Time: ${metricsData.overall.totalExecutionTimeMs}ms`);
 console.log();
-console.log('🔄 CACHE PERFORMANCE:');
+console.log('CACHE PERFORMANCE:');
 console.log(`Cache Hit Rate: ${metricsData.overall.cacheHitRate}`);
 console.log(`Cache Hits: ${metricsData.overall.cacheHits}`);
 console.log(`Cache Misses: ${metricsData.overall.cacheMisses}`);
 console.log();
 
 if (metricsData.overall.retryAttempts > 0) {
-    console.log('♻️  RETRY STATISTICS:');
+    console.log('↻  RETRY STATISTICS:');
     console.log(`Total Retry Attempts: ${metricsData.overall.retryAttempts}`);
     console.log(`Retry Strategy: Exponential backoff with 2.0x multiplier`);
     console.log();
 }
 
 if (metricsData.coverage) {
-    console.log('📊 CODE COVERAGE:');
+    console.log('CODE COVERAGE:');
     console.log(`Lines: ${metricsData.coverage.lines}%`);
     console.log(`Statements: ${metricsData.coverage.statements}%`);
     console.log(`Functions: ${metricsData.coverage.functions}%`);
@@ -157,14 +157,14 @@ if (metricsData.coverage) {
 }
 
 console.log('━'.repeat(70));
-console.log(`✅ Metrics saved to: ${outputPath}`);
+console.log(`✓ Metrics saved to: ${outputPath}`);
 console.log();
 
 // Print per-suite breakdown
-console.log('📋 PER-SUITE BREAKDOWN:');
+console.log('PER-SUITE BREAKDOWN:');
 console.log();
 Object.entries(metricsData.testSuites).forEach(([name, suite]) => {
-    const cacheStatus = suite.cacheHit ? '🟢 Cache Hit' : '🔴 Cache Miss';
+    const cacheStatus = suite.cacheHit ? 'Cache Hit' : 'Cache Miss';
     console.log(`${name}:`);
     console.log(`  Tests: ${suite.passed}/${suite.testsRun || suite.passed}`);
     console.log(`  Time: ${suite.executionTimeMs}ms`);
@@ -180,4 +180,4 @@ Object.entries(metricsData.testSuites).forEach(([name, suite]) => {
     console.log();
 });
 
-console.log('✅ Metrics aggregation complete!\n');
+console.log('✓ Metrics aggregation complete!\n');

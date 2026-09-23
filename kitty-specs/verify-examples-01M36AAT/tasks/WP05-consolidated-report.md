@@ -39,7 +39,7 @@ tracker_refs: []
 
 # Work Package Prompt: WP05 – Consolidated report + defect disposition
 
-## ⚡ Do This First: Load Agent Profile
+## ↯ Do This First: Load Agent Profile
 
 Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the frontmatter, and behave according to its guidance before parsing the rest of this prompt.
 

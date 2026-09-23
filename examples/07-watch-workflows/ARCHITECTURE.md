@@ -327,11 +327,11 @@ wait  # Wait for all background processes
 ### This Approach (fswatch + gaffer)
 
 **Pros**:
-- ✅ Works with any build tool
-- ✅ Minimal overhead
-- ✅ Dependency-aware
-- ✅ Composable (shell scripts)
-- ✅ Easy to debug
+- ✓ Works with any build tool
+- ✓ Minimal overhead
+- ✓ Dependency-aware
+- ✓ Composable (shell scripts)
+- ✓ Easy to debug
 
 **Cons**:
 - Requires installing fswatch

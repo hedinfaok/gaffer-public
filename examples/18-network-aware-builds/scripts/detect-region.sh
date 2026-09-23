@@ -4,7 +4,7 @@
 
 cd "$(dirname "$0")/.."
 
-echo "🌍 Detecting network topology..."
+echo "Detecting network topology..."
 echo ""
 
 # Create .cache directory if it doesn't exist
@@ -16,7 +16,7 @@ region_endpoints=("localhost:4566" "localhost:4567" "localhost:4568")
 region_latencies=(50 100 150)
 region_bandwidths=(100 50 25)
 
-echo "📊 Network Metrics:"
+echo "Network Metrics:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 printf "%-15s %-20s %-12s %-12s %-10s\n" "Region" "Endpoint" "Latency" "Bandwidth" "Score"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -52,7 +52,7 @@ done
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "✅ Selected primary cache: $best_region (score: $best_score)"
+echo "✓ Selected primary cache: $best_region (score: $best_score)"
 echo ""
 
 # Export environment variables
@@ -67,7 +67,7 @@ for i in "${!region_names[@]}"; do
     fi
 done
 
-echo "🔄 Fallback order: ${fallbacks[0]} → ${fallbacks[1]}"
+echo "Fallback order: ${fallbacks[0]} → ${fallbacks[1]}"
 echo ""
 
 # Set environment variables for the build
@@ -76,4 +76,4 @@ echo "export CACHE_ENDPOINT=${region_endpoints[$best_index]}" >> .cache/region-c
 echo "export FALLBACK_CACHE_1=${fallbacks[0]}" >> .cache/region-config.sh
 echo "export FALLBACK_CACHE_2=${fallbacks[1]}" >> .cache/region-config.sh
 
-echo "💾 Configuration saved to .cache/region-config.sh"
+echo "Configuration saved to .cache/region-config.sh"

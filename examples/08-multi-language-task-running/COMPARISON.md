@@ -435,11 +435,11 @@ Developers need to know:
 
 The unified Makefile + gaffer-exec approach provides:
 
-✅ **Simplicity**: One task graph, one way to run tasks  
-✅ **Performance**: Automatic parallelization  
-✅ **Consistency**: Same interface across languages  
-✅ **Maintainability**: Single source of truth  
-✅ **Efficiency**: Smart caching reduces redundant work  
-✅ **Clarity**: Explicit dependency management  
+✓ **Simplicity**: One task graph, one way to run tasks  
+✓ **Performance**: Automatic parallelization  
+✓ **Consistency**: Same interface across languages  
+✓ **Maintainability**: Single source of truth  
+✓ **Efficiency**: Smart caching reduces redundant work  
+✓ **Clarity**: Explicit dependency management  
 
 This significantly improves developer productivity and reduces friction in multi-language projects.

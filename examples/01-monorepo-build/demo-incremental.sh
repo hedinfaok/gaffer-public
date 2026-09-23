@@ -9,12 +9,12 @@ echo "════════════════════════�
 echo ""
 
 # Clean and do initial build
-echo "🧹 Cleaning build artifacts..."
+echo "Cleaning build artifacts..."
 rm -rf packages/*/dist
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📦 INITIAL BUILD (all packages)"
+echo "INITIAL BUILD (all packages)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -24,12 +24,12 @@ INITIAL_END=$(date +%s%3N)
 INITIAL_TOTAL=$((INITIAL_END - INITIAL_START))
 
 echo ""
-echo "  📊 Initial build time: ${INITIAL_TOTAL}ms"
+echo "  Initial build time: ${INITIAL_TOTAL}ms"
 echo ""
 
 # Simulate a change in auth-service
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "✏️  SIMULATING CODE CHANGE in auth-service"
+echo "✏  SIMULATING CODE CHANGE in auth-service"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Adding a comment to auth-service/src/handlers.ts..."
@@ -46,13 +46,13 @@ echo ""
 echo "Impact Analysis:"
 echo "  ✓ shared-lib:   no rebuild needed (unchanged)"
 echo "  ✓ user-service: no rebuild needed (unchanged)"
-echo "  ⚡ auth-service: REBUILD REQUIRED (source changed)"
-echo "  ⚡ api-gateway:  REBUILD REQUIRED (depends on auth-service)"
-echo "  ⚡ web-app:      REBUILD REQUIRED (depends on api-gateway)"
+echo "  ↯ auth-service: REBUILD REQUIRED (source changed)"
+echo "  ↯ api-gateway:  REBUILD REQUIRED (depends on auth-service)"
+echo "  ↯ web-app:      REBUILD REQUIRED (depends on api-gateway)"
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🔄 INCREMENTAL BUILD (only affected packages)"
+echo "INCREMENTAL BUILD (only affected packages)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -71,7 +71,7 @@ INCREMENTAL_END=$(date +%s%3N)
 INCREMENTAL_TOTAL=$((INCREMENTAL_END - INCREMENTAL_START))
 
 echo ""
-echo "  📊 Incremental build time: ${INCREMENTAL_TOTAL}ms"
+echo "  Incremental build time: ${INCREMENTAL_TOTAL}ms"
 echo ""
 
 # Restore original file
@@ -79,7 +79,7 @@ mv packages/auth-service/src/handlers.ts.backup packages/auth-service/src/handle
 
 # Calculate savings
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📈 RESULTS"
+echo "RESULTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "  Full build:        ${INITIAL_TOTAL}ms (5 packages)"
@@ -89,9 +89,9 @@ echo ""
 if [ $INCREMENTAL_TOTAL -gt 0 ]; then
     SPEEDUP=$(awk "BEGIN {printf \"%.2f\", $INITIAL_TOTAL / $INCREMENTAL_TOTAL}")
     IMPROVEMENT=$(awk "BEGIN {printf \"%.1f\", (($INITIAL_TOTAL - $INCREMENTAL_TOTAL) / $INITIAL_TOTAL) * 100}")
-    echo "  ⚡ Speedup: ${SPEEDUP}x faster"
-    echo "  💰 Time saved: ${IMPROVEMENT}%"
-    echo "  📦 Packages skipped: 2 out of 5 (40%)"
+    echo "  ↯ Speedup: ${SPEEDUP}x faster"
+    echo "  Time saved: ${IMPROVEMENT}%"
+    echo "  Packages skipped: 2 out of 5 (40%)"
 fi
 
 echo ""

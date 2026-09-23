@@ -19,16 +19,16 @@ get_timestamp_ms() {
 
 # Check if Node.js is available
 if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Please install Node.js to run this example."
+    echo "✗ Node.js is not installed. Please install Node.js to run this example."
     exit 1
 fi
 
 if ! command -v npm &> /dev/null; then
-    echo "❌ npm is not installed. Please install npm to run this example."
+    echo "✗ npm is not installed. Please install npm to run this example."
     exit 1
 fi
 
-echo "✅ Node.js and npm are available"
+echo "✓ Node.js and npm are available"
 echo ""
 
 # Test 1: Install dependencies
@@ -36,9 +36,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 1: Installing dependencies..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if npm install > /dev/null 2>&1; then
-    echo "✅ Dependencies installed successfully"
+    echo "✓ Dependencies installed successfully"
 else
-    echo "❌ Failed to install dependencies"
+    echo "✗ Failed to install dependencies"
     exit 1
 fi
 echo ""
@@ -48,7 +48,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 2: Cleaning previous test artifacts..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 rm -f .flaky-test-results.json test-metrics.json performance-metrics.json
-echo "✅ Test artifacts cleaned"
+echo "✓ Test artifacts cleaned"
 echo ""
 
 # Test 3: Run the full incremental test suite
@@ -61,9 +61,9 @@ cold_end=$(get_timestamp_ms)
 cold_time=$((cold_end - cold_start))
 
 if echo "$output" | grep -q "All tests completed successfully"; then
-    echo "✅ Full test suite completed (cold run: ${cold_time}ms)"
+    echo "✓ Full test suite completed (cold run: ${cold_time}ms)"
 else
-    echo "❌ Test suite failed"
+    echo "✗ Test suite failed"
     echo "$output"
     exit 1
 fi
@@ -80,10 +80,10 @@ warm_time=$((warm_end - warm_start))
 
 if echo "$warm_output" | grep -q "All tests completed successfully"; then
     speedup=$(echo "scale=2; $cold_time / $warm_time" | bc 2>/dev/null || echo "N/A")
-    echo "✅ Warm run completed (${warm_time}ms)"
-    echo "⚡ Cache speedup: ${speedup}x faster"
+    echo "✓ Warm run completed (${warm_time}ms)"
+    echo "↯ Cache speedup: ${speedup}x faster"
 else
-    echo "⚠️  Warm run may have issues"
+    echo "⚠  Warm run may have issues"
 fi
 echo ""
 
@@ -101,10 +101,10 @@ invalidate_time=$((invalidate_end - invalidate_start))
 git checkout src/lib/math.js 2>/dev/null || true
 
 if [ "$invalidate_time" -gt "$warm_time" ]; then
-    echo "✅ Cache invalidated - tests re-ran (${invalidate_time}ms vs ${warm_time}ms cached)"
+    echo "✓ Cache invalidated - tests re-ran (${invalidate_time}ms vs ${warm_time}ms cached)"
     echo "   Cache correctly detected file change"
 else
-    echo "⚠️  Cache invalidation time similar to cached time"
+    echo "⚠  Cache invalidation time similar to cached time"
 fi
 echo ""
 
@@ -116,10 +116,10 @@ gaffer-exec --workspace-root . run make:unit-tests-flaky > /dev/null 2>&1 || tru
 if [ -f ".flaky-test-results.json" ]; then
     attempts=$(grep -o '"attemptNumber":[0-9]*' .flaky-test-results.json | grep -o '[0-9]*' || echo "0")
     attempts=$((attempts + 1))
-    echo "✅ Flaky test retry demonstrated (${attempts} attempts total)"
+    echo "✓ Flaky test retry demonstrated (${attempts} attempts total)"
     echo "   Features: Exponential backoff, configurable delays"
 else
-    echo "⚠️  Flaky test demonstration incomplete"
+    echo "⚠  Flaky test demonstration incomplete"
 fi
 echo ""
 
@@ -130,9 +130,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 for suite in "unit-tests-lib" "unit-tests-api" "unit-tests-ui"; do
     suite_output=$(gaffer-exec --workspace-root . run make:$suite 2>&1)
     if echo "$suite_output" | grep -q "$suite"; then
-        echo "✅ $suite executed (parallel: 4 workers, 512MB limit)"
+        echo "✓ $suite executed (parallel: 4 workers, 512MB limit)"
     else
-        echo "⚠️  $suite may have issues"
+        echo "⚠  $suite may have issues"
     fi
 done
 echo ""
@@ -143,10 +143,10 @@ echo "Test 7: Testing dependency-aware test ordering..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 integration_output=$(gaffer-exec --workspace-root . run make:integration-tests 2>&1)
 if echo "$integration_output" | grep -q "integration"; then
-    echo "✅ Integration tests run after unit tests (dependency ordering)"
+    echo "✓ Integration tests run after unit tests (dependency ordering)"
     echo "   Retry config: 4 attempts, exponential backoff"
 else
-    echo "⚠️  Integration test execution may have issues"
+    echo "⚠  Integration test execution may have issues"
 fi
 echo ""
 
@@ -155,31 +155,31 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 8: Verifying test configuration and artifacts..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ -f "package.json" ] && [ -f "jest.config.js" ] && [ -f "tests/setup.js" ]; then
-    echo "✅ Test configuration files exist"
+    echo "✓ Test configuration files exist"
 else
-    echo "❌ Missing test configuration files"
+    echo "✗ Missing test configuration files"
     exit 1
 fi
 
 # Check for test files
 test_files=$(find tests/ -name "*.test.js" 2>/dev/null | wc -l)
 if [ "$test_files" -gt 0 ]; then
-    echo "✅ Found $test_files test files"
+    echo "✓ Found $test_files test files"
 else
-    echo "❌ No test files found"
+    echo "✗ No test files found"
     exit 1
 fi
 
 # Check for flaky test files
 flaky_files=$(find tests/flaky -name "*.js" 2>/dev/null | wc -l)
 if [ "$flaky_files" -gt 0 ]; then
-    echo "✅ Flaky test demonstration files found"
+    echo "✓ Flaky test demonstration files found"
 fi
 
 # Check for scripts
 script_files=$(find scripts -name "*.js" 2>/dev/null | wc -l)
 if [ "$script_files" -gt 0 ]; then
-    echo "✅ Found $script_files helper scripts (benchmark, metrics, signals)"
+    echo "✓ Found $script_files helper scripts (benchmark, metrics, signals)"
 fi
 echo ""
 
@@ -188,9 +188,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 9: Verifying Jest test runner..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if npm test -- --passWithNoTests 2>/dev/null; then
-    echo "✅ Jest test runner is working"
+    echo "✓ Jest test runner is working"
 else
-    echo "⚠️  Jest test runner may need configuration"
+    echo "⚠  Jest test runner may need configuration"
 fi
 echo ""
 
@@ -201,13 +201,13 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 if [ -f "scripts/aggregate-metrics.js" ]; then
     node scripts/aggregate-metrics.js > /dev/null 2>&1
     if [ -f "test-metrics.json" ]; then
-        echo "✅ Metrics aggregation working"
+        echo "✓ Metrics aggregation working"
         echo "   Generated: test-metrics.json with performance data"
     else
-        echo "⚠️  Metrics file not created"
+        echo "⚠  Metrics file not created"
     fi
 else
-    echo "⚠️  Metrics aggregation script not found"
+    echo "⚠  Metrics aggregation script not found"
 fi
 echo ""
 
@@ -216,12 +216,12 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Test 11: Verifying Makefile task graph and gaffer-exec features..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ ! -f "Makefile" ]; then
-    echo "❌ Makefile not found"
+    echo "✗ Makefile not found"
     exit 1
 fi
 
 if ! grep -qE '^test-all:' Makefile; then
-    echo "❌ Missing test-all target in Makefile"
+    echo "✗ Missing test-all target in Makefile"
     exit 1
 fi
 
@@ -229,15 +229,15 @@ task_count=$(grep -cE '^[A-Za-z0-9_-]+:' Makefile 2>/dev/null || echo "0")
 dep_count=$(grep -cE '^[A-Za-z0-9_-]+: .+' Makefile 2>/dev/null || echo "0")
 
 if gaffer-exec --workspace-root . list -t makefile > /dev/null 2>&1; then
-    echo "✅ Makefile targets loadable by gaffer-exec"
+    echo "✓ Makefile targets loadable by gaffer-exec"
 else
-    echo "❌ gaffer-exec could not load Makefile targets"
+    echo "✗ gaffer-exec could not load Makefile targets"
     exit 1
 fi
 
-echo "✅ Test tasks defined: $task_count targets"
-echo "✅ Dependency relationships: $dep_count configured"
-echo "✅ Orchestration task graph validated"
+echo "✓ Test tasks defined: $task_count targets"
+echo "✓ Dependency relationships: $dep_count configured"
+echo "✓ Orchestration task graph validated"
 echo ""
 echo "Advanced features available via CLI flags:"
 echo "  • Retry: --retry N (intelligent retry handling)"
@@ -248,10 +248,10 @@ echo ""
 
 # Summary
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 Incremental Testing Example - COMPLETE VERIFICATION SUCCESS!"
+echo "Incremental Testing Example - COMPLETE VERIFICATION SUCCESS!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "✅ VERIFIED FEATURES:"
+echo "✓ VERIFIED FEATURES:"
 echo "   • Retry Logic (--retry flag): Intelligent handling of flaky tests"
 echo "   • Merkle Caching (--cache merkle): ${speedup}x speedup on warm runs"
 echo "   • Auto Parallelism (-j auto): Concurrent independent test suites"
@@ -260,16 +260,16 @@ echo "   • Graceful Signal Handling (--signal-mode graceful)"
 echo "   • Flaky Test Demonstration: ${attempts} attempts tracked"
 echo "   • Test Metrics Aggregation"
 echo ""
-echo "📊 PERFORMANCE METRICS:"
+echo "PERFORMANCE METRICS:"
 echo "   • Cold run: ${cold_time}ms"
 echo "   • Warm run: ${warm_time}ms"
 echo "   • Cache speedup: ${speedup}x (using --cache flag)"
 echo "   • Test tasks: $task_count"
 echo "   • Dependency relationships: $dep_count"
 echo ""
-echo "💡 TIP: Run with 'gaffer-exec --retry 3 --cache merkle -j auto' for full power!"
+echo "TIP: Run with 'gaffer-exec --retry 3 --cache merkle -j auto' for full power!"
 echo ""
-echo "🚀 QUICK START COMMANDS:"
+echo "QUICK START COMMANDS:"
 echo ""
 echo "# Run all tests with intelligent orchestration:"
 echo "   gaffer-exec --workspace-root . run make:test-all"
@@ -283,18 +283,18 @@ echo ""
 echo "# Run performance benchmarks:"
 echo "   gaffer-exec --workspace-root . run make:performance-benchmark"
 echo ""
-echo "📖 See README.md for detailed documentation"
+echo "See README.md for detailed documentation"
 echo ""
 echo "   npm install"
 echo "   gaffer-exec --workspace-root . run make:test-all"
 echo ""
-echo "📋 Individual test commands:"
+echo "Individual test commands:"
 echo "   gaffer-exec --workspace-root . run make:unit-tests-lib"
 echo "   gaffer-exec --workspace-root . run make:unit-tests-api"
 echo "   gaffer-exec --workspace-root . run make:unit-tests-ui"
 echo "   gaffer-exec --workspace-root . run make:integration-tests"
 echo "   gaffer-exec --workspace-root . run make:e2e-tests"
 echo ""
-echo "💡 For development:"
+echo "For development:"
 echo "   gaffer-exec --workspace-root . run make:test-watch"
 echo "   gaffer-exec --workspace-root . run make:test-debug"

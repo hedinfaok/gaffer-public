@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🧪 Testing ML Workflows Example..."
+echo "Testing ML Workflows Example..."
 echo "=================================="
 
 # Colors for output
@@ -34,21 +34,21 @@ run_test() {
     
     if output=$(eval "$fixed_command" 2>&1); then
         if [[ "$output" =~ $expected_pattern ]]; then
-            echo -e "${GREEN}✅ PASS${NC}"
+            echo -e "${GREEN}✓ PASS${NC}"
             TESTS_PASSED=$((TESTS_PASSED + 1))
         else
-            echo -e "${RED}❌ FAIL - Output doesn't match expected pattern${NC}"
+            echo -e "${RED}✗ FAIL - Output doesn't match expected pattern${NC}"
             echo "Expected pattern: $expected_pattern"
             echo "Actual output: $output"
         fi
     else
-        echo -e "${RED}❌ FAIL - Command failed${NC}"
+        echo -e "${RED}✗ FAIL - Command failed${NC}"
         echo "Error output: $output"
     fi
 }
 
 # Cleanup from any previous runs
-echo -e "\n${YELLOW}🧹 Cleaning up previous runs...${NC}"
+echo -e "\n${YELLOW}Cleaning up previous runs...${NC}"
 rm -rf data/ || true
 
 # Test 1: Validate Makefile target graph
@@ -135,7 +135,7 @@ results = json.load(open('data/results/evaluation_results_iris.json'))
 accuracy = max([m['accuracy'] for m in results['metrics']])
 print(f'Best accuracy: {accuracy:.3f}')
 assert accuracy > 0.8, f'Accuracy too low: {accuracy}'
-print('✅ Model performance acceptable')
+print('✓ Model performance acceptable')
 \"" \
     "Model performance acceptable"
 
@@ -147,7 +147,7 @@ raw_files = [f for f in os.listdir('data/raw') if f.endswith('.csv')]
 processed_files = [f for f in os.listdir('data/processed') if f.endswith('.csv')]
 print(f'Data integrity: {len(raw_files)} raw → {len(processed_files)} processed')
 assert len(raw_files) == len(processed_files), 'Mismatch in data files'
-print('✅ Data pipeline integrity verified')
+print('✓ Data pipeline integrity verified')
 \"" \
     "Data pipeline integrity verified"
 
@@ -167,8 +167,8 @@ echo "Test Results Summary"
 echo -e "==================================${NC}"
 
 if [ $TESTS_PASSED -eq $TESTS_RUN ]; then
-    echo -e "${GREEN}🎉 ALL TESTS PASSED! ($TESTS_PASSED/$TESTS_RUN)${NC}"
-    echo -e "\n${GREEN}✅ ML Workflows Example is working correctly!${NC}"
+    echo -e "${GREEN}ALL TESTS PASSED! ($TESTS_PASSED/$TESTS_RUN)${NC}"
+    echo -e "\n${GREEN}✓ ML Workflows Example is working correctly!${NC}"
     echo -e "   • Data preparation: Downloads real datasets"
     echo -e "   • Feature engineering: Scikit-learn preprocessing"
     echo -e "   • Model training: Multiple ML algorithms"  
@@ -176,7 +176,7 @@ if [ $TESTS_PASSED -eq $TESTS_RUN ]; then
     echo -e "   • gaffer-exec orchestration: Full pipeline"
     exit 0
 else
-    echo -e "${RED}❌ SOME TESTS FAILED ($TESTS_PASSED/$TESTS_RUN passed)${NC}"
+    echo -e "${RED}✗ SOME TESTS FAILED ($TESTS_PASSED/$TESTS_RUN passed)${NC}"
     echo -e "\n${YELLOW}The ML workflows example has issues that need to be addressed.${NC}"
     exit 1
 fi

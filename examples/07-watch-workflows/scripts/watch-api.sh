@@ -5,18 +5,18 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "👀 Watching api-service for changes..."
+echo "Watching api-service for changes..."
 echo "   Source: api-service/src/"
 echo "   Trigger: gaffer-exec --workspace-root . run make:rebuild-api"
 echo "   Note: Changes to shared-lib will trigger this automatically"
 echo ""
 
 # Cleanup on exit
-trap 'echo ""; echo "🛑 Stopping api-service watch..."; exit 0' SIGINT SIGTERM
+trap 'echo ""; echo "Stopping api-service watch..."; exit 0' SIGINT SIGTERM
 
 # Check if fswatch is installed
 if ! command -v fswatch &> /dev/null; then
-    echo "❌ Error: fswatch is not installed"
+    echo "✗ Error: fswatch is not installed"
     echo "   Install with: brew install fswatch (macOS) or apt-get install fswatch (Linux)"
     exit 1
 fi
@@ -35,13 +35,13 @@ fswatch \
   "$WORKSPACE_ROOT/api-service/tsconfig.json" | while read -r file; do
     RELATIVE_FILE="${file#$WORKSPACE_ROOT/}"
     echo ""
-    echo "🔄 Changed: $RELATIVE_FILE"
+    echo "Changed: $RELATIVE_FILE"
     echo "   Running: gaffer-exec --workspace-root . run make:rebuild-api"
     
     cd "$WORKSPACE_ROOT"
     if gaffer-exec --workspace-root . run make:rebuild-api; then
-        echo "✅ Rebuild complete"
+        echo "✓ Rebuild complete"
     else
-        echo "❌ Rebuild failed"
+        echo "✗ Rebuild failed"
     fi
 done

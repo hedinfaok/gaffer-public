@@ -123,7 +123,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className="container">
-          <h1>🚀 Task Manager</h1>
+          <h1>Task Manager</h1>
           <p className="subtitle">Local Development Environment Demo</p>
           
           {/* API Health Status */}
@@ -149,19 +149,19 @@ function App() {
         {/* Stats Section */}
         <div className="stats">
           <div className="stat-card">
-            <h3>📋 Total Tasks</h3>
+            <h3>Total Tasks</h3>
             <span className="stat-number">{tasks.length}</span>
           </div>
           <div className="stat-card">
-            <h3>✅ Completed</h3>
+            <h3>✓ Completed</h3>
             <span className="stat-number">{tasks.filter(t => t.status === 'completed').length}</span>
           </div>
           <div className="stat-card">
-            <h3>⭏ In Progress</h3>
+            <h3>→ In Progress</h3>
             <span className="stat-number">{tasks.filter(t => t.status === 'in_progress').length}</span>
           </div>
           <div className="stat-card">
-            <h3>👥 Users</h3>
+            <h3>Users</h3>
             <span className="stat-number">{users.length}</span>
           </div>
         </div>
@@ -205,7 +205,7 @@ function App() {
 
         {/* Tasks List */}
         <div className="tasks-section">
-          <h2>📋 Tasks</h2>
+          <h2>Tasks</h2>
           
           {tasks.length === 0 ? (
             <div className="empty-state">
@@ -260,7 +260,7 @@ function App() {
 
         {/* Development Info */}
         <div className="dev-info">
-          <h2>🛠️ Development Environment</h2>
+          <h2>Development Environment</h2>
           <div className="dev-stats">
             <div><strong>API URL:</strong> {API_URL}</div>
             <div><strong>Frontend Port:</strong> {window.location.port}</div>

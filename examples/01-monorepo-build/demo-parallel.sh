@@ -9,13 +9,13 @@ echo "════════════════════════�
 echo ""
 
 # Clean first
-echo "🧹 Cleaning build artifacts..."
+echo "Cleaning build artifacts..."
 rm -rf packages/*/dist
 echo ""
 
 # Sequential build simulation (npm workspaces style)
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "⏱️  SEQUENTIAL BUILD (like 'npm run build --workspaces')"
+echo "⏱  SEQUENTIAL BUILD (like 'npm run build --workspaces')"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -51,17 +51,17 @@ echo "  user-service: $((SEQUENTIAL_USER - SEQUENTIAL_AUTH))ms"
 echo "  api-gateway:  $((SEQUENTIAL_GATEWAY - SEQUENTIAL_USER))ms"
 echo "  web-app:      $((SEQUENTIAL_END - SEQUENTIAL_GATEWAY))ms"
 echo ""
-echo "  📊 TOTAL TIME: ${SEQUENTIAL_TOTAL}ms"
+echo "  TOTAL TIME: ${SEQUENTIAL_TOTAL}ms"
 echo ""
 
 # Clean for parallel build
-echo "🧹 Cleaning for parallel build..."
+echo "Cleaning for parallel build..."
 rm -rf packages/*/dist
 echo ""
 
 # Parallel build with gaffer-exec
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "⚡ PARALLEL BUILD (gaffer-exec)"
+echo "↯ PARALLEL BUILD (gaffer-exec)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Note: auth-service and user-service build IN PARALLEL"
@@ -76,12 +76,12 @@ PARALLEL_END=$(date +%s%3N)
 PARALLEL_TOTAL=$((PARALLEL_END - PARALLEL_START))
 
 echo ""
-echo "  📊 TOTAL TIME: ${PARALLEL_TOTAL}ms"
+echo "  TOTAL TIME: ${PARALLEL_TOTAL}ms"
 echo ""
 
 # Calculate speedup
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📈 RESULTS"
+echo "RESULTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "  Sequential (npm):  ${SEQUENTIAL_TOTAL}ms"
@@ -91,10 +91,10 @@ echo ""
 if [ $PARALLEL_TOTAL -gt 0 ]; then
     SPEEDUP=$(awk "BEGIN {printf \"%.2f\", $SEQUENTIAL_TOTAL / $PARALLEL_TOTAL}")
     IMPROVEMENT=$(awk "BEGIN {printf \"%.1f\", (($SEQUENTIAL_TOTAL - $PARALLEL_TOTAL) / $SEQUENTIAL_TOTAL) * 100}")
-    echo "  ⚡ Speedup: ${SPEEDUP}x faster"
-    echo "  💰 Time saved: ${IMPROVEMENT}%"
+    echo "  ↯ Speedup: ${SPEEDUP}x faster"
+    echo "  Time saved: ${IMPROVEMENT}%"
 else
-    echo "  ⚡ Speedup: N/A (parallel was too fast to measure)"
+    echo "  ↯ Speedup: N/A (parallel was too fast to measure)"
 fi
 
 echo ""

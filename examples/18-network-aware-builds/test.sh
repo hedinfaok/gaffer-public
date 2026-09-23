@@ -4,61 +4,61 @@ set -e
 cd "$(dirname "$0")"
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "🧪 Testing Network-Aware Builds Example"
+echo "Testing Network-Aware Builds Example"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
 # Check prerequisites
-echo "📋 Checking prerequisites..."
+echo "Checking prerequisites..."
 echo ""
 
 # Check Go
 if ! command -v go &> /dev/null; then
-    echo "❌ Go is not installed. Install with: brew install go"
+    echo "✗ Go is not installed. Install with: brew install go"
     exit 1
 fi
-echo "   ✅ Go: $(go version | cut -d' ' -f3)"
+echo "   ✓ Go: $(go version | cut -d' ' -f3)"
 
 # Check Docker
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker is not installed. Install Docker Desktop"
+    echo "✗ Docker is not installed. Install Docker Desktop"
     exit 1
 fi
 
 if ! docker info > /dev/null 2>&1; then
-    echo "❌ Docker is not running. Please start Docker Desktop"
+    echo "✗ Docker is not running. Please start Docker Desktop"
     exit 1
 fi
-echo "   ✅ Docker: Running"
+echo "   ✓ Docker: Running"
 
 # Check AWS CLI
 if ! command -v aws &> /dev/null; then
-    echo "❌ AWS CLI is not installed. Install with: brew install awscli"
+    echo "✗ AWS CLI is not installed. Install with: brew install awscli"
     exit 1
 fi
-echo "   ✅ AWS CLI: $(aws --version | cut -d' ' -f1 | cut -d'/' -f2)"
+echo "   ✓ AWS CLI: $(aws --version | cut -d' ' -f1 | cut -d'/' -f2)"
 
 # Check gaffer-exec
 if ! command -v gaffer-exec &> /dev/null; then
-    echo "⚠️  gaffer-exec not found in PATH. Tests will use direct commands."
+    echo "⚠  gaffer-exec not found in PATH. Tests will use direct commands."
     USE_GAFFER=false
 else
-    echo "   ✅ gaffer-exec: Available"
+    echo "   ✓ gaffer-exec: Available"
     USE_GAFFER=true
 fi
 
 # Verify the Makefile task graph exists and is discoverable
 if [ ! -f Makefile ]; then
-    echo "❌ Makefile not found"
+    echo "✗ Makefile not found"
     exit 1
 fi
-echo "   ✅ Makefile: Found"
+echo "   ✓ Makefile: Found"
 
 if [ "$USE_GAFFER" = true ]; then
     if gaffer-exec --workspace-root . list -t makefile >/dev/null 2>&1; then
-        echo "   ✅ gaffer-exec Makefile targets: Discovered"
+        echo "   ✓ gaffer-exec Makefile targets: Discovered"
     else
-        echo "❌ gaffer-exec failed to discover Makefile targets"
+        echo "✗ gaffer-exec failed to discover Makefile targets"
         exit 1
     fi
 fi
@@ -68,7 +68,7 @@ echo ""
 # Cleanup function
 cleanup() {
     echo ""
-    echo "🧹 Cleaning up..."
+    echo "Cleaning up..."
     ./scripts/stop-regions.sh --clean >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
@@ -82,9 +82,9 @@ echo ""
 chmod +x scripts/*.sh
 
 if ./scripts/start-regions.sh; then
-    echo "✅ Multi-region infrastructure started successfully"
+    echo "✓ Multi-region infrastructure started successfully"
 else
-    echo "❌ Failed to start infrastructure"
+    echo "✗ Failed to start infrastructure"
     exit 1
 fi
 
@@ -110,9 +110,9 @@ for region_config in "${regions[@]}"; do
     echo "Testing region on port $port..."
     
     if aws --endpoint-url=http://localhost:$port s3 ls s3://$bucket >/dev/null 2>&1; then
-        echo "   ✅ Successfully connected to $bucket"
+        echo "   ✓ Successfully connected to $bucket"
     else
-        echo "   ❌ Failed to connect to $bucket"
+        echo "   ✗ Failed to connect to $bucket"
         all_healthy=false
     fi
 done
@@ -120,11 +120,11 @@ done
 echo ""
 
 if [ "$all_healthy" = false ]; then
-    echo "❌ Some regions are not accessible"
+    echo "✗ Some regions are not accessible"
     exit 1
 fi
 
-echo "✅ All regions accessible"
+echo "✓ All regions accessible"
 echo ""
 
 # Test 3: Initialize project
@@ -134,9 +134,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if go mod tidy; then
-    echo "✅ Go modules initialized"
+    echo "✓ Go modules initialized"
 else
-    echo "❌ Failed to initialize Go modules"
+    echo "✗ Failed to initialize Go modules"
     exit 1
 fi
 
@@ -149,18 +149,18 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if ./scripts/detect-region.sh; then
-    echo "✅ Network topology detected"
+    echo "✓ Network topology detected"
     
     # Verify configuration file was created
     if [ -f .cache/region-config.sh ]; then
-        echo "✅ Region configuration saved"
+        echo "✓ Region configuration saved"
         source .cache/region-config.sh
         echo "   Primary cache: $PRIMARY_CACHE"
     else
-        echo "⚠️  Region configuration not saved"
+        echo "⚠  Region configuration not saved"
     fi
 else
-    echo "❌ Failed to detect network topology"
+    echo "✗ Failed to detect network topology"
     exit 1
 fi
 
@@ -181,17 +181,17 @@ echo "Building services..."
 if go build -o bin/api ./cmd/api && \
    go build -o bin/worker ./cmd/worker && \
    go build -o bin/frontend ./cmd/frontend; then
-    echo "✅ All services built successfully"
+    echo "✓ All services built successfully"
 else
-    echo "❌ Failed to build services"
+    echo "✗ Failed to build services"
     exit 1
 fi
 
 # Verify builds
 if ./scripts/verify-builds.sh; then
-    echo "✅ Build verification passed"
+    echo "✓ Build verification passed"
 else
-    echo "❌ Build verification failed"
+    echo "✗ Build verification failed"
     exit 1
 fi
 
@@ -204,9 +204,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if ./scripts/upload-cache.sh; then
-    echo "✅ Cache uploaded successfully"
+    echo "✓ Cache uploaded successfully"
 else
-    echo "❌ Failed to upload cache"
+    echo "✗ Failed to upload cache"
     exit 1
 fi
 
@@ -219,9 +219,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if ./scripts/sync-caches.sh; then
-    echo "✅ Cache synchronized across regions"
+    echo "✓ Cache synchronized across regions"
 else
-    echo "❌ Failed to synchronize caches"
+    echo "✗ Failed to synchronize caches"
     exit 1
 fi
 
@@ -238,9 +238,9 @@ rm -rf bin/
 
 # Fetch from cache
 if ./scripts/fetch-cache.sh us-east; then
-    echo "✅ Cache fetched successfully"
+    echo "✓ Cache fetched successfully"
 else
-    echo "⚠️  Cache fetch had issues (may be expected for first run)"
+    echo "⚠  Cache fetch had issues (may be expected for first run)"
 fi
 
 # Rebuild
@@ -248,9 +248,9 @@ mkdir -p bin
 if go build -o bin/api ./cmd/api && \
    go build -o bin/worker ./cmd/worker && \
    go build -o bin/frontend ./cmd/frontend; then
-    echo "✅ Warm build completed"
+    echo "✓ Warm build completed"
 else
-    echo "❌ Warm build failed"
+    echo "✗ Warm build failed"
     exit 1
 fi
 
@@ -263,9 +263,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if ./scripts/monitor-network.sh | head -20; then
-    echo "✅ Network monitoring working"
+    echo "✓ Network monitoring working"
 else
-    echo "⚠️  Network monitoring had issues (non-critical)"
+    echo "⚠  Network monitoring had issues (non-critical)"
 fi
 
 echo ""
@@ -277,9 +277,9 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 if ./scripts/test-failure.sh | head -50; then
-    echo "✅ Failure recovery tests passed"
+    echo "✓ Failure recovery tests passed"
 else
-    echo "⚠️  Some failure recovery tests had issues (non-critical)"
+    echo "⚠  Some failure recovery tests had issues (non-critical)"
 fi
 
 echo ""
@@ -301,9 +301,9 @@ sleep 2
 
 # Test health endpoint
 if curl -sf http://localhost:18080/health >/dev/null 2>&1; then
-    echo "✅ API service health check passed"
+    echo "✓ API service health check passed"
 else
-    echo "⚠️  API service not responding (may need more time to start)"
+    echo "⚠  API service not responding (may need more time to start)"
 fi
 
 # Cleanup
@@ -323,22 +323,22 @@ echo ""
 
 # Final summary
 echo "═══════════════════════════════════════════════════════════════"
-echo "✅ ALL TESTS PASSED!"
+echo "✓ ALL TESTS PASSED!"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
-echo "📊 Test Summary:"
-echo "   ✅ Multi-region infrastructure: Working"
-echo "   ✅ Network topology detection: Working"
-echo "   ✅ Build process: Working"
-echo "   ✅ Cache upload/download: Working"
-echo "   ✅ Cross-region sync: Working"
-echo "   ✅ Warm builds: Working"
-echo "   ✅ Network monitoring: Working"
-echo "   ✅ Failure recovery: Working"
-echo "   ✅ Service health: Working"
-echo "   ✅ Statistics: Working"
+echo "Test Summary:"
+echo "   ✓ Multi-region infrastructure: Working"
+echo "   ✓ Network topology detection: Working"
+echo "   ✓ Build process: Working"
+echo "   ✓ Cache upload/download: Working"
+echo "   ✓ Cross-region sync: Working"
+echo "   ✓ Warm builds: Working"
+echo "   ✓ Network monitoring: Working"
+echo "   ✓ Failure recovery: Working"
+echo "   ✓ Service health: Working"
+echo "   ✓ Statistics: Working"
 echo ""
-echo "🎉 Network-Aware Builds example is fully functional!"
+echo "Network-Aware Builds example is fully functional!"
 echo ""
 echo "Next steps:"
 echo "   • Run ./scripts/benchmark.sh for performance comparison"

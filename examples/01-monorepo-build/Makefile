@@ -13,26 +13,26 @@
 
 # Remove all build artifacts
 clean:
-	@rm -rf packages/*/dist && echo '🧹 Cleaned all build artifacts'
+	@rm -rf packages/*/dist && echo 'Cleaned all build artifacts'
 
 # Shared library (required by every service)
 shared-lib:
-	@echo '📦 Building shared-lib...' && npx tsc -p packages/shared-lib/tsconfig.json && echo '✓ shared-lib complete'
+	@echo 'Building shared-lib...' && npx tsc -p packages/shared-lib/tsconfig.json && echo '✓ shared-lib complete'
 
 # Application services (build in parallel, both depend on shared-lib)
 auth-service: shared-lib
-	@echo '🔐 Building auth-service...' && npx tsc -p packages/auth-service/tsconfig.json && echo '✓ auth-service complete'
+	@echo 'Building auth-service...' && npx tsc -p packages/auth-service/tsconfig.json && echo '✓ auth-service complete'
 
 user-service: shared-lib
-	@echo '👤 Building user-service...' && npx tsc -p packages/user-service/tsconfig.json && echo '✓ user-service complete'
+	@echo 'Building user-service...' && npx tsc -p packages/user-service/tsconfig.json && echo '✓ user-service complete'
 
 # API gateway (depends on both services)
 api-gateway: auth-service user-service
-	@echo '🌐 Building api-gateway...' && npx tsc -p packages/api-gateway/tsconfig.json && echo '✓ api-gateway complete'
+	@echo 'Building api-gateway...' && npx tsc -p packages/api-gateway/tsconfig.json && echo '✓ api-gateway complete'
 
 # Web application (top of the dependency chain)
 web-app: api-gateway
-	@echo '🚀 Building web-app...' && npx tsc -p packages/web-app/tsconfig.json && echo '✓ web-app complete'
+	@echo 'Building web-app...' && npx tsc -p packages/web-app/tsconfig.json && echo '✓ web-app complete'
 
 # Build everything
 build-all: web-app

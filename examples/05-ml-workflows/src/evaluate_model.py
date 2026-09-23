@@ -37,7 +37,7 @@ class MLModelEvaluator:
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model not found: {model_path}")
         
-        logger.info(f"📂 Loading model: {model_path}")
+        logger.info(f"Loading model: {model_path}")
         return joblib.load(model_path)
     
     def load_training_results(self, dataset_name):
@@ -45,10 +45,10 @@ class MLModelEvaluator:
         results_path = f'data/results/training_results_{dataset_name}.json'
         
         if not os.path.exists(results_path):
-            logger.warning(f"⚠️ Training results not found: {results_path}")
+            logger.warning(f"⚠ Training results not found: {results_path}")
             return None
         
-        logger.info(f"📂 Loading training results: {results_path}")
+        logger.info(f"Loading training results: {results_path}")
         with open(results_path, 'r') as f:
             return json.load(f)
     
@@ -64,7 +64,7 @@ class MLModelEvaluator:
             raw_path = f'data/raw/{dataset_name}.csv'
             df = pd.read_csv(raw_path)
         
-        logger.info(f"📂 Loaded evaluation data: {df.shape}")
+        logger.info(f"Loaded evaluation data: {df.shape}")
         return df
     
     def evaluate_regression_model(self, y_true, y_pred, model_name):
@@ -78,7 +78,7 @@ class MLModelEvaluator:
             'samples': len(y_true)
         }
         
-        logger.info(f"📊 {model_name} - RMSE: {metrics['rmse']:.4f}, R²: {metrics['r2']:.4f}")
+        logger.info(f"{model_name} - RMSE: {metrics['rmse']:.4f}, R²: {metrics['r2']:.4f}")
         return metrics
     
     def evaluate_classification_model(self, y_true, y_pred, model_name):
@@ -95,12 +95,12 @@ class MLModelEvaluator:
             'samples': len(y_true)
         }
         
-        logger.info(f"📊 {model_name} - Accuracy: {metrics['accuracy']:.4f}, F1: {metrics['f1']:.4f}")
+        logger.info(f"{model_name} - Accuracy: {metrics['accuracy']:.4f}, F1: {metrics['f1']:.4f}")
         return metrics
     
     def create_evaluation_plots(self, dataset_name, problem_type, metrics_list):
         """Create evaluation visualizations."""
-        logger.info(f"📈 Creating evaluation plots for {dataset_name}...")
+        logger.info(f"Creating evaluation plots for {dataset_name}...")
         
         # Create plots directory
         plots_dir = f'data/plots/{dataset_name}'
@@ -187,16 +187,16 @@ class MLModelEvaluator:
             plt.savefig(f'{plots_dir}/f1_comparison.png', dpi=300, bbox_inches='tight')
             plt.close()
         
-        logger.info(f"✅ Evaluation plots saved to: {plots_dir}")
+        logger.info(f"✓ Evaluation plots saved to: {plots_dir}")
     
     def evaluate_dataset_models(self, dataset_name):
         """Evaluate all models for a dataset."""
-        logger.info(f"📊 Evaluating models for {dataset_name}...")
+        logger.info(f"Evaluating models for {dataset_name}...")
         
         # Load training results
         training_results = self.load_training_results(dataset_name)
         if not training_results:
-            logger.error(f"❌ No training results found for {dataset_name}")
+            logger.error(f"✗ No training results found for {dataset_name}")
             return False
         
         problem_type = training_results['problem_type']
@@ -223,7 +223,7 @@ class MLModelEvaluator:
         from sklearn.model_selection import train_test_split
         _, X_test, _, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         
-        logger.info(f"🧪 Evaluating on {len(y_test)} test samples")
+        logger.info(f"Evaluating on {len(y_test)} test samples")
         
         # Evaluate each model
         metrics_list = []
@@ -256,11 +256,11 @@ class MLModelEvaluator:
                 metrics_list.append(metrics)
                 
             except Exception as e:
-                logger.error(f"❌ Failed to evaluate {model_name}: {e}")
+                logger.error(f"✗ Failed to evaluate {model_name}: {e}")
                 continue
         
         if not metrics_list:
-            logger.error(f"❌ No models could be evaluated for {dataset_name}")
+            logger.error(f"✗ No models could be evaluated for {dataset_name}")
             return False
         
         # Create evaluation summary
@@ -290,8 +290,8 @@ class MLModelEvaluator:
         with open(evaluation_path, 'w') as f:
             json.dump(evaluation_summary, f, indent=2)
         
-        logger.info(f"✅ Evaluation results saved: {evaluation_path}")
-        logger.info(f"🏆 Best model: {evaluation_summary['best_model']} ({evaluation_summary['best_score']})")
+        logger.info(f"✓ Evaluation results saved: {evaluation_path}")
+        logger.info(f"Best model: {evaluation_summary['best_model']} ({evaluation_summary['best_score']})")
         
         # Create visualizations
         self.create_evaluation_plots(dataset_name, problem_type, metrics_list)
@@ -300,14 +300,14 @@ class MLModelEvaluator:
 
 def evaluate_dataset(dataset_name):
     """Evaluate models for a specific dataset."""
-    logger.info(f"🎯 Evaluating models for {dataset_name} dataset...")
+    logger.info(f"Evaluating models for {dataset_name} dataset...")
     
     evaluator = MLModelEvaluator()
     return evaluator.evaluate_dataset_models(dataset_name)
 
 def main():
     """Main evaluation pipeline."""
-    logger.info("🚀 Starting ML model evaluation pipeline...")
+    logger.info("Starting ML model evaluation pipeline...")
     
     # Available datasets
     datasets = ['california_housing', 'iris', 'wine']
@@ -322,14 +322,14 @@ def main():
         if evaluate_dataset(dataset):
             successful_evaluations += 1
     
-    logger.info(f"\n🎉 Evaluation pipeline completed!")
-    logger.info(f"📊 Successfully evaluated {successful_evaluations}/{len(datasets)} datasets")
-    logger.info("🔧 Built with: gaffer-exec ML workflow orchestration")
+    logger.info(f"\nEvaluation pipeline completed!")
+    logger.info(f"Successfully evaluated {successful_evaluations}/{len(datasets)} datasets")
+    logger.info("Built with: gaffer-exec ML workflow orchestration")
     
     if successful_evaluations > 0:
         return 0
     else:
-        logger.error("❌ No models were successfully evaluated")
+        logger.error("✗ No models were successfully evaluated")
         return 1
 
 if __name__ == "__main__":

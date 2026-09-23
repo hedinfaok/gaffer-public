@@ -20,19 +20,19 @@ fetch-cache: init
 	@chmod +x scripts/fetch-cache.sh && ./scripts/fetch-cache.sh
 
 build-gateway: fetch-cache
-	@echo '🔨 Building gateway service...' && go build -o cmd/gateway/main ./cmd/gateway
+	@echo 'Building gateway service...' && go build -o cmd/gateway/main ./cmd/gateway
 
 build-auth: fetch-cache
-	@echo '🔨 Building auth service...' && go build -o cmd/auth/main ./cmd/auth
+	@echo 'Building auth service...' && go build -o cmd/auth/main ./cmd/auth
 
 build-users: fetch-cache
-	@echo '🔨 Building users service...' && go build -o cmd/users/main ./cmd/users
+	@echo 'Building users service...' && go build -o cmd/users/main ./cmd/users
 
 upload-cache: build-gateway build-auth build-users
 	@chmod +x scripts/upload-cache.sh && ./scripts/upload-cache.sh
 
 distributed-build: upload-cache
-	@echo '✅ Distributed build complete!' && echo '🚀 All microservices built with caching optimization'
+	@echo '✓ Distributed build complete!' && echo 'All microservices built with caching optimization'
 
 clean-build: distributed-build
-	@echo '🧹 Clean build (no cache)'
+	@echo 'Clean build (no cache)'

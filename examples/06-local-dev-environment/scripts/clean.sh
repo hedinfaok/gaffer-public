@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🧹 Cleaning up development environment..."
+echo "Cleaning up development environment..."
 
 # Remove generated files
 rm -f setup.complete
@@ -19,16 +19,16 @@ rm -rf logs
 # rm -rf db/data
 
 # Remove node_modules (optional - uncomment for full cleanup)
-# echo "🗑️  Removing node_modules..."
+# echo " Removing node_modules..."
 # rm -rf node_modules
 # rm -rf api/node_modules
 # rm -rf frontend/node_modules
 
 # Remove Docker container and volume
-echo "🐳 Cleaning up Docker resources..."
+echo "Cleaning up Docker resources..."
 docker stop taskmanager-db 2>/dev/null || true
 docker rm taskmanager-db 2>/dev/null || true
 
-echo "✅ Development environment cleaned"
+echo "✓ Development environment cleaned"
 echo ""
-echo "💡 To start fresh, run: gaffer-exec --workspace-root . run make:dev"
+echo "To start fresh, run: gaffer-exec --workspace-root . run make:dev"

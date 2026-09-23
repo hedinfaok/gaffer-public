@@ -145,7 +145,7 @@ class App {
     start(port = 3000) {
         return new Promise((resolve) => {
             this.server = this.app.listen(port, () => {
-                console.log(`🧪 Test API server running on port ${port}`);
+                console.log(`Test API server running on port ${port}`);
                 resolve();
             });
         });

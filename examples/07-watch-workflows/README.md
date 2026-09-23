@@ -183,12 +183,12 @@ cd frontend && webpack-dev-server
 ```
 
 **Benefits:**
-- ✅ Dependency-aware cascading rebuilds
-- ✅ Incremental builds (only rebuild what changed)
-- ✅ Single command to watch all services
-- ✅ Graceful shutdown of all watchers
-- ✅ Debouncing via `--latency` flag
-- ✅ Works with any build tool (TypeScript, Webpack, Babel, etc.)
+- ✓ Dependency-aware cascading rebuilds
+- ✓ Incremental builds (only rebuild what changed)
+- ✓ Single command to watch all services
+- ✓ Graceful shutdown of all watchers
+- ✓ Debouncing via `--latency` flag
+- ✓ Works with any build tool (TypeScript, Webpack, Babel, etc.)
 
 ## Key Features
 

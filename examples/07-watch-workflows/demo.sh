@@ -19,22 +19,22 @@ echo "Step 1: Checking prerequisites..."
 echo "--------------------------------"
 
 if ! command -v fswatch &> /dev/null; then
-    echo "❌ fswatch is not installed"
+    echo "✗ fswatch is not installed"
     echo ""
     echo "Install it with:"
     echo "  macOS:   brew install fswatch"
     echo "  Linux:   apt-get install fswatch"
     exit 1
 fi
-echo "✅ fswatch: $(fswatch --version | head -n1)"
+echo "✓ fswatch: $(fswatch --version | head -n1)"
 
 if ! command -v gaffer-exec &> /dev/null; then
-    echo "❌ gaffer-exec is not installed"
+    echo "✗ gaffer-exec is not installed"
     echo ""
     echo "Please install gaffer-exec first"
     exit 1
 fi
-echo "✅ gaffer-exec: installed"
+echo "✓ gaffer-exec: installed"
 
 echo ""
 
@@ -130,7 +130,7 @@ fi
 
 echo ""
 echo "═══════════════════════════════════════════════════════"
-echo "Demo complete! 🎉"
+echo "Demo complete!"
 echo ""
 echo "Next steps:"
 echo "  1. Read QUICKSTART.md for hands-on tutorial"

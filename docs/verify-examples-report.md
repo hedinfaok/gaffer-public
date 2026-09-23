@@ -14,16 +14,16 @@ LocalStack configuration was still found and fixed.
 
 | # | Example | Static | Executed | Result |
 |---|---------|--------|----------|--------|
-| 01 | 01-monorepo-build | pass | pass | ✅ `test.sh` exit 0 — 5 packages built, cached, visualized, app runs |
-| 02 | 02-distributed-build | pass | blocked | ⚠️ `blocked (environment: azure-cli, gsutil)` — LocalStack defect fixed |
-| 03 | 03-multi-language-build | pass | pass | ✅ `test.sh` exit 0 — Rust/Go/Node/Python artifacts verified |
-| 04 | 04-incremental-testing | pass | pass | ✅ `test.sh` exit 0 (flaky on first run — see quarantine) |
-| 05 | 05-ml-workflows | pass | pass | ✅ `test.sh` 18/18 — full ML pipeline |
-| 06 | 06-local-dev-environment | pass | pass | ✅ `test.sh` 10/10 — DB→API→frontend, ports, shutdown |
-| 07 | 07-watch-workflows | pass | pass | ✅ `test.sh` 47/0 — after 2 fixes |
-| 08 | 08-multi-language-task-running | pass | pass | ✅ `test.sh` 24/0 — after 6 fixes |
-| 18 | 18-network-aware-builds | pass | pass | ✅ `test.sh` exit 0 — after 2 fixes |
-| 19 | 19-cross-platform-builds | pass | pass | ✅ `test.sh` exit 0 — cross-compilation verified |
+| 01 | 01-monorepo-build | pass | pass | ✓ `test.sh` exit 0 — 5 packages built, cached, visualized, app runs |
+| 02 | 02-distributed-build | pass | blocked | ⚠ `blocked (environment: azure-cli, gsutil)` — LocalStack defect fixed |
+| 03 | 03-multi-language-build | pass | pass | ✓ `test.sh` exit 0 — Rust/Go/Node/Python artifacts verified |
+| 04 | 04-incremental-testing | pass | pass | ✓ `test.sh` exit 0 (flaky on first run — see quarantine) |
+| 05 | 05-ml-workflows | pass | pass | ✓ `test.sh` 18/18 — full ML pipeline |
+| 06 | 06-local-dev-environment | pass | pass | ✓ `test.sh` 10/10 — DB→API→frontend, ports, shutdown |
+| 07 | 07-watch-workflows | pass | pass | ✓ `test.sh` 47/0 — after 2 fixes |
+| 08 | 08-multi-language-task-running | pass | pass | ✓ `test.sh` 24/0 — after 6 fixes |
+| 18 | 18-network-aware-builds | pass | pass | ✓ `test.sh` exit 0 — after 2 fixes |
+| 19 | 19-cross-platform-builds | pass | pass | ✓ `test.sh` exit 0 — cross-compilation verified |
 
 Static evidence (per example):
 `gaffer-exec --workspace-root . validate` → OK; `run --dry-run make:<primary>` →
@@ -59,11 +59,11 @@ root cause fixed in both owners.
 
 | ID | Criterion | Result |
 |----|-----------|--------|
-| SC-001 | 10/10 static verification pass | ✅ |
-| SC-002 | 10/10 executed results recorded | ✅ (02 blocked-environment, recorded) |
-| SC-003 | Every non-environment failure fixed or quarantined | ✅ (D1–D10 fixed; 04 quarantined with rationale) |
-| SC-004 | Zero removed-JSON-format references | ✅ |
-| SC-005 | Single consolidated report | ✅ (this file) |
+| SC-001 | 10/10 static verification pass | ✓ |
+| SC-002 | 10/10 executed results recorded | ✓ (02 blocked-environment, recorded) |
+| SC-003 | Every non-environment failure fixed or quarantined | ✓ (D1–D10 fixed; 04 quarantined with rationale) |
+| SC-004 | Zero removed-JSON-format references | ✓ |
+| SC-005 | Single consolidated report | ✓ (this file) |
 
 ## How to reproduce
 

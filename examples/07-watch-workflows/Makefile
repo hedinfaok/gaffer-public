@@ -36,7 +36,7 @@ build-frontend: build-shared-lib
 
 # Build everything
 build-all: build-api build-frontend
-	@echo '✅ All services built'
+	@echo '✓ All services built'
 
 # Rebuild shared-lib without reinstalling dependencies (used by watch mode)
 rebuild-shared-lib:
@@ -60,7 +60,7 @@ start-frontend: build-frontend
 
 # Start all services
 dev: start-api start-frontend
-	@echo '🚀 All services started. Run ./scripts/watch-all.sh in another terminal to enable watch mode.'
+	@echo 'All services started. Run ./scripts/watch-all.sh in another terminal to enable watch mode.'
 
 # Run the validation tests
 test:

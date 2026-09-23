@@ -4,7 +4,7 @@
 
 cd "$(dirname "$0")/.."
 
-echo "🔍 Verifying build artifacts..."
+echo "Verifying build artifacts..."
 echo ""
 
 success=true
@@ -17,9 +17,9 @@ for service in "${services[@]}"; do
     
     if [ -f "$binary" ]; then
         size=$(stat -f%z "$binary" 2>/dev/null || stat -c%s "$binary" 2>/dev/null)
-        echo "✅ $service: $(numfmt --to=iec-i --suffix=B $size 2>/dev/null || echo $size bytes)"
+        echo "✓ $service: $(numfmt --to=iec-i --suffix=B $size 2>/dev/null || echo $size bytes)"
     else
-        echo "❌ $service: NOT FOUND"
+        echo "✗ $service: NOT FOUND"
         success=false
     fi
 done
@@ -27,9 +27,9 @@ done
 echo ""
 
 if [ "$success" = true ]; then
-    echo "✅ All services built successfully!"
+    echo "✓ All services built successfully!"
     exit 0
 else
-    echo "❌ Some services failed to build"
+    echo "✗ Some services failed to build"
     exit 1
 fi

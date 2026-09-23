@@ -12,32 +12,32 @@ This follows distributed build patterns used by:
 
 ## Key Features
 
-🌍 **Multi-Region Cache Architecture:**
+**Multi-Region Cache Architecture:**
 - Simulated US-East, US-West, EU-Central regions
 - Automatic region detection and optimal cache selection
 - Cross-region cache synchronization with conflict resolution
 
-📊 **Network Topology Awareness:**
+**Network Topology Awareness:**
 - Automatic bandwidth and latency detection
 - Adaptive compression based on network conditions
 - Smart routing to nearest high-performance cache
 
-⚡ **Bandwidth Optimization:**
+↯ **Bandwidth Optimization:**
 - Conceptual delta transfer design (simulated in metrics)
 - Automatic compression (gzip/zstd) based on bandwidth
 - Parallel chunk downloads with resumable transfers
 
-🔄 **Intelligent Fallback System:**
+**Intelligent Fallback System:**
 - Primary/secondary/tertiary cache mirrors
 - Exponential backoff on failures
 - Automatic mirror health monitoring
 
-💪 **Network Failure Recovery:**
+**Network Failure Recovery:**
 - Resumable transfers with checksum verification
 - Automatic retry with exponential backoff
 - Graceful degradation to local cache
 
-📈 **Performance Monitoring:**
+**Performance Monitoring:**
 - Real-time bandwidth and latency tracking
 - Cache hit rate per region
 - Transfer speed and optimization metrics
@@ -164,12 +164,12 @@ The build system automatically detects network topology:
 gaffer-exec --workspace-root . run make:network-build
 
 # Output shows:
-# 🌍 Detected region: us-east-1
-# 📊 Network metrics:
+# Detected region: us-east-1
+# Network metrics:
 #    - Latency to us-east: 50ms
 #    - Latency to us-west: 100ms
 #    - Latency to eu-central: 150ms
-# ✅ Selected primary cache: us-east (50ms, 100Mbps)
+# ✓ Selected primary cache: us-east (50ms, 100Mbps)
 ```
 
 ### 2. Bandwidth Optimization
@@ -191,9 +191,9 @@ Automatic compression based on network speed:
 ./scripts/sync-caches.sh
 
 # Shows:
-# 🔄 Syncing us-east → us-west (100 artifacts)
-# 📦 Transferred artifacts with compression
-# ⏱️  Sync completed in 12s
+# Syncing us-east → us-west (100 artifacts)
+# Transferred artifacts with compression
+# ⏱  Sync completed in 12s
 # Note: Bandwidth savings shown in metrics are simulated/projected
 ```
 
@@ -202,9 +202,9 @@ Automatic compression based on network speed:
 ```bash
 # Primary cache fails, automatically falls back
 # Primary (us-east): Connection timeout
-# ⚠️  Falling back to secondary (us-west)
-# ✅ Connected to us-west (100ms latency)
-# 📦 Resuming transfer from chunk 42/100
+# ⚠  Falling back to secondary (us-west)
+# ✓ Connected to us-west (100ms latency)
+# Resuming transfer from chunk 42/100
 ```
 
 ### 5. Network Performance Monitoring
@@ -215,9 +215,9 @@ Automatic compression based on network speed:
 # Real-time metrics:
 # Region       | Latency | Bandwidth | Cache Hits | Status
 # -------------|---------|-----------|------------|--------
-# us-east      | 50ms    | 100Mbps   | 85%        | ✅
-# us-west      | 100ms   | 50Mbps    | 60%        | ✅
-# eu-central   | 150ms   | 25Mbps    | 40%        | ⚠️
+# us-east      | 50ms    | 100Mbps   | 85%        | ✓
+# us-west      | 100ms   | 50Mbps    | 60%        | ✓
+# eu-central   | 150ms   | 25Mbps    | 40%        | ⚠
 ```
 
 ## Performance Benchmarks
@@ -271,8 +271,8 @@ export CACHE_BACKEND="local://.cache+s3://gaffer-build-cache"
 ```bash
 # Large artifact transfer interrupted at 60%
 # Automatic resume from last checkpoint:
-# 📦 Resuming transfer (chunk 60/100)
-# ✅ Transfer completed in 8s (40% remaining)
+# Resuming transfer (chunk 60/100)
+# ✓ Transfer completed in 8s (40% remaining)
 ```
 
 ## Troubleshooting
@@ -386,24 +386,24 @@ Cross-region sync uses eventual consistency:
 
 ### vs. Jenkins Distributed Builds
 
-- ✅ 60% faster network failure recovery
-- ✅ Automatic network optimization (Jenkins requires manual configuration)
-- ✅ Built-in multi-region support
-- ✅ Resumable transfers
+- ✓ 60% faster network failure recovery
+- ✓ Automatic network optimization (Jenkins requires manual configuration)
+- ✓ Built-in multi-region support
+- ✓ Resumable transfers
 
 ### vs. GitHub Actions Caching
 
-- ✅ Regional cache selection (GitHub Actions uses single region)
-- ✅ Delta transfer design (GitHub Actions transfers full cache)
-- ✅ Intelligent fallback (GitHub Actions fails on cache unavailability)
-- ✅ 75% bandwidth savings potential with delta transfers (simulated)
+- ✓ Regional cache selection (GitHub Actions uses single region)
+- ✓ Delta transfer design (GitHub Actions transfers full cache)
+- ✓ Intelligent fallback (GitHub Actions fails on cache unavailability)
+- ✓ 75% bandwidth savings potential with delta transfers (simulated)
 
 ### vs. BuildKite Artifact Storage
 
-- ✅ Network-aware routing (BuildKite uses static configuration)
-- ✅ Automatic compression tuning
-- ✅ Built-in cross-region sync
-- ✅ More granular cache control
+- ✓ Network-aware routing (BuildKite uses static configuration)
+- ✓ Automatic compression tuning
+- ✓ Built-in cross-region sync
+- ✓ More granular cache control
 
 ## References
 

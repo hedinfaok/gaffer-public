@@ -3,7 +3,7 @@ set -e
 
 source .env
 
-echo "🗄️  Starting PostgreSQL database..."
+echo " Starting PostgreSQL database..."
 
 # Stop existing container if running
 docker stop taskmanager-db 2>/dev/null || true
@@ -26,12 +26,12 @@ attempt=1
 
 while [ $attempt -le $max_attempts ]; do
   if docker exec taskmanager-db pg_isready -U devuser -d taskmanager > /dev/null 2>&1; then
-    echo "✅ Database is ready!"
+    echo "✓ Database is ready!"
     break
   fi
   
   if [ $attempt -eq $max_attempts ]; then
-    echo "❌ Database failed to start after $max_attempts attempts"
+    echo "✗ Database failed to start after $max_attempts attempts"
     exit 1
   fi
   
@@ -41,7 +41,7 @@ while [ $attempt -le $max_attempts ]; do
 done
 
 # Run database migrations
-echo "🔄 Running database migrations..."
+echo "Running database migrations..."
 docker exec taskmanager-db psql -U devuser -d taskmanager -c "
 CREATE TABLE IF NOT EXISTS tasks (
   id SERIAL PRIMARY KEY,
@@ -74,4 +74,4 @@ ON CONFLICT DO NOTHING;
 
 echo "DB_CONTAINER_ID=$(docker ps -q -f name=taskmanager-db)" > .temp/db.pid
 touch db.ready
-echo "✅ Database started on port ${DB_PORT}"
+echo "✓ Database started on port ${DB_PORT}"

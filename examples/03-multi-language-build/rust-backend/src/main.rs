@@ -34,7 +34,7 @@ struct MetricsData {
 
 #[tokio::main]
 async fn main() {
-    println!("🦀 Starting Rust Backend Server...");
+    println!("Starting Rust Backend Server...");
     
     // Health endpoint
     let health = warp::path("health")
@@ -138,8 +138,8 @@ async fn main() {
         .or(api_info)
         .with(cors);
 
-    println!("🚀 Rust backend running on http://localhost:8080");
-    println!("📡 Available endpoints:");
+    println!("Rust backend running on http://localhost:8080");
+    println!("Available endpoints:");
     println!("   - GET /health");
     println!("   - GET /metrics");
     println!("   - GET /api");

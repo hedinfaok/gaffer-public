@@ -46,11 +46,11 @@ This is tedious, error-prone, and doesn't leverage parallelism!
 
 With `gaffer-exec`, you define **all tasks** in a single top-level `Makefile` and get:
 
-✅ **Unified interface**: Same commands for all languages  
-✅ **Automatic parallelization**: Tasks run in parallel when possible  
-✅ **Dependency orchestration**: Define cross-language dependencies  
-✅ **Consistent workflows**: Same commands for every task  
-✅ **Smart caching**: Unchanged tasks are skipped automatically  
+✓ **Unified interface**: Same commands for all languages  
+✓ **Automatic parallelization**: Tasks run in parallel when possible  
+✓ **Dependency orchestration**: Define cross-language dependencies  
+✓ **Consistent workflows**: Same commands for every task  
+✓ **Smart caching**: Unchanged tasks are skipped automatically  
 
 gaffer-exec **consumes standard Makefiles** — it does not replace GNU Make. It reads the Makefile to build the dependency graph, then schedules and caches it. The same targets still run with plain `make`.
 
@@ -362,14 +362,14 @@ This runs both traditional and gaffer-based approaches and reports timing differ
 ## Summary
 
 This example shows how `gaffer-exec` unifies:
-- ✅ npm/yarn scripts
-- ✅ Makefile targets
-- ✅ Shell scripts
-- ✅ Manual task coordination
+- ✓ npm/yarn scripts
+- ✓ Makefile targets
+- ✓ Shell scripts
+- ✓ Manual task coordination
 
 Into:
-- ✅ A single top-level `Makefile` task graph
-- ✅ Unified command interface via gaffer-exec
-- ✅ Automatic parallelization
-- ✅ Cross-language orchestration
-- ✅ Content-based caching that skips unchanged work
+- ✓ A single top-level `Makefile` task graph
+- ✓ Unified command interface via gaffer-exec
+- ✓ Automatic parallelization
+- ✓ Cross-language orchestration
+- ✓ Content-based caching that skips unchanged work

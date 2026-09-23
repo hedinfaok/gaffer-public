@@ -11,12 +11,12 @@ This example demonstrates how to use **gaffer-exec** to orchestrate a complete l
 - **Orchestration**: gaffer-exec managing the entire stack
 
 **Key Features:**
-- 🚀 Automatic port discovery and assignment
-- 🔄 Dependency-aware startup sequence (DB → API → Frontend)
-- ✅ Health checks and readiness validation
-- 🧪 Integrated testing framework
-- 🛑 Graceful shutdown of all services
-- 📊 Real-time development environment status
+- Automatic port discovery and assignment
+- Dependency-aware startup sequence (DB → API → Frontend)
+- ✓ Health checks and readiness validation
+- Integrated testing framework
+- Graceful shutdown of all services
+- Real-time development environment status
 
 ## Prerequisites
 
@@ -45,11 +45,11 @@ gaffer-exec --workspace-root . run make:dev
 ```
 
 The system will:
-1. ✅ Find available ports (DB, API, Frontend)
-2. 🐳 Start PostgreSQL database in Docker
-3. 🚀 Start Express API server
-4. 🎨 Start React development server
-5. ✅ Run health checks and connectivity tests
+1. ✓ Find available ports (DB, API, Frontend)
+2. Start PostgreSQL database in Docker
+3. Start Express API server
+4. Start React development server
+5. ✓ Run health checks and connectivity tests
 
 ## Available Commands
 
@@ -101,14 +101,14 @@ npm run clean   # Same as gaffer-exec --workspace-root . run make:clean
 Once `gaffer-exec --workspace-root . run make:dev` completes successfully:
 
 ```
-🎉 All services are ready!
+All services are ready!
 
-📊 Development Stack Status:
+Development Stack Status:
    Database:  http://localhost:5433 (PostgreSQL)
    API:       http://localhost:3001
    Frontend:  http://localhost:3000
 
-🏃 You can now:
+You can now:
    • Open your browser to http://localhost:3000
    • Test API at http://localhost:3001/api/tasks
    • Check API health at http://localhost:3001/health
@@ -119,21 +119,21 @@ Once `gaffer-exec --workspace-root . run make:dev` completes successfully:
 The **Task Manager** application demonstrates a real-world development environment:
 
 ### Frontend (React)
-- 📋 Task management interface
-- 📊 Real-time statistics dashboard
-- 🔄 Live API health monitoring
-- 📱 Responsive design
+- Task management interface
+- Real-time statistics dashboard
+- Live API health monitoring
+- Responsive design
 
 ### API (Express)
-- 🔗 RESTful endpoints (`/api/tasks`, `/api/users`)
-- 🏥 Health check endpoint (`/health`)
-- 🗄️ PostgreSQL database integration
-- 🛡️ Error handling and validation
+- RESTful endpoints (`/api/tasks`, `/api/users`)
+- Health check endpoint (`/health`)
+- PostgreSQL database integration
+- Error handling and validation
 
 ### Database (PostgreSQL)
-- 📊 Pre-populated sample data
-- 🔄 Automatic migrations
-- 💾 Persistent data storage
+- Pre-populated sample data
+- Automatic migrations
+- Persistent data storage
 
 ## Testing
 
@@ -164,11 +164,11 @@ gaffer-exec --workspace-root . run make:test
 ```
 
 **Test Coverage:**
-- ✅ Database connectivity
-- ✅ API endpoint functionality  
-- ✅ CRUD operations (Create, Read, Update, Delete)
-- ✅ Frontend accessibility
-- ✅ Service health checks
+- ✓ Database connectivity
+- ✓ API endpoint functionality  
+- ✓ CRUD operations (Create, Read, Update, Delete)
+- ✓ Frontend accessibility
+- ✓ Service health checks
 
 ## How It Works
 
@@ -276,17 +276,17 @@ tail -f logs/frontend.log
 
 This example demonstrates patterns applicable to:
 
-### 🏢 **Enterprise Development**
+### **Enterprise Development**
 - Multi-service applications
 - Database-dependent development  
 - Integration testing automation
 
-### 🚀 **Microservices**
+### **Microservices**
 - Service orchestration
 - Health check coordination
 - Port management
 
-### 👥 **Team Development**
+### **Team Development**
 - Consistent development environments
 - Automated dependency startup
 - One-command environment setup
@@ -318,8 +318,8 @@ gaffer-exec --workspace-root . run make:dev  # Everything coordinated automatica
 ```
 
 **Benefits:**
-- ⚡ Single command for complex environments
-- 🔄 Dependency management built-in
-- 🧪 Testing integration  
-- 🛑 Graceful shutdown handling
-- 📊 Status visibility throughout
+- ↯ Single command for complex environments
+- Dependency management built-in
+- Testing integration  
+- Graceful shutdown handling
+- Status visibility throughout

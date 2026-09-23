@@ -3,7 +3,7 @@ set -e
 
 source .env
 
-echo "🎨 Starting frontend development server..."
+echo "Starting frontend development server..."
 
 # Ensure logs directory exists
 mkdir -p ../logs
@@ -29,13 +29,13 @@ attempt=1
 
 while [ $attempt -le $max_attempts ]; do
   if curl -s http://localhost:${FRONTEND_PORT} > /dev/null 2>&1; then
-    echo "✅ Frontend is ready!"
+    echo "✓ Frontend is ready!"
     break
   fi
   
   if [ $attempt -eq $max_attempts ]; then
-    echo "❌ Frontend failed to start after $max_attempts attempts"
-    echo "📋 Frontend logs:"
+    echo "✗ Frontend failed to start after $max_attempts attempts"
+    echo "Frontend logs:"
     tail -20 logs/frontend.log
     exit 1
   fi
@@ -46,4 +46,4 @@ while [ $attempt -le $max_attempts ]; do
 done
 
 touch frontend.ready
-echo "✅ Frontend started on port ${FRONTEND_PORT}"
+echo "✓ Frontend started on port ${FRONTEND_PORT}"

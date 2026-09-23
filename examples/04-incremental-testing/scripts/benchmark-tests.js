@@ -13,14 +13,14 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('⚡ Performance Benchmark: gaffer-exec vs Alternatives');
+console.log('↯ Performance Benchmark: gaffer-exec vs Alternatives');
 console.log('='.repeat(70));
 console.log();
 
 const benchmarks = [];
 
 // Benchmark 1: gaffer-exec with caching and parallelism
-console.log('🔧 Benchmark 1: gaffer-exec with intelligent orchestration');
+console.log('Benchmark 1: gaffer-exec with intelligent orchestration');
 console.log('   - Merkle tree caching for unchanged tests');
 console.log('   - Resource-aware parallelization');
 console.log('   - Dependency-based test ordering');
@@ -52,17 +52,17 @@ try {
         ]
     });
     
-    console.log(`   ✅ Cold run: ${coldTime}ms`);
-    console.log(`   ✅ Warm run (cached): ${warmTime}ms`);
-    console.log(`   ⚡ Speedup: ${(coldTime / warmTime).toFixed(2)}x faster`);
+    console.log(`   ✓ Cold run: ${coldTime}ms`);
+    console.log(`   ✓ Warm run (cached): ${warmTime}ms`);
+    console.log(`   ↯ Speedup: ${(coldTime / warmTime).toFixed(2)}x faster`);
     console.log();
 } catch (error) {
-    console.log('   ⚠️  Could not complete gaffer-exec benchmark');
+    console.log('   ⚠  Could not complete gaffer-exec benchmark');
     console.log();
 }
 
 // Benchmark 2: Jest alone (baseline)
-console.log('🧪 Benchmark 2: Jest alone (baseline)');
+console.log('Benchmark 2: Jest alone (baseline)');
 console.log('   - No caching between runs');
 console.log('   - No intelligent orchestration');
 console.log('   - Sequential test suite execution');
@@ -85,16 +85,16 @@ try {
         ]
     });
     
-    console.log(`   ✅ Test run: ${jestTime}ms`);
-    console.log(`   ⚠️  No cross-run caching`);
+    console.log(`   ✓ Test run: ${jestTime}ms`);
+    console.log(`   ⚠  No cross-run caching`);
     console.log();
 } catch (error) {
-    console.log('   ⚠️  Could not complete Jest benchmark');
+    console.log('   ⚠  Could not complete Jest benchmark');
     console.log();
 }
 
 // Benchmark 3: Simulated Cypress (e2e only)
-console.log('🌐 Benchmark 3: Cypress-style (e2e only)');
+console.log('Benchmark 3: Cypress-style (e2e only)');
 console.log('   - E2E tests only');
 console.log('   - Limited parallelization');
 console.log('   - Manual retry logic');
@@ -117,16 +117,16 @@ try {
         ]
     });
     
-    console.log(`   ✅ E2E run: ${cypressTime}ms`);
-    console.log(`   ⚠️  E2E only, no unit/integration orchestration`);
+    console.log(`   ✓ E2E run: ${cypressTime}ms`);
+    console.log(`   ⚠  E2E only, no unit/integration orchestration`);
     console.log();
 } catch (error) {
-    console.log('   ⚠️  Could not complete Cypress-style benchmark');
+    console.log('   ⚠  Could not complete Cypress-style benchmark');
     console.log();
 }
 
 // Benchmark 4: Simulated Playwright (e2e only)
-console.log('🎭 Benchmark 4: Playwright-style (e2e only)');
+console.log('Benchmark 4: Playwright-style (e2e only)');
 console.log('   - E2E tests only');
 console.log('   - Better parallelization than Cypress');
 console.log('   - Manual retry configuration');
@@ -149,17 +149,17 @@ try {
         ]
     });
     
-    console.log(`   ✅ E2E run: ${playwrightTime}ms`);
-    console.log(`   ⚠️  E2E only, no orchestration for full test suite`);
+    console.log(`   ✓ E2E run: ${playwrightTime}ms`);
+    console.log(`   ⚠  E2E only, no orchestration for full test suite`);
     console.log();
 } catch (error) {
-    console.log('   ⚠️  Could not complete Playwright-style benchmark');
+    console.log('   ⚠  Could not complete Playwright-style benchmark');
     console.log();
 }
 
 // Generate comparison report
 console.log('='.repeat(70));
-console.log('📊 BENCHMARK RESULTS');
+console.log('BENCHMARK RESULTS');
 console.log('='.repeat(70));
 console.log();
 
@@ -176,7 +176,7 @@ if (benchmarks.length > 0) {
         console.log(`  Cache hit rate: ${benchmark.cacheHitRate}`);
         
         if (benchmark === fastest) {
-            console.log(`  🏆 FASTEST`);
+            console.log(`  FASTEST`);
         } else {
             const slowdown = (benchmark.warmRunMs / fastest.warmRunMs).toFixed(2);
             console.log(`  ${slowdown}x slower than fastest`);
@@ -188,15 +188,15 @@ if (benchmarks.length > 0) {
 }
 
 // Key insights
-console.log('🎯 KEY INSIGHTS:');
+console.log('KEY INSIGHTS:');
 console.log('━'.repeat(70));
-console.log('✅ gaffer-exec advantages:');
+console.log('✓ gaffer-exec advantages:');
 console.log('   • Merkle tree caching skips unchanged test suites');
 console.log('   • Resource-aware parallelization maximizes CPU usage');
 console.log('   • Exponential backoff handles flaky tests intelligently');
 console.log('   • Dependency-aware ordering ensures correct test sequence');
 console.log();
-console.log('❌ Traditional tools limitations:');
+console.log('✗ Traditional tools limitations:');
 console.log('   • Jest: No cross-run caching, basic parallelism only');
 console.log('   • Cypress: Limited parallelism, manual retry logic');
 console.log('   • Playwright: Better parallelism but no orchestration layer');
@@ -218,5 +218,5 @@ const metrics = {
 };
 
 fs.writeFileSync(metricsFile, JSON.stringify(metrics, null, 2));
-console.log(`📁 Detailed metrics saved to: ${metricsFile}`);
+console.log(`Detailed metrics saved to: ${metricsFile}`);
 console.log();

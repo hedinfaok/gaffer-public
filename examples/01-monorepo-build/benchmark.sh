@@ -9,13 +9,13 @@ echo "════════════════════════�
 echo ""
 
 # Clean build artifacts
-echo "🧹 Cleaning build artifacts..."
+echo "Cleaning build artifacts..."
 rm -rf packages/*/dist
 echo ""
 
 # Benchmark 1: npm workspaces (sequential)
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "1️⃣  npm workspaces (sequential builds)"
+echo "1⃣  npm workspaces (sequential builds)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -37,7 +37,7 @@ done
 
 NPM_AVG=$((NPM_TOTAL / NPM_RUNS))
 echo ""
-echo "  📊 Average time: ${NPM_AVG}ms"
+echo "  Average time: ${NPM_AVG}ms"
 echo ""
 
 # Clean for next benchmark
@@ -46,7 +46,7 @@ sleep 1
 
 # Benchmark 2: gaffer-exec (parallel, cold cache)
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "2️⃣  gaffer-exec (parallel builds, cold cache)"
+echo "2⃣  gaffer-exec (parallel builds, cold cache)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -68,12 +68,12 @@ done
 
 GAFFER_AVG=$((GAFFER_TOTAL / GAFFER_RUNS))
 echo ""
-echo "  📊 Average time: ${GAFFER_AVG}ms"
+echo "  Average time: ${GAFFER_AVG}ms"
 echo ""
 
 # Benchmark 3: gaffer-exec (parallel, hot cache)
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "3️⃣  gaffer-exec (parallel builds, hot cache)"
+echo "3⃣  gaffer-exec (parallel builds, hot cache)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -97,12 +97,12 @@ done
 
 CACHED_AVG=$((CACHED_TOTAL / CACHED_RUNS))
 echo ""
-echo "  📊 Average time: ${CACHED_AVG}ms"
+echo "  Average time: ${CACHED_AVG}ms"
 echo ""
 
 # Results table
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📊 BENCHMARK RESULTS"
+echo "BENCHMARK RESULTS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 printf "%-40s %10s %10s\n" "Tool" "Time (ms)" "Speedup"
@@ -127,11 +127,11 @@ echo ""
 echo "Key Findings:"
 if [ $GAFFER_AVG -gt 0 ]; then
     IMPROVEMENT=$(awk "BEGIN {printf \"%.1f\", (($NPM_AVG - $GAFFER_AVG) / $NPM_AVG) * 100}")
-    echo "  ⚡ Parallel execution: ${IMPROVEMENT}% faster than sequential"
+    echo "  ↯ Parallel execution: ${IMPROVEMENT}% faster than sequential"
 fi
 if [ $CACHED_AVG -gt 0 ]; then
     CACHE_IMPROVEMENT=$(awk "BEGIN {printf \"%.1f\", (($NPM_AVG - $CACHED_AVG) / $NPM_AVG) * 100}")
-    echo "  💾 With caching: ${CACHE_IMPROVEMENT}% faster than sequential"
+    echo "  With caching: ${CACHE_IMPROVEMENT}% faster than sequential"
 fi
 echo ""
 echo "Scalability:"
