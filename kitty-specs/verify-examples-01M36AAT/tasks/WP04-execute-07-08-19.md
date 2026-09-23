@@ -9,6 +9,9 @@ requirement_refs:
 planning_base_branch: verify-examples
 merge_target_branch: verify-examples
 branch_strategy: Planning artifacts for this mission were generated on verify-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into verify-examples unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-verify-examples-01M36AAT
+base_commit: a9dc23c88fee30944196b9a563c688eb9e647506
+created_at: '2026-09-23T05:28:09.127501+00:00'
 subtasks:
 - T017
 - T018
@@ -107,3 +110,4 @@ Use the `/ad-hoc-profile-load` skill to load the agent profile specified in the 
 ## Activity Log
 
 - 2026-09-23T05:05:00Z – system – Prompt generated via /spec-kitty.tasks
+- 2026-09-23T06:26:39Z – opencode – Executed examples 07/08/19. 19 pass (exit 0). 07 pass (47/0) after fixing two defects: shared-lib import path ../../../ -> ../../ in api-service+frontend, and ((VAR++)) under set -e aborting test.sh. 08 pass (24/0) after fixing: recursive npm 'install': 'npm ci' script; pip->python3 -m pip --break-system-packages; python->python3; go mod download->tidy (go.sum); unused fmt import in go-api; cache test now passes --cache sha256. Reverted incidental black/isort formatting churn.
