@@ -11,6 +11,9 @@ requirement_refs:
 planning_base_branch: improve-examples
 merge_target_branch: improve-examples
 branch_strategy: Planning artifacts for this mission were generated on improve-examples. During /spec-kitty.implement this WP may branch from a dependency-specific base, but completed changes must merge back into improve-examples unless the human explicitly redirects the landing branch.
+base_branch: kitty/mission-improve-examples-01M36QTK
+base_commit: a5f47cd83f0c3ff319739406b21e32a1e9c40703
+created_at: '2026-09-23T09:01:45.789038+00:00'
 subtasks:
 - T004
 - T005
